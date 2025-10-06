@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hours Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #4a6491;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 100, 145, 0.2);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-separator {
+            text-align: center;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .time-entry {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4a6491;
+        }
+
+        .time-entry-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .entry-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .remove-entry {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .add-entry-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .pay-calculator {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .pay-calculator h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            display: none;
+            border-left: 5px solid #4a6491;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a6491;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .total-hours {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .total-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .total-label {
+            font-size: 1.2rem;
+        }
+
+        .breakdown {
+            margin-top: 25px;
+        }
+
+        .breakdown h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e1e8ed;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .time-chart {
+            margin-top: 25px;
+        }
+
+        .time-chart h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .chart-bar {
+            height: 30px;
+            background-color: #ecf0f1;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4a6491, #667eea);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .tips {
+            background-color: #fff9e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .tips h4 {
+            color: #e67e22;
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hours Calculator</h1>
+            <p class="subtitle">Track work hours, calculate pay, and manage time entries</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <div class="input-group">
+                    <label>Time Entry #1</label>
+                    <div class="time-inputs">
+                        <input type="time" id="startTime1" value="09:00">
+                        <div class="time-separator">to</div>
+                        <input type="time" id="endTime1" value="17:00">
+                    </div>
+                </div>
+
+                <div id="additionalEntries">
+                    <!-- Additional time entries will be added here -->
+                </div>
+
+                <button id="addEntryBtn" class="add-entry-btn">+ Add Another Time Entry</button>
+
+                <div class="input-group">
+                    <label for="breakMinutes">Break Time (minutes)</label>
+                    <input type="number" id="breakMinutes" min="0" value="60">
+                </div>
+
+                <div class="pay-calculator">
+                    <h4>💰 Pay Calculator (Optional)</h4>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="hourlyRate">Hourly Rate ($)</label>
+                            <input type="number" id="hourlyRate" min="0" step="0.01" value="25.00">
+                        </div>
+                        <div class="input-group">
+                            <label for="overtimeRate">Overtime Rate ($)</label>
+                            <input type="number" id="overtimeRate" min="0" step="0.01" value="37.50">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="overtimeThreshold">Overtime After (hours)</label>
+                        <input type="number" id="overtimeThreshold" min="0" value="40">
+                    </div>
+                </div>
+                
+                <button id="calculateBtn" class="calculate-btn">Calculate Hours & Pay</button>
+                
+                <div class="tips">
+                    <h4>💡 Time Management Tips</h4>
+                    <ul>
+                        <li>Track all your work hours accurately</li>
+                        <li>Include breaks in your calculations</li>
+                        <li>Use overtime rates for hours beyond threshold</li>
+                        <li>Keep records for payroll and timesheets</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div id="result" class="result">
+                    <h2>Time Calculation Results</h2>
+                    
+                    <div class="total-hours">
+                        <div class="total-amount" id="totalHours">0.00</div>
+                        <div class="total-label">Total Hours</div>
+                    </div>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-value" id="regularHours">0.00</div>
+                            <div class="result-label">Regular Hours</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="overtimeHours">0.00</div>
+                            <div class="result-label">Overtime Hours</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="regularPay">$0.00</div>
+                            <div class="result-label">Regular Pay</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="overtimePay">$0.00</div>
+                            <div class="result-label">Overtime Pay</div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown">
+                        <h3>Pay Breakdown</h3>
+                        <div class="breakdown-item">
+                            <span>Regular Hours:</span>
+                            <span id="breakdownRegularHours">0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Regular Pay:</span>
+                            <span id="breakdownRegularPay">$0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Overtime Hours:</span>
+                            <span id="breakdownOvertimeHours">0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Overtime Pay:</span>
+                            <span id="breakdownOvertimePay">$0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Total Pay:</span>
+                            <span id="breakdownTotalPay">$0.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="time-chart">
+                        <h3>Time Distribution</h3>
+                        <div class="chart-bar">
+                            <div class="chart-fill" id="regularChart"></div>
+                        </div>
+                        <div class="chart-labels">
+                            <span>Regular: <span id="regularLabel">0.00h</span></span>
+                            <span>Overtime: <span id="overtimeLabel">0.00h</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="history">
+                    <h3>Recent Calculations</h3>
+                    <div id="historyList">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const calculateBtn = document.getElementById('calculateBtn');
+        const addEntryBtn = document.getElementById('addEntryBtn');
+        const additionalEntries = document.getElementById('additionalEntries');
+        const resultDiv = document.getElementById('result');
+        const totalHours = document.getElementById('totalHours');
+        const regularHours = document.getElementById('regularHours');
+        const overtimeHours = document.getElementById('overtimeHours');
+        const regularPay = document.getElementById('regularPay');
+        const overtimePay = document.getElementById('overtimePay');
+        const breakdownRegularHours = document.getElementById('breakdownRegularHours');
+        const breakdownRegularPay = document.getElementById('breakdownRegularPay');
+        const breakdownOvertimeHours = document.getElementById('breakdownOvertimeHours');
+        const breakdownOvertimePay = document.getElementById('breakdownOvertimePay');
+        const breakdownTotalPay = document.getElementById('breakdownTotalPay');
+        const regularChart = document.getElementById('regularChart');
+        const regularLabel = document.getElementById('regularLabel');
+        const overtimeLabel = document.getElementById('overtimeLabel');
+        const historyList = document.getElementById('historyList');
+
+        let entryCount = 1;
+
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateHours);
+        addEntryBtn.addEventListener('click', addTimeEntry);
+
+        // Add new time entry
+        function addTimeEntry() {
+            entryCount++;
+            const newEntry = document.createElement('div');
+            newEntry.className = 'time-entry';
+            newEntry.innerHTML = `
+                <div class="time-entry-header">
+                    <div class="entry-title">Time Entry #${entryCount}</div>
+                    <button class="remove-entry" onclick="removeTimeEntry(this)">Remove</button>
+                </div>
+                <div class="time-inputs">
+                    <input type="time" id="startTime${entryCount}" value="09:00">
+                    <div class="time-separator">to</div>
+                    <input type="time" id="endTime${entryCount}" value="17:00">
+                </div>
+            `;
+            additionalEntries.appendChild(newEntry);
+        }
+
+        // Remove time entry
+        function removeTimeEntry(button) {
+            const entry = button.closest('.time-entry');
+            entry.remove();
+            // Renumber remaining entries
+            const entries = additionalEntries.querySelectorAll('.time-entry');
+            entries.forEach((entry, index) => {
+                const title = entry.querySelector('.entry-title');
+                title.textContent = `Time Entry #${index + 2}`;
+            });
+            entryCount = entries.length + 1;
+        }
+
+        // Calculate hours and pay
+        function calculateHours() {
+            let totalMinutes = 0;
+            
+            // Calculate total time from all entries
+            for (let i = 1; i <= entryCount; i++) {
+                const startTimeInput = document.getElementById(`startTime${i}`);
+                const endTimeInput = document.getElementById(`endTime${i}`);
+                
+                if (startTimeInput && endTimeInput) {
+                    const startTime = startTimeInput.value;
+                    const endTime = endTimeInput.value;
+                    
+                    if (startTime && endTime) {
+                        const start = parseTime(startTime);
+                        const end = parseTime(endTime);
+                        
+                        // Handle overnight shifts
+                        let diffMinutes;
+                        if (end < start) {
+                            diffMinutes = (24 * 60 - start) + end;
+                        } else {
+                            diffMinutes = end - start;
+                        }
+                        
+                        totalMinutes += diffMinutes;
+                    }
+                }
+            }
+            
+            // Subtract break time
+            const breakMinutes = parseInt(document.getElementById('breakMinutes').value) || 0;
+            totalMinutes = Math.max(0, totalMinutes - breakMinutes);
+            
+            // Convert to hours
+            const totalHoursValue = totalMinutes / 60;
+            
+            // Calculate pay if hourly rate is provided
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
+            const overtimeRate = parseFloat(document.getElementById('overtimeRate').value) || 0;
+            const overtimeThreshold = parseFloat(document.getElementById('overtimeThreshold').value) || 40;
+            
+            let regularHoursValue, overtimeHoursValue;
+            let regularPayValue, overtimePayValue;
+            
+            if (totalHoursValue > overtimeThreshold) {
+                regularHoursValue = overtimeThreshold;
+                overtimeHoursValue = totalHoursValue - overtimeThreshold;
+            } else {
+                regularHoursValue = totalHoursValue;
+                overtimeHoursValue = 0;
+            }
+            
+            regularPayValue = regularHoursValue * hourlyRate;
+            overtimePayValue = overtimeHoursValue * overtimeRate;
+            const totalPayValue = regularPayValue + overtimePayValue;
+            
+            // Format numbers
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            const currencyFormatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            // Update results
+            totalHours.textContent = formatter.format(totalHoursValue);
+            regularHours.textContent = formatter.format(regularHoursValue);
+            overtimeHours.textContent = formatter.format(overtimeHoursValue);
+            regularPay.textContent = currencyFormatter.format(regularPayValue);
+            overtimePay.textContent = currencyFormatter.format(overtimePayValue);
+            
+            breakdownRegularHours.textContent = formatter.format(regularHoursValue);
+            breakdownRegularPay.textContent = currencyFormatter.format(regularPayValue);
+            breakdownOvertimeHours.textContent = formatter.format(overtimeHoursValue);
+            breakdownOvertimePay.textContent = currencyFormatter.format(overtimePayValue);
+            breakdownTotalPay.textContent = currencyFormatter.format(totalPayValue);
+            
+            // Update chart
+            const regularPercentage = (regularHoursValue / totalHoursValue) * 100;
+            regularChart.style.width = `${regularPercentage}%`;
+            regularLabel.textContent = formatter.format(regularHoursValue) + 'h';
+            overtimeLabel.textContent = formatter.format(overtimeHoursValue) + 'h';
+            
+            // Show result section
+            resultDiv.classList.add('active');
+            
+            // Add to history
+            addToHistory(totalHoursValue, regularPayValue, overtimePayValue, totalPayValue);
+        }
+
+        // Parse time string to minutes
+        function parseTime(timeString) {
+            const [hours, minutes] = timeString.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        // Add calculation to history
+        function addToHistory(totalHours, regularPay, overtimePay, totalPay) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            const currencyFormatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${formatter.format(totalHours)} hours</strong>
+                    <div class="history-details">${dateStr}</div>
+                </div>
+                <div class="history-pay">${currencyFormatter.format(totalPay)}</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Add some sample history items
+            const sampleItems = [
+                { hours: 8.5, pay: 212.50, date: '2023-10-15' },
+                { hours: 7.25, pay: 181.25, date: '2023-10-14' },
+                { hours: 9.0, pay: 243.75, date: '2023-10-13' }
+            ];
+            
+            const formatter = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            const currencyFormatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${formatter.format(item.hours)} hours</strong>
+                        <div class="history-details">${item.date}</div>
+                    </div>
+                    <div class="history-pay">${currencyFormatter.format(item.pay)}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // Calculate initial results
+            calculateHours();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initCalculator);
+    </script>
+</body>
+</html>

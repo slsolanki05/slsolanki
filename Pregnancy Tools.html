@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestational Age Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            color: #2c3e50;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .tools-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 992px) {
+            .tools-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tool-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .tool-header {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            color: #2c3e50;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .tool-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .calculator {
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff9a9e;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 154, 158, 0.2);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            color: #2c3e50;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .method-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .method-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .method-option.active {
+            border-color: #ff9a9e;
+            background-color: #fff5f5;
+        }
+
+        .method-option input {
+            display: none;
+        }
+
+        .pregnancy-info {
+            background-color: #fff5f5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            border-left: 4px solid #ff9a9e;
+        }
+
+        .pregnancy-info h4 {
+            color: #ff9a9e;
+            margin-bottom: 8px;
+        }
+
+        .pregnancy-info ul {
+            padding-left: 20px;
+        }
+
+        .pregnancy-info li {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            display: none;
+            border-left: 5px solid #ff9a9e;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .pregnancy-progress {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .gestational-age {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ff9a9e;
+            margin-bottom: 8px;
+        }
+
+        .trimester {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+
+        .progress-container {
+            margin: 15px 0;
+        }
+
+        .progress-bar {
+            height: 15px;
+            background-color: #e1e8ed;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            border-radius: 10px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff9a9e;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .milestones {
+            margin-top: 20px;
+        }
+
+        .milestones h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .milestone-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e1e8ed;
+        }
+
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+
+        .baby-development {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .baby-development h4 {
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .baby-development p {
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .health-tips {
+            background-color: #fff9e6;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .health-tips h4 {
+            color: #e67e22;
+            margin-bottom: 8px;
+        }
+
+        .health-tips ul {
+            padding-left: 20px;
+        }
+
+        .health-tips li {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .history {
+            margin-top: 20px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Weight Tracker Styles */
+        .weight-input-group {
+            margin-bottom: 15px;
+        }
+
+        .weight-input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .weight-result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            display: none;
+            border-left: 5px solid #ff9a9e;
+        }
+
+        .weight-result.active {
+            display: block;
+        }
+
+        .weight-result h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .weight-guidelines {
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .weight-guidelines h4 {
+            color: #2980b9;
+            margin-bottom: 8px;
+        }
+
+        .weight-guidelines ul {
+            padding-left: 20px;
+        }
+
+        .weight-guidelines li {
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+
+        .weight-chart {
+            margin-top: 20px;
+        }
+
+        .weight-chart h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-bar {
+            height: 20px;
+            background-color: #e1e8ed;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chart-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-radius: 10px;
+            transition: width 0.5s;
+            width: 0%;
+        }
+
+        .chart-label {
+            position: absolute;
+            top: 0;
+            left: 10px;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+            font-size: 0.8rem;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pregnancy Tools</h1>
+            <p class="subtitle">Track your pregnancy progress and important milestones</p>
+        </header>
+        
+        <div class="tools-container">
+            <!-- Original Gestational Age Calculator -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <h2>Gestational Age Calculator</h2>
+                </div>
+                <div class="calculator">
+                    <div class="input-section">
+                        <div class="method-selector">
+                            <div class="method-option active" data-method="lmp">
+                                <input type="radio" id="lmp" name="method" value="lmp" checked>
+                                <label for="lmp">Last Menstrual Period</label>
+                            </div>
+                            <div class="method-option" data-method="conception">
+                                <input type="radio" id="conception" name="method" value="conception">
+                                <label for="conception">Conception Date</label>
+                            </div>
+                        </div>
+                        
+                        <div class="input-group" id="lmpGroup">
+                            <label for="lmpDate">First Day of Last Menstrual Period</label>
+                            <input type="date" id="lmpDate" required>
+                        </div>
+                        
+                        <div class="input-group" id="conceptionGroup" style="display: none;">
+                            <label for="conceptionDate">Conception Date</label>
+                            <input type="date" id="conceptionDate">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="ultrasoundWeeks">Ultrasound Gestational Age (weeks)</label>
+                            <input type="number" id="ultrasoundWeeks" min="4" max="42" placeholder="Optional">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="ultrasoundDays">Ultrasound Gestational Age (days)</label>
+                            <input type="number" id="ultrasoundDays" min="0" max="6" placeholder="Optional">
+                        </div>
+                        
+                        <button id="calculateBtn" class="calculate-btn">Calculate Gestational Age</button>
+                        
+                        <div class="pregnancy-info">
+                            <h4>About Gestational Age</h4>
+                            <ul>
+                                <li>Gestational age is measured from the first day of your last menstrual period (LMP)</li>
+                                <li>Pregnancy typically lasts 40 weeks (280 days) from LMP</li>
+                                <li>First trimester: Weeks 1-13</li>
+                                <li>Second trimester: Weeks 14-27</li>
+                                <li>Third trimester: Weeks 28-40+</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="results-section">
+                        <div id="result" class="result">
+                            <h2>Your Pregnancy Progress</h2>
+                            
+                            <div class="pregnancy-progress">
+                                <div class="gestational-age" id="gestationalAge">0w 0d</div>
+                                <div class="trimester" id="trimester">First Trimester</div>
+                                
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                    <div class="progress-labels">
+                                        <span>Week 1</span>
+                                        <span>Week 40</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <div class="result-value" id="weeksPregnant">0</div>
+                                    <div class="result-label">Weeks Pregnant</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="daysPregnant">0</div>
+                                    <div class="result-label">Days Pregnant</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="dueDate">-</div>
+                                    <div class="result-label">Estimated Due Date</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="conceptionDateResult">-</div>
+                                    <div class="result-label">Conception Date</div>
+                                </div>
+                            </div>
+                            
+                            <div class="milestones">
+                                <h3>Pregnancy Milestones</h3>
+                                <div class="milestone-item">
+                                    <span>First Trimester Ends:</span>
+                                    <span id="firstTrimesterEnd">-</span>
+                                </div>
+                                <div class="milestone-item">
+                                    <span>Second Trimester Ends:</span>
+                                    <span id="secondTrimesterEnd">-</span>
+                                </div>
+                                <div class="milestone-item">
+                                    <span>Third Trimester Starts:</span>
+                                    <span id="thirdTrimesterStart">-</span>
+                                </div>
+                                <div class="milestone-item">
+                                    <span>Full Term (37 weeks):</span>
+                                    <span id="fullTerm">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="baby-development">
+                                <h4>👶 Baby Development This Week</h4>
+                                <p id="babyDevelopment">Enter your information to see your baby's development progress.</p>
+                            </div>
+                            
+                            <div class="health-tips">
+                                <h4>💡 Pregnancy Health Tips</h4>
+                                <ul>
+                                    <li>Take prenatal vitamins with folic acid</li>
+                                    <li>Stay hydrated and eat balanced meals</li>
+                                    <li>Attend all prenatal appointments</li>
+                                    <li>Get moderate exercise as approved by your doctor</li>
+                                    <li>Get plenty of rest and sleep</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="history">
+                            <h3>Recent Calculations</h3>
+                            <div id="historyList">
+                                <!-- History items will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- New Pregnancy Weight Gain Tracker -->
+            <div class="tool-card">
+                <div class="tool-header">
+                    <h2>Pregnancy Weight Gain Tracker</h2>
+                </div>
+                <div class="calculator">
+                    <div class="input-section">
+                        <div class="weight-input-group">
+                            <label for="prePregnancyWeight">Pre-pregnancy Weight (kg)</label>
+                            <input type="number" id="prePregnancyWeight" min="40" max="150" step="0.1" placeholder="Enter weight in kg">
+                        </div>
+                        
+                        <div class="weight-input-group">
+                            <label for="currentWeight">Current Weight (kg)</label>
+                            <input type="number" id="currentWeight" min="40" max="150" step="0.1" placeholder="Enter current weight in kg">
+                        </div>
+                        
+                        <div class="weight-input-group">
+                            <label for="currentWeek">Current Week of Pregnancy</label>
+                            <input type="number" id="currentWeek" min="1" max="42" placeholder="Enter current week">
+                        </div>
+                        
+                        <div class="weight-input-group">
+                            <label for="height">Your Height (cm)</label>
+                            <input type="number" id="height" min="140" max="200" placeholder="Enter height in cm">
+                        </div>
+                        
+                        <button id="calculateWeightBtn" class="calculate-btn">Calculate Weight Gain</button>
+                        
+                        <div class="weight-guidelines">
+                            <h4>About Pregnancy Weight Gain</h4>
+                            <ul>
+                                <li>Weight gain recommendations vary based on pre-pregnancy BMI</li>
+                                <li>Underweight (BMI < 18.5): 12.5-18 kg</li>
+                                <li>Normal weight (BMI 18.5-24.9): 11.5-16 kg</li>
+                                <li>Overweight (BMI 25-29.9): 7-11.5 kg</li>
+                                <li>Obese (BMI ≥ 30): 5-9 kg</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="results-section">
+                        <div id="weightResult" class="weight-result">
+                            <h2>Your Weight Gain Progress</h2>
+                            
+                            <div class="result-grid">
+                                <div class="result-item">
+                                    <div class="result-value" id="weightGain">0</div>
+                                    <div class="result-label">Weight Gained (kg)</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="bmiValue">0</div>
+                                    <div class="result-label">Pre-pregnancy BMI</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="recommendedGain">-</div>
+                                    <div class="result-label">Recommended Gain</div>
+                                </div>
+                                <div class="result-item">
+                                    <div class="result-value" id="gainStatus">-</div>
+                                    <div class="result-label">Status</div>
+                                </div>
+                            </div>
+                            
+                            <div class="weight-chart">
+                                <h3>Weight Gain Progress</h3>
+                                <div class="chart-container">
+                                    <div class="chart-bar">
+                                        <div class="chart-fill" id="weightProgressFill"></div>
+                                        <div class="chart-label" id="weightProgressLabel">0%</div>
+                                    </div>
+                                    <div class="chart-legend">
+                                        <span>Start</span>
+                                        <span>Recommended</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="health-tips">
+                                <h4>💡 Healthy Weight Gain Tips</h4>
+                                <ul>
+                                    <li>Focus on nutrient-dense foods rather than empty calories</li>
+                                    <li>Eat small, frequent meals to manage nausea and maintain energy</li>
+                                    <li>Include protein with each meal to support baby's growth</li>
+                                    <li>Stay active with doctor-approved exercises</li>
+                                    <li>Listen to your body's hunger and fullness cues</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="history">
+                            <h3>Weight Tracking History</h3>
+                            <div id="weightHistoryList">
+                                <!-- Weight history items will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements for Gestational Age Calculator
+        const methodOptions = document.querySelectorAll('.method-option');
+        const lmpGroup = document.getElementById('lmpGroup');
+        const conceptionGroup = document.getElementById('conceptionGroup');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultDiv = document.getElementById('result');
+        const gestationalAge = document.getElementById('gestationalAge');
+        const trimester = document.getElementById('trimester');
+        const progressFill = document.getElementById('progressFill');
+        const weeksPregnant = document.getElementById('weeksPregnant');
+        const daysPregnant = document.getElementById('daysPregnant');
+        const dueDate = document.getElementById('dueDate');
+        const conceptionDateResult = document.getElementById('conceptionDateResult');
+        const firstTrimesterEnd = document.getElementById('firstTrimesterEnd');
+        const secondTrimesterEnd = document.getElementById('secondTrimesterEnd');
+        const thirdTrimesterStart = document.getElementById('thirdTrimesterStart');
+        const fullTerm = document.getElementById('fullTerm');
+        const babyDevelopment = document.getElementById('babyDevelopment');
+        const historyList = document.getElementById('historyList');
+
+        // DOM elements for Weight Tracker
+        const calculateWeightBtn = document.getElementById('calculateWeightBtn');
+        const weightResultDiv = document.getElementById('weightResult');
+        const weightGain = document.getElementById('weightGain');
+        const bmiValue = document.getElementById('bmiValue');
+        const recommendedGain = document.getElementById('recommendedGain');
+        const gainStatus = document.getElementById('gainStatus');
+        const weightProgressFill = document.getElementById('weightProgressFill');
+        const weightProgressLabel = document.getElementById('weightProgressLabel');
+        const weightHistoryList = document.getElementById('weightHistoryList');
+
+        // Set default date to today for LMP
+        const today = new Date();
+        const twoWeeksAgo = new Date(today);
+        twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+        document.getElementById('lmpDate').valueAsDate = twoWeeksAgo;
+
+        // Baby development information by week
+        const babyDevelopmentInfo = {
+            4: "Baby is the size of a poppy seed. Neural tube formation begins.",
+            8: "Baby is the size of a raspberry. All major organs have begun to form.",
+            12: "Baby is the size of a lime. Reflexes are developing.",
+            16: "Baby is the size of an avocado. Can make facial expressions.",
+            20: "Baby is the size of a banana. You may feel movement.",
+            24: "Baby is the size of an ear of corn. Hearing is developing.",
+            28: "Baby is the size of an eggplant. Eyes can open and close.",
+            32: "Baby is the size of a squash. Practicing breathing movements.",
+            36: "Baby is the size of a head of lettuce. Getting ready for birth.",
+            40: "Baby is the size of a small pumpkin. Ready to meet the world!"
+        };
+
+        // Event listeners for Gestational Age Calculator
+        methodOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                methodOptions.forEach(opt => opt.classList.remove('active'));
+                option.classList.add('active');
+                
+                const method = option.getAttribute('data-method');
+                if (method === 'lmp') {
+                    lmpGroup.style.display = 'block';
+                    conceptionGroup.style.display = 'none';
+                } else {
+                    lmpGroup.style.display = 'none';
+                    conceptionGroup.style.display = 'block';
+                }
+            });
+        });
+
+        calculateBtn.addEventListener('click', calculateGestationalAge);
+
+        // Event listener for Weight Tracker
+        calculateWeightBtn.addEventListener('click', calculateWeightGain);
+
+        // Calculate gestational age
+        function calculateGestationalAge() {
+            const method = document.querySelector('input[name="method"]:checked').value;
+            let startDate;
+            
+            if (method === 'lmp') {
+                startDate = new Date(document.getElementById('lmpDate').value);
+                if (!startDate || isNaN(startDate.getTime())) {
+                    alert("Please select a valid date for your last menstrual period!");
+                    return;
+                }
+            } else {
+                startDate = new Date(document.getElementById('conceptionDate').value);
+                if (!startDate || isNaN(startDate.getTime())) {
+                    alert("Please select a valid conception date!");
+                    return;
+                }
+                // Add 14 days to conception date to get LMP equivalent
+                startDate.setDate(startDate.getDate() - 14);
+            }
+            
+            // Calculate gestational age
+            const today = new Date();
+            const diffTime = today - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            let weeks = Math.floor(diffDays / 7);
+            let days = diffDays % 7;
+            
+            // Use ultrasound data if provided
+            const ultrasoundWeeks = parseInt(document.getElementById('ultrasoundWeeks').value) || 0;
+            const ultrasoundDays = parseInt(document.getElementById('ultrasoundDays').value) || 0;
+            
+            if (ultrasoundWeeks > 0) {
+                weeks = ultrasoundWeeks;
+                days = ultrasoundDays;
+            }
+            
+            // Calculate due date (40 weeks from LMP)
+            const dueDateCalc = new Date(startDate);
+            dueDateCalc.setDate(dueDateCalc.getDate() + 280);
+            
+            // Calculate conception date (14 days after LMP)
+            const conceptionDateCalc = new Date(startDate);
+            conceptionDateCalc.setDate(conceptionDateCalc.getDate() + 14);
+            
+            // Calculate trimester milestones
+            const firstTrimesterEndDate = new Date(startDate);
+            firstTrimesterEndDate.setDate(firstTrimesterEndDate.getDate() + 91);
+            
+            const secondTrimesterEndDate = new Date(startDate);
+            secondTrimesterEndDate.setDate(secondTrimesterEndDate.getDate() + 189);
+            
+            const thirdTrimesterStartDate = new Date(startDate);
+            thirdTrimesterStartDate.setDate(thirdTrimesterStartDate.getDate() + 190);
+            
+            const fullTermDate = new Date(startDate);
+            fullTermDate.setDate(fullTermDate.getDate() + 259);
+            
+            // Format dates
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            
+            // Determine trimester
+            let currentTrimester;
+            if (weeks < 14) {
+                currentTrimester = "First Trimester";
+            } else if (weeks < 28) {
+                currentTrimester = "Second Trimester";
+            } else {
+                currentTrimester = "Third Trimester";
+            }
+            
+            // Update results
+            gestationalAge.textContent = `${weeks}w ${days}d`;
+            trimester.textContent = currentTrimester;
+            weeksPregnant.textContent = weeks;
+            daysPregnant.textContent = days;
+            dueDate.textContent = formatter.format(dueDateCalc);
+            conceptionDateResult.textContent = formatter.format(conceptionDateCalc);
+            firstTrimesterEnd.textContent = formatter.format(firstTrimesterEndDate);
+            secondTrimesterEnd.textContent = formatter.format(secondTrimesterEndDate);
+            thirdTrimesterStart.textContent = formatter.format(thirdTrimesterStartDate);
+            fullTerm.textContent = formatter.format(fullTermDate);
+            
+            // Update progress bar
+            const progressPercentage = Math.min((weeks / 40) * 100, 100);
+            progressFill.style.width = `${progressPercentage}%`;
+            
+            // Update baby development info
+            const developmentWeek = Math.min(Math.max(4, weeks), 40);
+            babyDevelopment.textContent = babyDevelopmentInfo[developmentWeek] || 
+                "Your baby is growing and developing every day!";
+            
+            // Show result section
+            resultDiv.classList.add('active');
+            
+            // Add to history
+            addToHistory(weeks, days, dueDateCalc);
+        }
+
+        // Add calculation to history
+        function addToHistory(weeks, days, dueDate) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${weeks}w ${days}d</strong>
+                    <div class="history-details">Due: ${formatter.format(dueDate)} • ${dateStr}</div>
+                </div>
+                <div class="history-progress">${Math.round((weeks/40)*100)}%</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Calculate weight gain
+        function calculateWeightGain() {
+            const prePregnancyWeight = parseFloat(document.getElementById('prePregnancyWeight').value);
+            const currentWeight = parseFloat(document.getElementById('currentWeight').value);
+            const currentWeek = parseInt(document.getElementById('currentWeek').value);
+            const height = parseFloat(document.getElementById('height').value);
+            
+            if (!prePregnancyWeight || !currentWeight || !currentWeek || !height) {
+                alert("Please fill in all fields!");
+                return;
+            }
+            
+            // Calculate BMI
+            const heightInMeters = height / 100;
+            const bmi = prePregnancyWeight / (heightInMeters * heightInMeters);
+            
+            // Calculate weight gain
+            const weightGained = currentWeight - prePregnancyWeight;
+            
+            // Determine recommended weight gain based on BMI
+            let recommendedMin, recommendedMax, bmiCategory;
+            
+            if (bmi < 18.5) {
+                recommendedMin = 12.5;
+                recommendedMax = 18;
+                bmiCategory = "Underweight";
+            } else if (bmi < 25) {
+                recommendedMin = 11.5;
+                recommendedMax = 16;
+                bmiCategory = "Normal weight";
+            } else if (bmi < 30) {
+                recommendedMin = 7;
+                recommendedMax = 11.5;
+                bmiCategory = "Overweight";
+            } else {
+                recommendedMin = 5;
+                recommendedMax = 9;
+                bmiCategory = "Obese";
+            }
+            
+            // Calculate expected weight gain at current week
+            const totalWeeks = 40;
+            const expectedMin = (recommendedMin / totalWeeks) * currentWeek;
+            const expectedMax = (recommendedMax / totalWeeks) * currentWeek;
+            
+            // Determine status
+            let status;
+            if (weightGained < expectedMin) {
+                status = "Below recommended";
+            } else if (weightGained > expectedMax) {
+                status = "Above recommended";
+            } else {
+                status = "Within recommended range";
+            }
+            
+            // Update results
+            weightGain.textContent = weightGained.toFixed(1);
+            bmiValue.textContent = bmi.toFixed(1);
+            recommendedGain.textContent = `${recommendedMin}-${recommendedMax} kg`;
+            gainStatus.textContent = status;
+            
+            // Update progress bar
+            const progressPercentage = Math.min((weightGained / recommendedMax) * 100, 100);
+            weightProgressFill.style.width = `${progressPercentage}%`;
+            weightProgressLabel.textContent = `${Math.round(progressPercentage)}%`;
+            
+            // Show result section
+            weightResultDiv.classList.add('active');
+            
+            // Add to history
+            addToWeightHistory(currentWeek, weightGained, status);
+        }
+
+        // Add weight calculation to history
+        function addToWeightHistory(week, gain, status) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>Week ${week}</strong>
+                    <div class="history-details">Gain: ${gain.toFixed(1)} kg • ${dateStr}</div>
+                </div>
+                <div class="history-progress">${status}</div>
+            `;
+            
+            weightHistoryList.insertBefore(historyItem, weightHistoryList.firstChild);
+            
+            // Keep only last 5 entries
+            if (weightHistoryList.children.length > 5) {
+                weightHistoryList.removeChild(weightHistoryList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Add some sample history items for gestational age calculator
+            const sampleItems = [
+                { weeks: 12, days: 3, dueDate: new Date(2024, 6, 15), date: '2023-10-15' },
+                { weeks: 8, days: 2, dueDate: new Date(2024, 7, 1), date: '2023-10-01' },
+                { weeks: 20, days: 0, dueDate: new Date(2024, 3, 20), date: '2023-09-25' }
+            ];
+            
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${item.weeks}w ${item.days}d</strong>
+                        <div class="history-details">Due: ${formatter.format(item.dueDate)} • ${item.date}</div>
+                    </div>
+                    <div class="history-progress">${Math.round((item.weeks/40)*100)}%</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // Add some sample history items for weight tracker
+            const weightSampleItems = [
+                { week: 12, gain: 1.5, status: "Within recommended range" },
+                { week: 8, gain: 0.8, status: "Below recommended" },
+                { week: 20, gain: 4.2, status: "Within recommended range" }
+            ];
+            
+            weightSampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>Week ${item.week}</strong>
+                        <div class="history-details">Gain: ${item.gain} kg • Sample data</div>
+                    </div>
+                    <div class="history-progress">${item.status}</div>
+                `;
+                weightHistoryList.appendChild(historyItem);
+            });
+        }
+
+        // Initialize the calculator when the page loads
+        window.onload = initCalculator;
+    </script>
+</body>
+</html>

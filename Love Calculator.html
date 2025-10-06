@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 50%, #ff6b6b 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hearts-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            opacity: 0.1;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff6b6b' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: 100px;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ffd1d1;
+            border-radius: 50px;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s;
+            background-color: #fffafa;
+        }
+
+        input:focus {
+            border-color: #ff6b6b;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+
+        .heart-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 3rem;
+            color: #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background: linear-gradient(135deg, #fff0f0, #fffafa);
+            border-radius: 15px;
+            padding: 30px;
+            display: none;
+            border: 2px dashed #ff6b6b;
+            text-align: center;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .love-percentage {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .couple-names {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .love-message {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .love-description {
+            background-color: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .love-description h4 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            margin: 25px 0;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background-color: #ffe0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            border-radius: 10px;
+            transition: width 1.5s ease-in-out;
+            width: 0%;
+        }
+
+        .compatibility-factors {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .factor {
+            background-color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .factor-name {
+            font-weight: 600;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+        }
+
+        .factor-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ff6b6b' d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E");
+            background-size: contain;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hearts-background"></div>
+        <div class="floating-hearts" id="floatingHearts"></div>
+        
+        <header>
+            <h1>Love Calculator</h1>
+            <p class="subtitle">Find out your compatibility with your crush or partner!</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="name1">Your Name</label>
+                    <input type="text" id="name1" placeholder="Enter your name" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="name2">Partner's Name</label>
+                    <input type="text" id="name2" placeholder="Enter their name" required>
+                </div>
+            </div>
+            
+            <div class="heart-icon">❤️</div>
+            
+            <button id="calculateBtn" class="calculate-btn">Calculate Love</button>
+            
+            <div id="result" class="result">
+                <h2>Love Compatibility</h2>
+                
+                <div class="couple-names" id="coupleNames">You & Your Partner</div>
+                
+                <div class="love-percentage" id="lovePercentage">0%</div>
+                
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <div class="love-message" id="loveMessage">Calculating your love compatibility...</div>
+                
+                <div class="compatibility-factors">
+                    <div class="factor">
+                        <div class="factor-name">Communication</div>
+                        <div class="factor-value" id="communication">-</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-name">Trust</div>
+                        <div class="factor-value" id="trust">-</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-name">Passion</div>
+                        <div class="factor-value" id="passion">-</div>
+                    </div>
+                    <div class="factor">
+                        <div class="factor-name">Understanding</div>
+                        <div class="factor-value" id="understanding">-</div>
+                    </div>
+                </div>
+                
+                <div class="love-description">
+                    <h4>Relationship Advice</h4>
+                    <p id="relationshipAdvice">Based on your compatibility score, we'll provide personalized advice for your relationship.</p>
+                </div>
+            </div>
+            
+            <div class="history">
+                <h3>Recent Calculations</h3>
+                <div id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultDiv = document.getElementById('result');
+        const coupleNames = document.getElementById('coupleNames');
+        const lovePercentage = document.getElementById('lovePercentage');
+        const progressFill = document.getElementById('progressFill');
+        const loveMessage = document.getElementById('loveMessage');
+        const relationshipAdvice = document.getElementById('relationshipAdvice');
+        const communication = document.getElementById('communication');
+        const trust = document.getElementById('trust');
+        const passion = document.getElementById('passion');
+        const understanding = document.getElementById('understanding');
+        const historyList = document.getElementById('historyList');
+        const floatingHearts = document.getElementById('floatingHearts');
+
+        // Love messages based on percentage
+        const loveMessages = {
+            low: [
+                "There might be some challenges ahead, but every relationship takes work!",
+                "Don't worry, compatibility can grow over time with effort and understanding.",
+                "This could be the start of a beautiful friendship or a slow-burning romance!"
+            ],
+            medium: [
+                "You have a good foundation for a relationship! With communication, this could blossom.",
+                "There's definite potential here! Focus on your common interests and values.",
+                "A balanced connection with room to grow stronger over time."
+            ],
+            high: [
+                "Wow! The stars have aligned for you two. This is a special connection!",
+                "You complement each other perfectly. This relationship has amazing potential!",
+                "A truly harmonious match! Your energies resonate beautifully together."
+            ],
+            perfect: [
+                "Soulmates alert! This connection is truly one in a million.",
+                "Destiny has brought you together. This is a match made in heaven!",
+                "Perfect harmony! Your love story is meant to be written in the stars."
+            ]
+        };
+
+        // Relationship advice based on percentage
+        const adviceMessages = {
+            low: "Focus on building friendship first. Find common interests and spend quality time together without pressure.",
+            medium: "Continue getting to know each other. Communication is key - share your thoughts and feelings openly.",
+            high: "Nurture this beautiful connection. Plan special moments together and continue supporting each other's growth.",
+            perfect: "Cherish this rare bond. Keep the romance alive with surprises and never stop appreciating each other."
+        };
+
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateLove);
+
+        // Calculate love compatibility
+        function calculateLove() {
+            const name1 = document.getElementById('name1').value.trim();
+            const name2 = document.getElementById('name2').value.trim();
+            
+            if (!name1 || !name2) {
+                alert("Please enter both names!");
+                return;
+            }
+            
+            // Generate a "random" but deterministic percentage based on names
+            const loveScore = generateLoveScore(name1, name2);
+            
+            // Update UI with results
+            updateResults(name1, name2, loveScore);
+            
+            // Create floating hearts animation
+            createHearts();
+            
+            // Add to history
+            addToHistory(name1, name2, loveScore);
+        }
+
+        // Generate a deterministic love score based on names
+        function generateLoveScore(name1, name2) {
+            // Combine names and convert to a number seed
+            const combined = (name1 + name2).toLowerCase();
+            let seed = 0;
+            
+            for (let i = 0; i < combined.length; i++) {
+                seed += combined.charCodeAt(i);
+            }
+            
+            // Use the seed to generate a "random" but consistent percentage
+            const pseudoRandom = (seed * 9301 + 49297) % 233280;
+            const percentage = Math.floor((pseudoRandom / 233280) * 40) + 60; // Between 60-100%
+            
+            return Math.min(percentage, 100);
+        }
+
+        // Update results in the UI
+        function updateResults(name1, name2, score) {
+            // Update names
+            coupleNames.textContent = `${name1} & ${name2}`;
+            
+            // Update percentage with animation
+            animatePercentage(score);
+            
+            // Update progress bar
+            progressFill.style.width = `${score}%`;
+            
+            // Update compatibility factors (randomized but based on main score)
+            communication.textContent = `${Math.min(score + Math.floor(Math.random() * 10) - 5, 100)}%`;
+            trust.textContent = `${Math.min(score + Math.floor(Math.random() * 10) - 5, 100)}%`;
+            passion.textContent = `${Math.min(score + Math.floor(Math.random() * 10) - 5, 100)}%`;
+            understanding.textContent = `${Math.min(score + Math.floor(Math.random() * 10) - 5, 100)}%`;
+            
+            // Select appropriate message and advice
+            let messageCategory;
+            if (score < 40) messageCategory = 'low';
+            else if (score < 70) messageCategory = 'medium';
+            else if (score < 90) messageCategory = 'high';
+            else messageCategory = 'perfect';
+            
+            const messages = loveMessages[messageCategory];
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            
+            loveMessage.textContent = randomMessage;
+            relationshipAdvice.textContent = adviceMessages[messageCategory];
+            
+            // Show result section
+            resultDiv.classList.add('active');
+        }
+
+        // Animate the percentage counter
+        function animatePercentage(target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                lovePercentage.textContent = `${Math.floor(current)}%`;
+            }, 30);
+        }
+
+        // Create floating hearts animation
+        function createHearts() {
+            // Clear existing hearts
+            floatingHearts.innerHTML = '';
+            
+            // Create new hearts
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                
+                // Random position and animation delay
+                const left = Math.random() * 100;
+                const delay = Math.random() * 5;
+                const duration = 5 + Math.random() * 5;
+                
+                heart.style.left = `${left}%`;
+                heart.style.animation = `float ${duration}s ease-in ${delay}s forwards`;
+                
+                floatingHearts.appendChild(heart);
+                
+                // Remove heart after animation completes
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.parentNode.removeChild(heart);
+                    }
+                }, (duration + delay) * 1000);
+            }
+        }
+
+        // Add calculation to history
+        function addToHistory(name1, name2, score) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${name1} & ${name2}</strong>
+                    <div class="history-details">${dateStr}</div>
+                </div>
+                <div class="history-score">${score}%</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Add some sample history items
+            const sampleItems = [
+                { name1: 'Romeo', name2: 'Juliet', score: 98, date: '2023-10-15' },
+                { name1: 'Jack', name2: 'Rose', score: 92, date: '2023-10-10' },
+                { name1: 'John', name2: 'Jane', score: 87, date: '2023-10-05' }
+            ];
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${item.name1} & ${item.name2}</strong>
+                        <div class="history-details">${item.date}</div>
+                    </div>
+                    <div class="history-score">${item.score}%</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initCalculator);
+    </script>
+</body>
+</html>

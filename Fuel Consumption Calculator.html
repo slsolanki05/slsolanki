@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Consumption Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .calculator-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: #3498db;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .calculator-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .unit-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .unit-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .calculate-btn {
+            grid-column: span 2;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+        
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .cost-analysis {
+            margin-top: 20px;
+        }
+        
+        .cost-analysis h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .comparison {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+        }
+        
+        .comparison h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .comparison p {
+            margin-bottom: 10px;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+        }
+        
+        .history-section h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .history-table th, .history-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #e1e8ed;
+        }
+        
+        .history-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .calculator-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculate-btn {
+                grid-column: span 1;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fuel Consumption Calculator</h1>
+            <p class="description">Calculate your vehicle's fuel efficiency and track your fuel costs</p>
+        </header>
+        
+        <div class="calculator-tabs">
+            <div class="tab active" data-tab="consumption">Fuel Consumption</div>
+            <div class="tab" data-tab="cost">Cost Calculator</div>
+            <div class="tab" data-tab="trip">Trip Calculator</div>
+        </div>
+        
+        <div id="consumption" class="tab-content active">
+            <div class="unit-selector">
+                <div class="unit-option">
+                    <input type="radio" id="metric" name="unit" value="metric" checked>
+                    <label for="metric">Metric (L/100km)</label>
+                </div>
+                <div class="unit-option">
+                    <input type="radio" id="imperial" name="unit" value="imperial">
+                    <label for="imperial">Imperial (MPG)</label>
+                </div>
+            </div>
+            
+            <form id="consumptionCalculator" class="calculator-form">
+                <div class="input-group">
+                    <label for="distance">Distance Traveled</label>
+                    <input type="number" id="distance" min="1" step="0.1" required>
+                    <span class="unit-label" id="distance-unit">km</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="fuel">Fuel Used</label>
+                    <input type="number" id="fuel" min="0.1" step="0.1" required>
+                    <span class="unit-label" id="fuel-unit">liters</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="fuelPrice">Fuel Price (optional)</label>
+                    <input type="number" id="fuelPrice" min="0" step="0.01">
+                    <span class="unit-label" id="price-unit">per liter</span>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Calculate Fuel Consumption</button>
+            </form>
+        </div>
+        
+        <div id="cost" class="tab-content">
+            <form id="costCalculator" class="calculator-form">
+                <div class="input-group">
+                    <label for="tripDistance">Trip Distance</label>
+                    <input type="number" id="tripDistance" min="1" step="0.1" required>
+                    <span class="unit-label" id="trip-distance-unit">km</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="vehicleConsumption">Vehicle Consumption</label>
+                    <input type="number" id="vehicleConsumption" min="1" step="0.1" required>
+                    <span class="unit-label" id="consumption-unit">L/100km</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="tripFuelPrice">Fuel Price</label>
+                    <input type="number" id="tripFuelPrice" min="0.1" step="0.01" required>
+                    <span class="unit-label" id="trip-price-unit">per liter</span>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Calculate Trip Cost</button>
+            </form>
+        </div>
+        
+        <div id="trip" class="tab-content">
+            <form id="tripCalculator" class="calculator-form">
+                <div class="input-group">
+                    <label for="tripFuel">Fuel Available</label>
+                    <input type="number" id="tripFuel" min="1" step="0.1" required>
+                    <span class="unit-label" id="trip-fuel-unit">liters</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="tripVehicleConsumption">Vehicle Consumption</label>
+                    <input type="number" id="tripVehicleConsumption" min="1" step="0.1" required>
+                    <span class="unit-label" id="trip-consumption-unit">L/100km</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="reserveFuel">Reserve Fuel (optional)</label>
+                    <input type="number" id="reserveFuel" min="0" step="0.1" value="5">
+                    <span class="unit-label">liters</span>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Calculate Trip Range</button>
+            </form>
+        </div>
+        
+        <div id="result" class="result">
+            <h2>Calculation Results</h2>
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-value" id="consumptionResult">-</div>
+                    <div class="result-label">Fuel Consumption</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="costResult">-</div>
+                    <div class="result-label">Fuel Cost</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="efficiencyResult">-</div>
+                    <div class="result-label">Fuel Efficiency</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-value" id="rangeResult">-</div>
+                    <div class="result-label">Estimated Range</div>
+                </div>
+            </div>
+            
+            <div class="cost-analysis">
+                <h3>Cost Analysis</h3>
+                <p id="costPerDistance">Cost per km: -</p>
+                <p id="monthlyCost">Estimated monthly cost (1000 km): -</p>
+                <p id="yearlyCost">Estimated yearly cost (12000 km): -</p>
+            </div>
+            
+            <div class="comparison">
+                <h3>Efficiency Comparison</h3>
+                <p id="efficiencyComparison">Your vehicle is -% more/less efficient than average</p>
+                <p id="potentialSavings">Potential annual savings with a more efficient vehicle: -</p>
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <h2>Calculation History</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Distance</th>
+                        <th>Fuel</th>
+                        <th>Consumption</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <!-- History rows will be added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const unitRadios = document.querySelectorAll('input[name="unit"]');
+        const consumptionForm = document.getElementById('consumptionCalculator');
+        const costForm = document.getElementById('costCalculator');
+        const tripForm = document.getElementById('tripCalculator');
+        const resultDiv = document.getElementById('result');
+        
+        // Tab switching
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Show active tab content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === tabId) {
+                        content.classList.add('active');
+                    }
+                });
+                
+                // Reset result display when switching tabs
+                resultDiv.style.display = 'none';
+            });
+        });
+        
+        // Unit system change
+        unitRadios.forEach(radio => {
+            radio.addEventListener('change', updateUnits);
+        });
+        
+        function updateUnits() {
+            const isMetric = document.getElementById('metric').checked;
+            
+            // Update labels for consumption calculator
+            document.getElementById('distance-unit').textContent = isMetric ? 'km' : 'miles';
+            document.getElementById('fuel-unit').textContent = isMetric ? 'liters' : 'gallons';
+            document.getElementById('price-unit').textContent = isMetric ? 'per liter' : 'per gallon';
+            
+            // Update labels for cost calculator
+            document.getElementById('trip-distance-unit').textContent = isMetric ? 'km' : 'miles';
+            document.getElementById('consumption-unit').textContent = isMetric ? 'L/100km' : 'MPG';
+            document.getElementById('trip-price-unit').textContent = isMetric ? 'per liter' : 'per gallon';
+            
+            // Update labels for trip calculator
+            document.getElementById('trip-fuel-unit').textContent = isMetric ? 'liters' : 'gallons';
+            document.getElementById('trip-consumption-unit').textContent = isMetric ? 'L/100km' : 'MPG';
+        }
+        
+        // Consumption calculator
+        consumptionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isMetric = document.getElementById('metric').checked;
+            const distance = parseFloat(document.getElementById('distance').value);
+            const fuel = parseFloat(document.getElementById('fuel').value);
+            const fuelPrice = document.getElementById('fuelPrice').value ? parseFloat(document.getElementById('fuelPrice').value) : null;
+            
+            let consumption, consumptionText, efficiencyText;
+            
+            if (isMetric) {
+                // Calculate L/100km
+                consumption = (fuel / distance) * 100;
+                consumptionText = consumption.toFixed(2) + ' L/100km';
+                
+                // Calculate MPG for efficiency comparison
+                const mpg = (distance * 0.621371) / (fuel * 0.264172);
+                efficiencyText = mpg.toFixed(1) + ' MPG';
+            } else {
+                // Calculate MPG
+                consumption = distance / fuel;
+                consumptionText = consumption.toFixed(1) + ' MPG';
+                
+                // Calculate L/100km for efficiency comparison
+                const l100km = 235.214 / consumption;
+                efficiencyText = l100km.toFixed(2) + ' L/100km';
+            }
+            
+            // Calculate costs if fuel price provided
+            let cost = '-';
+            let costPerDistance = '-';
+            let monthlyCost = '-';
+            let yearlyCost = '-';
+            
+            if (fuelPrice) {
+                const totalCost = fuel * fuelPrice;
+                cost = formatCurrency(totalCost);
+                
+                const costPerKm = totalCost / distance;
+                costPerDistance = formatCurrency(costPerKm) + (isMetric ? '/km' : '/mile');
+                
+                // Estimate monthly and yearly costs based on average driving
+                const monthlyDistance = isMetric ? 1000 : 621; // 1000 km or 621 miles
+                const yearlyDistance = isMetric ? 12000 : 7456; // 12000 km or 7456 miles
+                
+                const monthlyFuel = (consumption / (isMetric ? 100 : 1)) * monthlyDistance;
+                const yearlyFuel = (consumption / (isMetric ? 100 : 1)) * yearlyDistance;
+                
+                monthlyCost = formatCurrency(monthlyFuel * fuelPrice);
+                yearlyCost = formatCurrency(yearlyFuel * fuelPrice);
+            }
+            
+            // Calculate range (assuming 50L tank for metric, 13.2 gallon for imperial)
+            const tankSize = isMetric ? 50 : 13.2;
+            const range = tankSize / (consumption / (isMetric ? 100 : 1));
+            const rangeText = range.toFixed(0) + (isMetric ? ' km' : ' miles');
+            
+            // Efficiency comparison
+            const avgConsumption = isMetric ? 8.0 : 30; // 8.0 L/100km or 30 MPG
+            const efficiencyDiff = isMetric ? 
+                ((avgConsumption - consumption) / avgConsumption) * 100 :
+                ((consumption - avgConsumption) / avgConsumption) * 100;
+                
+            const comparisonText = `Your vehicle is ${Math.abs(efficiencyDiff).toFixed(1)}% ${efficiencyDiff > 0 ? 'more' : 'less'} efficient than average`;
+            
+            // Potential savings
+            let savingsText = '-';
+            if (fuelPrice && efficiencyDiff < 0) {
+                const yearlyFuelCurrent = (consumption / (isMetric ? 100 : 1)) * (isMetric ? 12000 : 7456);
+                const yearlyFuelAvg = (avgConsumption / (isMetric ? 100 : 1)) * (isMetric ? 12000 : 7456);
+                const savings = (yearlyFuelCurrent - yearlyFuelAvg) * fuelPrice;
+                savingsText = formatCurrency(savings);
+            }
+            
+            // Display results
+            document.getElementById('consumptionResult').textContent = consumptionText;
+            document.getElementById('costResult').textContent = cost;
+            document.getElementById('efficiencyResult').textContent = efficiencyText;
+            document.getElementById('rangeResult').textContent = rangeText;
+            
+            document.getElementById('costPerDistance').textContent = `Cost per ${isMetric ? 'km' : 'mile'}: ${costPerDistance}`;
+            document.getElementById('monthlyCost').textContent = `Estimated monthly cost (${isMetric ? '1000 km' : '621 miles'}): ${monthlyCost}`;
+            document.getElementById('yearlyCost').textContent = `Estimated yearly cost (${isMetric ? '12000 km' : '7456 miles'}): ${yearlyCost}`;
+            
+            document.getElementById('efficiencyComparison').textContent = comparisonText;
+            document.getElementById('potentialSavings').textContent = `Potential annual savings with a more efficient vehicle: ${savingsText}`;
+            
+            resultDiv.style.display = 'block';
+            
+            // Add to history
+            addToHistory(distance, fuel, consumptionText, cost, isMetric);
+        });
+        
+        // Cost calculator
+        costForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isMetric = document.getElementById('metric').checked;
+            const distance = parseFloat(document.getElementById('tripDistance').value);
+            const consumption = parseFloat(document.getElementById('vehicleConsumption').value);
+            const fuelPrice = parseFloat(document.getElementById('tripFuelPrice').value);
+            
+            // Calculate fuel needed
+            let fuelNeeded;
+            if (isMetric) {
+                fuelNeeded = (consumption / 100) * distance;
+            } else {
+                fuelNeeded = distance / consumption;
+            }
+            
+            // Calculate cost
+            const cost = fuelNeeded * fuelPrice;
+            
+            // Display results
+            document.getElementById('consumptionResult').textContent = isMetric ? 
+                consumption.toFixed(2) + ' L/100km' : consumption.toFixed(1) + ' MPG';
+            document.getElementById('costResult').textContent = formatCurrency(cost);
+            document.getElementById('efficiencyResult').textContent = fuelNeeded.toFixed(2) + (isMetric ? ' liters' : ' gallons');
+            document.getElementById('rangeResult').textContent = '-';
+            
+            document.getElementById('costPerDistance').textContent = `Cost per ${isMetric ? 'km' : 'mile'}: ${formatCurrency(cost / distance)}`;
+            document.getElementById('monthlyCost').textContent = '-';
+            document.getElementById('yearlyCost').textContent = '-';
+            
+            document.getElementById('efficiencyComparison').textContent = '-';
+            document.getElementById('potentialSavings').textContent = '-';
+            
+            resultDiv.style.display = 'block';
+        });
+        
+        // Trip calculator
+        tripForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isMetric = document.getElementById('metric').checked;
+            const fuel = parseFloat(document.getElementById('tripFuel').value);
+            const consumption = parseFloat(document.getElementById('tripVehicleConsumption').value);
+            const reserveFuel = parseFloat(document.getElementById('reserveFuel').value) || 0;
+            
+            // Calculate range
+            let range;
+            if (isMetric) {
+                range = (fuel - reserveFuel) / (consumption / 100);
+            } else {
+                range = (fuel - reserveFuel) * consumption;
+            }
+            
+            // Display results
+            document.getElementById('consumptionResult').textContent = isMetric ? 
+                consumption.toFixed(2) + ' L/100km' : consumption.toFixed(1) + ' MPG';
+            document.getElementById('costResult').textContent = '-';
+            document.getElementById('efficiencyResult').textContent = fuel.toFixed(2) + (isMetric ? ' liters' : ' gallons');
+            document.getElementById('rangeResult').textContent = range.toFixed(0) + (isMetric ? ' km' : ' miles');
+            
+            document.getElementById('costPerDistance').textContent = `With ${reserveFuel} ${isMetric ? 'liters' : 'gallons'} reserve`;
+            document.getElementById('monthlyCost').textContent = '-';
+            document.getElementById('yearlyCost').textContent = '-';
+            
+            document.getElementById('efficiencyComparison').textContent = '-';
+            document.getElementById('potentialSavings').textContent = '-';
+            
+            resultDiv.style.display = 'block';
+        });
+        
+        // Utility functions
+        function formatCurrency(amount) {
+            if (amount === '-') return '-';
+            return '$' + amount.toFixed(2);
+        }
+        
+        function addToHistory(distance, fuel, consumption, cost, isMetric) {
+            const historyBody = document.getElementById('historyBody');
+            const now = new Date();
+            const dateStr = now.toLocaleDateString();
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${dateStr}</td>
+                <td>${distance.toFixed(1)} ${isMetric ? 'km' : 'mi'}</td>
+                <td>${fuel.toFixed(2)} ${isMetric ? 'L' : 'gal'}</td>
+                <td>${consumption}</td>
+                <td>${cost}</td>
+            `;
+            
+            historyBody.insertBefore(row, historyBody.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyBody.children.length > 5) {
+                historyBody.removeChild(historyBody.lastChild);
+            }
+        }
+        
+        // Initialize units on page load
+        updateUnits();
+    </script>
+</body>
+</html>

@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Calculator - Numerology & Personality Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .name-analysis-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .analysis-type {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .analysis-type.active {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+
+        .analysis-type h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .analysis-type .desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .numerology-chart {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chart-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #b8dcff;
+        }
+
+        .chart-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .chart-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .personality-traits {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .trait-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .trait-name {
+            width: 120px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .trait-bar {
+            flex: 1;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .trait-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .trait-value {
+            width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .name-meaning {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .compatibility-section {
+            margin-top: 25px;
+        }
+
+        .compatibility-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .compat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .compat-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .good { color: #27ae60; }
+        .average { color: #f39c12; }
+        .poor { color: #e74c3c; }
+
+        .life-path-analysis {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .name-variations {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .variation-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .variation-item {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #3498db;
+            color: #3498db;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .variation-item:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .popularity-meter {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .popularity-bar {
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            margin: 15px 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .popularity-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1s ease-in-out;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+
+        .popularity-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Name Calculator</h1>
+            <p>Discover Numerology, Personality Traits & Name Meaning</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Enter Name Details</h2>
+                
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" placeholder="Enter your full name" value="John Alexander Smith">
+                </div>
+
+                <div class="input-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="culture">Cultural Origin</label>
+                    <select id="culture">
+                        <option value="english">English</option>
+                        <option value="indian">Indian</option>
+                        <option value="arabic">Arabic</option>
+                        <option value="chinese">Chinese</option>
+                        <option value="latin">Latin</option>
+                        <option value="greek">Greek</option>
+                        <option value="german">German</option>
+                        <option value="french">French</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Analysis Type</label>
+                    <div class="name-analysis-types">
+                        <div class="analysis-type active" onclick="selectAnalysisType('numerology')">
+                            <h4>Numerology</h4>
+                            <div class="desc">Life path & destiny numbers</div>
+                        </div>
+                        <div class="analysis-type" onclick="selectAnalysisType('personality')">
+                            <h4>Personality</h4>
+                            <div class="desc">Traits & characteristics</div>
+                        </div>
+                        <div class="analysis-type" onclick="selectAnalysisType('compatibility')">
+                            <h4>Compatibility</h4>
+                            <div class="desc">Relationship analysis</div>
+                        </div>
+                        <div class="analysis-type" onclick="selectAnalysisType('meaning')">
+                            <h4>Name Meaning</h4>
+                            <div class="desc">Origin & significance</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="numerology-chart">
+                    <h4>🔢 Numerology Values</h4>
+                    <div class="chart-grid">
+                        <div class="chart-item">
+                            <div class="chart-value">1</div>
+                            <div class="chart-label">A, J, S</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">2</div>
+                            <div class="chart-label">B, K, T</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">3</div>
+                            <div class="chart-label">C, L, U</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">4</div>
+                            <div class="chart-label">D, M, V</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">5</div>
+                            <div class="chart-label">E, N, W</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">6</div>
+                            <div class="chart-label">F, O, X</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">7</div>
+                            <div class="chart-label">G, P, Y</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">8</div>
+                            <div class="chart-label">H, Q, Z</div>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-value">9</div>
+                            <div class="chart-label">I, R</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="analyzeName()">Analyze Name</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Name Analysis Results</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Life Path Number</div>
+                        <div class="result-value" id="lifePathNumber">0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Destiny Number</div>
+                        <div class="result-value" id="destinyNumber">0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Soul Urge Number</div>
+                        <div class="result-value" id="soulUrgeNumber">0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Personality Number</div>
+                        <div class="result-value" id="personalityNumber">0</div>
+                    </div>
+                </div>
+
+                <div class="name-meaning">
+                    <h3>📖 Name Meaning</h3>
+                    <div id="nameMeaning">
+                        Enter a name to discover its meaning and origin.
+                    </div>
+                </div>
+
+                <div class="personality-traits">
+                    <h3>🎭 Personality Traits</h3>
+                    <div id="personalityTraits">
+                        <div class="trait-item">
+                            <div class="trait-name">Leadership</div>
+                            <div class="trait-bar">
+                                <div class="trait-fill" style="width: 0%; background: #3498db;"></div>
+                            </div>
+                            <div class="trait-value">0%</div>
+                        </div>
+                        <div class="trait-item">
+                            <div class="trait-name">Creativity</div>
+                            <div class="trait-bar">
+                                <div class="trait-fill" style="width: 0%; background: #e74c3c;"></div>
+                            </div>
+                            <div class="trait-value">0%</div>
+                        </div>
+                        <div class="trait-item">
+                            <div class="trait-name">Intelligence</div>
+                            <div class="trait-bar">
+                                <div class="trait-fill" style="width: 0%; background: #2ecc71;"></div>
+                            </div>
+                            <div class="trait-value">0%</div>
+                        </div>
+                        <div class="trait-item">
+                            <div class="trait-name">Communication</div>
+                            <div class="trait-bar">
+                                <div class="trait-fill" style="width: 0%; background: #f39c12;"></div>
+                            </div>
+                            <div class="trait-value">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="compatibility-section">
+                    <h3>💞 Best Compatibility With</h3>
+                    <div class="compatibility-grid">
+                        <div class="compat-item">
+                            <div>Friendship</div>
+                            <div class="compat-score good" id="friendshipScore">0%</div>
+                            <div>Names with 2,6,9</div>
+                        </div>
+                        <div class="compat-item">
+                            <div>Romance</div>
+                            <div class="compat-score average" id="romanceScore">0%</div>
+                            <div>Names with 3,5,7</div>
+                        </div>
+                        <div class="compat-item">
+                            <div>Business</div>
+                            <div class="compat-score poor" id="businessScore">0%</div>
+                            <div>Names with 1,4,8</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="life-path-analysis">
+                    <h3>🌟 Life Path Analysis</h3>
+                    <div id="lifePathAnalysis">
+                        Your life path number reveals your natural talents and challenges.
+                    </div>
+                </div>
+
+                <div class="name-variations">
+                    <h3>✨ Name Variations</h3>
+                    <div class="variation-list" id="nameVariations">
+                        <!-- Name variations will appear here -->
+                    </div>
+                </div>
+
+                <div class="popularity-meter">
+                    <h3>📊 Name Popularity</h3>
+                    <div class="popularity-bar">
+                        <div class="popularity-fill" id="popularityFill" style="width: 0%"></div>
+                    </div>
+                    <div class="popularity-labels">
+                        <span>Rare</span>
+                        <span>Average</span>
+                        <span>Popular</span>
+                    </div>
+                    <div id="popularityText" style="text-align: center; margin-top: 10px; font-weight: 600;">
+                        Enter name to see popularity
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAnalysisType = 'numerology';
+
+        // Numerology chart mapping
+        const numerologyChart = {
+            'A': 1, 'J': 1, 'S': 1,
+            'B': 2, 'K': 2, 'T': 2,
+            'C': 3, 'L': 3, 'U': 3,
+            'D': 4, 'M': 4, 'V': 4,
+            'E': 5, 'N': 5, 'W': 5,
+            'F': 6, 'O': 6, 'X': 6,
+            'G': 7, 'P': 7, 'Y': 7,
+            'H': 8, 'Q': 8, 'Z': 8,
+            'I': 9, 'R': 9
+        };
+
+        // Name meanings database
+        const nameMeanings = {
+            'JOHN': { meaning: 'God is gracious', origin: 'Hebrew', popularity: 85 },
+            'ALEXANDER': { meaning: 'Defender of mankind', origin: 'Greek', popularity: 78 },
+            'SMITH': { meaning: 'Metal worker', origin: 'English', popularity: 92 },
+            'MARIA': { meaning: 'Bitter or beloved', origin: 'Latin', popularity: 88 },
+            'DAVID': { meaning: 'Beloved', origin: 'Hebrew', popularity: 82 },
+            'SOPHIA': { meaning: 'Wisdom', origin: 'Greek', popularity: 90 },
+            'MICHAEL': { meaning: 'Who is like God', origin: 'Hebrew', popularity: 87 },
+            'EMMA': { meaning: 'Universal', origin: 'German', popularity: 94 },
+            'JAMES': { meaning: 'Supplanter', origin: 'Hebrew', popularity: 80 },
+            'OLIVIA': { meaning: 'Olive tree', origin: 'Latin', popularity: 91 }
+        };
+
+        function selectAnalysisType(type) {
+            currentAnalysisType = type;
+            
+            // Update active state
+            document.querySelectorAll('.analysis-type').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function analyzeName() {
+            const fullName = document.getElementById('fullName').value.trim().toUpperCase();
+            const gender = document.getElementById('gender').value;
+            const culture = document.getElementById('culture').value;
+
+            if (!fullName) {
+                alert('Please enter a name to analyze');
+                return;
+            }
+
+            // Calculate numerology numbers
+            const lifePathNumber = calculateLifePathNumber(fullName);
+            const destinyNumber = calculateDestinyNumber(fullName);
+            const soulUrgeNumber = calculateSoulUrgeNumber(fullName);
+            const personalityNumber = calculatePersonalityNumber(fullName);
+
+            // Display numerology results
+            document.getElementById('lifePathNumber').textContent = lifePathNumber;
+            document.getElementById('destinyNumber').textContent = destinyNumber;
+            document.getElementById('soulUrgeNumber').textContent = soulUrgeNumber;
+            document.getElementById('personalityNumber').textContent = personalityNumber;
+
+            // Display name meaning
+            displayNameMeaning(fullName, culture);
+
+            // Display personality traits
+            displayPersonalityTraits(lifePathNumber, destinyNumber);
+
+            // Display compatibility
+            displayCompatibility(lifePathNumber);
+
+            // Display life path analysis
+            displayLifePathAnalysis(lifePathNumber);
+
+            // Display name variations
+            displayNameVariations(fullName);
+
+            // Display popularity
+            displayPopularity(fullName);
+        }
+
+        function calculateLifePathNumber(name) {
+            let sum = 0;
+            for (let char of name.replace(/[^A-Z]/g, '')) {
+                sum += numerologyChart[char] || 0;
+            }
+            return reduceToSingleDigit(sum);
+        }
+
+        function calculateDestinyNumber(name) {
+            const vowels = 'AEIOU';
+            let sum = 0;
+            for (let char of name.replace(/[^A-Z]/g, '')) {
+                if (vowels.includes(char)) {
+                    sum += numerologyChart[char] || 0;
+                }
+            }
+            return reduceToSingleDigit(sum);
+        }
+
+        function calculateSoulUrgeNumber(name) {
+            const consonants = 'BCDFGHJKLMNPQRSTVWXYZ';
+            let sum = 0;
+            for (let char of name.replace(/[^A-Z]/g, '')) {
+                if (consonants.includes(char)) {
+                    sum += numerologyChart[char] || 0;
+                }
+            }
+            return reduceToSingleDigit(sum);
+        }
+
+        function calculatePersonalityNumber(name) {
+            // Simple algorithm for personality number
+            let sum = 0;
+            const cleanName = name.replace(/[^A-Z]/g, '');
+            for (let i = 0; i < Math.min(cleanName.length, 5); i++) {
+                sum += numerologyChart[cleanName[i]] || 0;
+            }
+            return reduceToSingleDigit(sum);
+        }
+
+        function reduceToSingleDigit(num) {
+            while (num > 9 && num !== 11 && num !== 22 && num !== 33) {
+                num = Math.floor(num / 10) + (num % 10);
+            }
+            return num;
+        }
+
+        function displayNameMeaning(name, culture) {
+            const firstName = name.split(' ')[0];
+            const meaningData = nameMeanings[firstName] || { 
+                meaning: 'Beautiful and significant name', 
+                origin: culture, 
+                popularity: 50 
+            };
+
+            document.getElementById('nameMeaning').innerHTML = `
+                <strong>${firstName}</strong> means "${meaningData.meaning}"<br>
+                <small>Origin: ${meaningData.origin}</small>
+            `;
+        }
+
+        function displayPersonalityTraits(lifePath, destiny) {
+            const traits = document.getElementById('personalityTraits');
+            const traitValues = [
+                Math.min(100, (lifePath * 10 + 20)),
+                Math.min(100, (destiny * 8 + 25)),
+                Math.min(100, ((lifePath + destiny) * 6 + 30)),
+                Math.min(100, (lifePath * 12 + 15))
+            ];
+
+            const traitItems = traits.querySelectorAll('.trait-item');
+            traitItems.forEach((item, index) => {
+                const fill = item.querySelector('.trait-fill');
+                const value = item.querySelector('.trait-value');
+                fill.style.width = traitValues[index] + '%';
+                value.textContent = traitValues[index] + '%';
+            });
+        }
+
+        function displayCompatibility(lifePath) {
+            const friendship = 100 - Math.abs(lifePath - 6) * 10;
+            const romance = 100 - Math.abs(lifePath - 5) * 12;
+            const business = 100 - Math.abs(lifePath - 4) * 15;
+
+            document.getElementById('friendshipScore').textContent = Math.max(0, friendship) + '%';
+            document.getElementById('romanceScore').textContent = Math.max(0, romance) + '%';
+            document.getElementById('businessScore').textContent = Math.max(0, business) + '%';
+        }
+
+        function displayLifePathAnalysis(lifePath) {
+            const analyses = {
+                1: 'You are a natural leader with strong determination and independence.',
+                2: 'You are diplomatic, cooperative, and have a natural sense of harmony.',
+                3: 'You are creative, expressive, and enjoy social interactions.',
+                4: 'You are practical, organized, and value stability and security.',
+                5: 'You are adventurous, versatile, and embrace change and freedom.',
+                6: 'You are nurturing, responsible, and value family and community.',
+                7: 'You are analytical, spiritual, and seek knowledge and truth.',
+                8: 'You are ambitious, authoritative, and have strong business sense.',
+                9: 'You are compassionate, idealistic, and work for humanitarian causes.',
+                11: 'You are an intuitive, inspirational, and spiritually aware person.',
+                22: 'You are a master builder with great potential for practical achievement.',
+                33: 'You are a master teacher with great compassion and healing abilities.'
+            };
+
+            document.getElementById('lifePathAnalysis').textContent = 
+                analyses[lifePath] || 'You have a unique life path with special talents and challenges.';
+        }
+
+        function displayNameVariations(name) {
+            const variationsContainer = document.getElementById('nameVariations');
+            const firstName = name.split(' ')[0];
+            const variations = [
+                firstName.toLowerCase(),
+                firstName.charAt(0) + firstName.slice(1).toLowerCase(),
+                firstName.toLowerCase().split('').reverse().join(''),
+                firstName.substring(0, 3),
+                firstName + 'y',
+                'Super ' + firstName
+            ];
+
+            variationsContainer.innerHTML = '';
+            variations.forEach(variation => {
+                const variationElement = document.createElement('div');
+                variationElement.className = 'variation-item';
+                variationElement.textContent = variation;
+                variationElement.onclick = function() {
+                    document.getElementById('fullName').value = variation;
+                    analyzeName();
+                };
+                variationsContainer.appendChild(variationElement);
+            });
+        }
+
+        function displayPopularity(name) {
+            const firstName = name.split(' ')[0];
+            const popularityData = nameMeanings[firstName] || { popularity: 50 };
+            const popularity = popularityData.popularity;
+
+            document.getElementById('popularityFill').style.width = popularity + '%';
+            
+            let popularityText = '';
+            if (popularity >= 80) popularityText = 'Very Popular Name';
+            else if (popularity >= 60) popularityText = 'Popular Name';
+            else if (popularity >= 40) popularityText = 'Moderately Popular';
+            else if (popularity >= 20) popularityText = 'Less Common';
+            else popularityText = 'Rare Name';
+
+            document.getElementById('popularityText').textContent = popularityText;
+        }
+
+        function resetCalculator() {
+            document.getElementById('fullName').value = 'John Alexander Smith';
+            document.getElementById('gender').selectedIndex = 0;
+            document.getElementById('culture').selectedIndex = 0;
+            
+            // Reset analysis type
+            document.querySelectorAll('.analysis-type').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.analysis-type')[0].classList.add('active');
+            currentAnalysisType = 'numerology';
+            
+            analyzeName();
+        }
+
+        // Initialize calculator
+        window.onload = function() {
+            analyzeName();
+        };
+
+        // Auto-analyze when inputs change
+        document.getElementById('fullName').addEventListener('input', analyzeName);
+        document.getElementById('gender').addEventListener('change', analyzeName);
+        document.getElementById('culture').addEventListener('change', analyzeName);
+    </script>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Numerology Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8B5FBF;
+            --primary-dark: #6B46C1;
+            --secondary: #D53F8C;
+            --mystic: #9F7AEA;
+            --spiritual: #805AD5;
+            --destiny: #6B46C1;
+            --soul: #D53F8C;
+            --personality: #ED64A6;
+            --light: #FAF5FF;
+            --dark: #2D3748;
+            --gray: #718096;
+            --border: #E2E8F0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .calculator-form {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            background: var(--light);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        input {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 95, 191, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(139, 95, 191, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(139, 95, 191, 0.4);
+        }
+        
+        .calculator-result {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .life-path-result {
+            text-align: center;
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 25px 0;
+            padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(139, 95, 191, 0.3);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--dark);
+        }
+        
+        .number-meaning {
+            background: #F0EBF8;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid var(--mystic);
+        }
+        
+        .number-meaning h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .meaning-content {
+            line-height: 1.7;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            background: var(--light);
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .life-path-result {
+                font-size: 2.8rem;
+                padding: 25px;
+            }
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-with-icon input {
+            padding-left: 55px;
+        }
+        
+        .numerology-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .numerology-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 15px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            background: white;
+        }
+        
+        .numerology-option:hover {
+            border-color: var(--primary);
+            background: rgba(139, 95, 191, 0.05);
+        }
+        
+        .numerology-option.active {
+            border-color: var(--primary);
+            background: rgba(139, 95, 191, 0.1);
+        }
+        
+        .numerology-icon {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .numerology-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .numerology-desc {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .vibration-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(139, 95, 191, 0.1);
+            border-radius: 12px;
+        }
+        
+        .vibration-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .vibration-value {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .vibration-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .number-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .number-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .number-item.active {
+            border-color: var(--primary);
+            background: rgba(139, 95, 191, 0.05);
+        }
+        
+        .number-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .number-name {
+            font-size: 0.8rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-star-and-crescent"></i> Name Numerology Calculator</h1>
+                <p class="subtitle">Discover the hidden meanings and vibrations of your name through numerology</p>
+            </div>
+        </header>
+        
+        <div class="calculator-content">
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="fullName"><i class="fas fa-signature"></i> Enter Your Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="fullName" placeholder="e.g., John Alexander Doe">
+                    </div>
+                    <small style="color: var(--gray); margin-top: 5px;">Enter your full birth name as it appears on your birth certificate</small>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-calculator"></i> Numerology Calculations</label>
+                    <div class="numerology-types">
+                        <div class="numerology-option active" data-type="all">
+                            <div class="numerology-icon"><i class="fas fa-chart-pie"></i></div>
+                            <div class="numerology-name">All Numbers</div>
+                            <div class="numerology-desc">Complete Analysis</div>
+                        </div>
+                        <div class="numerology-option" data-type="life-path">
+                            <div class="numerology-icon"><i class="fas fa-road"></i></div>
+                            <div class="numerology-name">Life Path</div>
+                            <div class="numerology-desc">Core Purpose</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculateNumerology">
+                    <i class="fas fa-crystal-ball"></i> Calculate Numerology
+                </button>
+                
+                <div class="vibration-display">
+                    <div class="vibration-item">
+                        <div class="vibration-value" id="vowelCount">0</div>
+                        <div class="vibration-label">Vowels</div>
+                    </div>
+                    <div class="vibration-item">
+                        <div class="vibration-value" id="consonantCount">0</div>
+                        <div class="vibration-label">Consonants</div>
+                    </div>
+                    <div class="vibration-item">
+                        <div class="vibration-value" id="letterCount">0</div>
+                        <div class="vibration-label">Letters</div>
+                    </div>
+                </div>
+                
+                <div class="number-grid">
+                    <div class="number-item">
+                        <div class="number-value" id="destinyNumber">-</div>
+                        <div class="number-name">Destiny</div>
+                    </div>
+                    <div class="number-item">
+                        <div class="number-value" id="soulNumber">-</div>
+                        <div class="number-name">Soul Urge</div>
+                    </div>
+                    <div class="number-item">
+                        <div class="number-value" id="personalityNumber">-</div>
+                        <div class="number-name">Personality</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-result">
+                <h2 class="result-title"><i class="fas fa-chart-line"></i> Numerology Results</h2>
+                
+                <div class="life-path-result" id="lifePathDisplay">
+                    -
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Life Path Number</span>
+                        <span class="result-value" id="lifePathNumber">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Expression Number</span>
+                        <span class="result-value" id="expressionNumber">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Soul Urge Number</span>
+                        <span class="result-value" id="soulUrgeNumber">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Personality Number</span>
+                        <span class="result-value" id="personalityNumberResult">-</span>
+                    </div>
+                </div>
+                
+                <div class="number-meaning">
+                    <h3><i class="fas fa-book-open"></i> Life Path Number Meaning</h3>
+                    <div class="meaning-content" id="numberMeaning">
+                        Enter your name to discover the meaning of your Life Path number...
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <h3 style="margin-bottom: 15px; color: var(--dark); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-magic"></i> Name Vibrations
+                    </h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">First Name</span>
+                            <span class="result-value" id="firstNameVibration">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Middle Name</span>
+                            <span class="result-value" id="middleNameVibration">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Last Name</span>
+                            <span class="result-value" id="lastNameVibration">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Full Name</span>
+                            <span class="result-value" id="fullNameVibration">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Name Numerology Calculator &copy; 2023 | For entertainment and self-discovery purposes</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const fullNameInput = document.getElementById('fullName');
+        const numerologyOptions = document.querySelectorAll('.numerology-option');
+        const calculateButton = document.getElementById('calculateNumerology');
+        
+        // Vibration Display Elements
+        const vowelCount = document.getElementById('vowelCount');
+        const consonantCount = document.getElementById('consonantCount');
+        const letterCount = document.getElementById('letterCount');
+        
+        // Number Grid Elements
+        const destinyNumber = document.getElementById('destinyNumber');
+        const soulNumber = document.getElementById('soulNumber');
+        const personalityNumber = document.getElementById('personalityNumber');
+        
+        // Result Elements
+        const lifePathDisplay = document.getElementById('lifePathDisplay');
+        const lifePathNumber = document.getElementById('lifePathNumber');
+        const expressionNumber = document.getElementById('expressionNumber');
+        const soulUrgeNumber = document.getElementById('soulUrgeNumber');
+        const personalityNumberResult = document.getElementById('personalityNumberResult');
+        const numberMeaning = document.getElementById('numberMeaning');
+        const firstNameVibration = document.getElementById('firstNameVibration');
+        const middleNameVibration = document.getElementById('middleNameVibration');
+        const lastNameVibration = document.getElementById('lastNameVibration');
+        const fullNameVibration = document.getElementById('fullNameVibration');
+        
+        // Numerology data
+        const numberMeanings = {
+            1: "The Leader - Independent, ambitious, and determined. You have strong leadership qualities and a pioneering spirit.",
+            2: "The Diplomat - Cooperative, sensitive, and intuitive. You excel in partnerships and bring harmony to situations.",
+            3: "The Communicator - Creative, expressive, and social. You have a talent for self-expression and bringing joy to others.",
+            4: "The Builder - Practical, reliable, and disciplined. You excel at creating solid foundations and systems.",
+            5: "The Freedom Seeker - Adventurous, versatile, and progressive. You thrive on change and new experiences.",
+            6: "The Nurturer - Responsible, caring, and compassionate. You excel in domestic affairs and service to others.",
+            7: "The Seeker - Analytical, intuitive, and spiritual. You have a deep need for knowledge and understanding.",
+            8: "The Powerhouse - Ambitious, authoritative, and successful. You excel in business and material achievements.",
+            9: "The Humanitarian - Compassionate, generous, and idealistic. You have a global consciousness and desire to serve humanity.",
+            11: "The Illuminator - Inspirational, intuitive, and enlightening. You have a spiritual mission to inspire others.",
+            22: "The Master Builder - Practical, powerful, and visionary. You have the potential to achieve massive success and make a significant impact.",
+            33: "The Master Teacher - Compassionate, healing, and uplifting. You have a mission to serve humanity through guidance and inspiration."
+        };
+        
+        // Letter to number mapping (Pythagorean system)
+        const letterValues = {
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9,
+            'J': 1, 'K': 2, 'L': 3, 'M': 4, 'N': 5, 'O': 6, 'P': 7, 'Q': 8, 'R': 9,
+            'S': 1, 'T': 2, 'U': 3, 'V': 4, 'W': 5, 'X': 6, 'Y': 7, 'Z': 8
+        };
+        
+        // Vowels for soul urge calculation
+        const vowels = ['A', 'E', 'I', 'O', 'U'];
+        
+        // Event Listeners
+        numerologyOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                numerologyOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked option
+                option.classList.add('active');
+            });
+        });
+        
+        calculateButton.addEventListener('click', calculateNumerology);
+        
+        // Calculate numerology based on name
+        function calculateNumerology() {
+            const fullName = fullNameInput.value.trim().toUpperCase();
+            
+            // Input validation
+            if (!fullName) {
+                alert('Please enter your full name.');
+                return;
+            }
+            
+            // Split name into parts
+            const nameParts = fullName.split(' ').filter(part => part.length > 0);
+            
+            if (nameParts.length === 0) {
+                alert('Please enter a valid name.');
+                return;
+            }
+            
+            // Calculate various numerology numbers
+            const expression = calculateExpressionNumber(fullName);
+            const soulUrge = calculateSoulUrgeNumber(fullName);
+            const personality = calculatePersonalityNumber(fullName);
+            const lifePath = calculateLifePathNumber(fullName);
+            
+            // Update vibration displays
+            updateVibrationCounts(fullName);
+            
+            // Update number grid
+            destinyNumber.textContent = expression;
+            soulNumber.textContent = soulUrge;
+            personalityNumber.textContent = personality;
+            
+            // Update main results
+            lifePathDisplay.textContent = lifePath;
+            lifePathNumber.textContent = lifePath;
+            expressionNumber.textContent = expression;
+            soulUrgeNumber.textContent = soulUrge;
+            personalityNumberResult.textContent = personality;
+            
+            // Update number meaning
+            numberMeaning.textContent = numberMeanings[lifePath] || "This number has a unique vibration and meaning in your life journey.";
+            
+            // Update name vibrations
+            updateNameVibrations(nameParts);
+            
+            // Add animation to result
+            lifePathDisplay.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                lifePathDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Calculate Expression Number (Destiny Number)
+        function calculateExpressionNumber(name) {
+            let total = 0;
+            
+            for (let i = 0; i < name.length; i++) {
+                const char = name[i];
+                if (letterValues[char]) {
+                    total += letterValues[char];
+                }
+            }
+            
+            return reduceToSingleDigit(total);
+        }
+        
+        // Calculate Soul Urge Number (Heart's Desire)
+        function calculateSoulUrgeNumber(name) {
+            let total = 0;
+            
+            for (let i = 0; i < name.length; i++) {
+                const char = name[i];
+                if (vowels.includes(char) && letterValues[char]) {
+                    total += letterValues[char];
+                }
+            }
+            
+            return reduceToSingleDigit(total);
+        }
+        
+        // Calculate Personality Number
+        function calculatePersonalityNumber(name) {
+            let total = 0;
+            
+            for (let i = 0; i < name.length; i++) {
+                const char = name[i];
+                if (!vowels.includes(char) && letterValues[char]) {
+                    total += letterValues[char];
+                }
+            }
+            
+            return reduceToSingleDigit(total);
+        }
+        
+        // Calculate Life Path Number (simplified for name-based calculation)
+        function calculateLifePathNumber(name) {
+            // In traditional numerology, Life Path is calculated from birth date
+            // For name-based calculation, we'll use a combination of numbers
+            const expression = calculateExpressionNumber(name);
+            const soulUrge = calculateSoulUrgeNumber(name);
+            const personality = calculatePersonalityNumber(name);
+            
+            const combined = expression + soulUrge + personality;
+            return reduceToSingleDigit(combined);
+        }
+        
+        // Reduce number to single digit (or master numbers)
+        function reduceToSingleDigit(number) {
+            if (number === 11 || number === 22 || number === 33) {
+                return number;
+            }
+            
+            let result = number;
+            while (result > 9 && result !== 11 && result !== 22 && result !== 33) {
+                result = result.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0);
+            }
+            
+            return result;
+        }
+        
+        // Update vowel, consonant, and letter counts
+        function updateVibrationCounts(name) {
+            let vowelCountValue = 0;
+            let consonantCountValue = 0;
+            let letterCountValue = 0;
+            
+            for (let i = 0; i < name.length; i++) {
+                const char = name[i];
+                if (letterValues[char]) {
+                    letterCountValue++;
+                    if (vowels.includes(char)) {
+                        vowelCountValue++;
+                    } else {
+                        consonantCountValue++;
+                    }
+                }
+            }
+            
+            vowelCount.textContent = vowelCountValue;
+            consonantCount.textContent = consonantCountValue;
+            letterCount.textContent = letterCountValue;
+        }
+        
+        // Update individual name part vibrations
+        function updateNameVibrations(nameParts) {
+            if (nameParts.length > 0) {
+                firstNameVibration.textContent = calculateExpressionNumber(nameParts[0]);
+            } else {
+                firstNameVibration.textContent = '-';
+            }
+            
+            if (nameParts.length > 1) {
+                middleNameVibration.textContent = calculateExpressionNumber(nameParts[1]);
+            } else {
+                middleNameVibration.textContent = '-';
+            }
+            
+            if (nameParts.length > 2) {
+                lastNameVibration.textContent = calculateExpressionNumber(nameParts[nameParts.length - 1]);
+            } else if (nameParts.length === 2) {
+                lastNameVibration.textContent = calculateExpressionNumber(nameParts[1]);
+            } else {
+                lastNameVibration.textContent = '-';
+            }
+            
+            fullNameVibration.textContent = calculateExpressionNumber(nameParts.join(''));
+        }
+        
+        // Initialize the calculator with a sample name
+        function initializeCalculator() {
+            fullNameInput.value = 'John Alexander Doe';
+            calculateNumerology();
+        }
+        
+        // Initialize the calculator when the page loads
+        window.onload = initializeCalculator;
+    </script>
+</body>
+</html>

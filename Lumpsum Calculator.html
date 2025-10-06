@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumpsum Calculator - Mutual Fund Investment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .fund-categories {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .fund-categories h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .category-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #b8dcff;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .category-item.active {
+            background: #3498db;
+            color: white;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .wealth-growth {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .growth-bar {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .growth-label {
+            width: 120px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .growth-container {
+            flex: 1;
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .growth-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1s ease-in-out;
+        }
+
+        .growth-amount {
+            width: 120px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .yearly-projection {
+            margin-top: 25px;
+        }
+
+        .projection-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .projection-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .projection-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .projection-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .scenario-comparison {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .scenario-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .scenario-value {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #3498db;
+        }
+
+        .performance-chart {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: end;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px 0;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: #3498db;
+            border-radius: 5px 5px 0 0;
+            transition: height 1s ease-in-out;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .chart-bar.invested {
+            background: #2c3e50;
+        }
+
+        .chart-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .investment-highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Lumpsum Calculator</h1>
+            <p>Calculate Your One-Time Mutual Fund Investment Returns</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Lumpsum Investment Details</h2>
+                
+                <div class="input-group">
+                    <label for="investmentAmount">Investment Amount (₹)</label>
+                    <input type="number" id="investmentAmount" placeholder="Enter investment amount" min="1000" step="1000" value="100000">
+                    <small style="color: #666; font-size: 0.9em;">Minimum typically ₹1,000 for most funds</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="investmentPeriod">Investment Period (Years)</label>
+                    <input type="number" id="investmentPeriod" placeholder="Enter years" min="1" max="30" step="1" value="10">
+                </div>
+
+                <div class="input-group">
+                    <label for="expectedReturn">Expected Annual Return (%)</label>
+                    <input type="number" id="expectedReturn" placeholder="Expected annual return" min="1" max="30" step="0.1" value="12">
+                </div>
+
+                <div class="input-group">
+                    <label for="fundCategory">Fund Category</label>
+                    <select id="fundCategory">
+                        <option value="largecap">Large Cap Funds</option>
+                        <option value="midcap">Mid Cap Funds</option>
+                        <option value="smallcap">Small Cap Funds</option>
+                        <option value="flexicap">Flexi Cap Funds</option>
+                        <option value="sectoral">Sectoral/Thematic</option>
+                        <option value="hybrid">Hybrid Funds</option>
+                        <option value="debt">Debt Funds</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="fund-categories">
+                    <h4>📊 Expected Returns by Category</h4>
+                    <div class="category-grid">
+                        <div class="category-item active" onclick="setCategoryReturn('largecap', 12)">Large Cap: 10-14%</div>
+                        <div class="category-item" onclick="setCategoryReturn('midcap', 14)">Mid Cap: 12-16%</div>
+                        <div class="category-item" onclick="setCategoryReturn('smallcap', 16)">Small Cap: 14-18%</div>
+                        <div class="category-item" onclick="setCategoryReturn('flexicap', 13)">Flexi Cap: 11-15%</div>
+                        <div class="category-item" onclick="setCategoryReturn('sectoral', 15)">Sectoral: 13-17%</div>
+                        <div class="category-item" onclick="setCategoryReturn('hybrid', 10)">Hybrid: 8-12%</div>
+                        <div class="category-item" onclick="setCategoryReturn('debt', 7)">Debt: 6-8%</div>
+                        <div class="category-item" onclick="setCategoryReturn('other', 12)">Other: Custom</div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateReturns()">Calculate Returns</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="features">
+                    <h3>✅ Lumpsum Investment Benefits</h3>
+                    <ul>
+                        <li>Power of compounding works from day one</li>
+                        <li>No need to time the market regularly</li>
+                        <li>Lower transaction costs compared to SIP</li>
+                        <li>Better for large investable surplus</li>
+                        <li>Simplicity - one-time decision</li>
+                        <li>Potential for higher returns in rising markets</li>
+                        <li>Ideal for bonus, inheritance, or windfall gains</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Investment Projection</h2>
+                
+                <div class="investment-highlight">
+                    <div class="result-label">Future Value of Your Investment</div>
+                    <div class="result-value" id="futureValue">₹0</div>
+                    <div style="margin-top: 10px; font-size: 1.1em;">After <span id="periodDisplay">0</span> years</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Amount Invested</div>
+                        <div class="result-value" id="investedAmount">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Wealth Gained</div>
+                        <div class="result-value" id="wealthGained">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Absolute Return</div>
+                        <div class="result-value" id="absoluteReturn">0%</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">CAGR</div>
+                        <div class="result-value" id="cagr">0%</div>
+                    </div>
+                </div>
+
+                <div class="wealth-growth">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Wealth Growth Visualization</h3>
+                    <div class="growth-bar">
+                        <div class="growth-label">Amount Invested</div>
+                        <div class="growth-container">
+                            <div class="growth-fill" id="investedBar" style="width: 0%; background: #2c3e50;"></div>
+                        </div>
+                        <div class="growth-amount" id="investedGrowth">₹0</div>
+                    </div>
+                    <div class="growth-bar">
+                        <div class="growth-label">Wealth Created</div>
+                        <div class="growth-container">
+                            <div class="growth-fill" id="returnsBar" style="width: 0%; background: #27ae60;"></div>
+                        </div>
+                        <div class="growth-amount" id="returnsGrowth">₹0</div>
+                    </div>
+                    <div class="growth-bar">
+                        <div class="growth-label">Future Value</div>
+                        <div class="growth-container">
+                            <div class="growth-fill" id="totalBar" style="width: 0%; background: #3498db;"></div>
+                        </div>
+                        <div class="growth-amount" id="totalGrowth">₹0</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Investment Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Initial Investment:</span>
+                        <span id="breakdownInitial">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Investment Period:</span>
+                        <span id="breakdownPeriod">0 years</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Expected Return (p.a.):</span>
+                        <span id="breakdownReturn">0%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Wealth Created:</span>
+                        <span class="increase-indicator" id="breakdownWealth">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Future Value:</span>
+                        <span id="breakdownFuture">₹0</span>
+                    </div>
+                </div>
+
+                <div class="scenario-comparison">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Return Scenarios</h3>
+                    <div class="scenario-grid">
+                        <div class="scenario-item">
+                            <div>Conservative</div>
+                            <div class="scenario-value" id="conservativeValue">₹0</div>
+                            <div>8% annual returns</div>
+                        </div>
+                        <div class="scenario-item">
+                            <div>Moderate</div>
+                            <div class="scenario-value" id="moderateValue">₹0</div>
+                            <div>12% annual returns</div>
+                        </div>
+                        <div class="scenario-item">
+                            <div>Aggressive</div>
+                            <div class="scenario-value" id="aggressiveValue">₹0</div>
+                            <div>16% annual returns</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="yearly-projection">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Yearly Growth Projection</h3>
+                    <div class="projection-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Investment</th>
+                                    <th>Returns</th>
+                                    <th>Total Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="projectionTableBody">
+                                <!-- Projection data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setCategoryReturn(category, returnRate) {
+            document.getElementById('expectedReturn').value = returnRate;
+            document.getElementById('fundCategory').value = category;
+            
+            // Update active state
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            calculateReturns();
+        }
+
+        function calculateReturns() {
+            // Get input values
+            const investmentAmount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const investmentPeriod = parseFloat(document.getElementById('investmentPeriod').value) || 0;
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) || 0;
+
+            // Validate inputs
+            if (investmentAmount < 1000) {
+                alert('Minimum investment amount is typically ₹1,000');
+                return;
+            }
+
+            if (investmentPeriod < 1) {
+                alert('Investment period should be at least 1 year');
+                return;
+            }
+
+            // Calculate future value using compound interest formula
+            // FV = PV * (1 + r)^n
+            const futureValue = investmentAmount * Math.pow(1 + expectedReturn/100, investmentPeriod);
+            const wealthGained = futureValue - investmentAmount;
+            const absoluteReturn = (wealthGained / investmentAmount) * 100;
+            const cagr = expectedReturn; // For lumpsum, CAGR = expected return
+
+            // Calculate scenario values
+            const conservativeValue = investmentAmount * Math.pow(1 + 0.08, investmentPeriod);
+            const moderateValue = investmentAmount * Math.pow(1 + 0.12, investmentPeriod);
+            const aggressiveValue = investmentAmount * Math.pow(1 + 0.16, investmentPeriod);
+
+            // Display results
+            displayResults(investmentAmount, wealthGained, futureValue, absoluteReturn, cagr, 
+                         conservativeValue, moderateValue, aggressiveValue, investmentPeriod, expectedReturn);
+            
+            // Generate yearly projection
+            generateYearlyProjection(investmentAmount, investmentPeriod, expectedReturn);
+        }
+
+        function displayResults(invested, returns, total, absoluteReturn, cagr, conservative, moderate, aggressive, period, expectedReturn) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+
+            document.getElementById('futureValue').textContent = formatINR(total);
+            document.getElementById('investedAmount').textContent = formatINR(invested);
+            document.getElementById('wealthGained').textContent = formatINR(returns);
+            document.getElementById('absoluteReturn').textContent = absoluteReturn.toFixed(1) + '%';
+            document.getElementById('cagr').textContent = cagr.toFixed(1) + '%';
+            document.getElementById('periodDisplay').textContent = period;
+
+            // Update wealth growth bars
+            const maxAmount = Math.max(invested, total);
+            document.getElementById('investedBar').style.width = (invested / maxAmount) * 100 + '%';
+            document.getElementById('returnsBar').style.width = (returns / maxAmount) * 100 + '%';
+            document.getElementById('totalBar').style.width = (total / maxAmount) * 100 + '%';
+            
+            document.getElementById('investedGrowth').textContent = formatINR(invested);
+            document.getElementById('returnsGrowth').textContent = formatINR(returns);
+            document.getElementById('totalGrowth').textContent = formatINR(total);
+
+            // Detailed breakdown
+            document.getElementById('breakdownInitial').textContent = formatINR(invested);
+            document.getElementById('breakdownPeriod').textContent = period + ' years';
+            document.getElementById('breakdownReturn').textContent = expectedReturn + '%';
+            document.getElementById('breakdownWealth').textContent = formatINR(returns);
+            document.getElementById('breakdownFuture').textContent = formatINR(total);
+
+            // Scenario comparison
+            document.getElementById('conservativeValue').textContent = formatINR(conservative);
+            document.getElementById('moderateValue').textContent = formatINR(moderate);
+            document.getElementById('aggressiveValue').textContent = formatINR(aggressive);
+        }
+
+        function generateYearlyProjection(investmentAmount, investmentPeriod, expectedReturn) {
+            const tableBody = document.getElementById('projectionTableBody');
+            tableBody.innerHTML = '';
+
+            // Show key years (every 2-3 years depending on total period)
+            const step = investmentPeriod <= 10 ? 1 : investmentPeriod <= 20 ? 2 : 3;
+            
+            for (let year = step; year <= investmentPeriod; year += step) {
+                const futureValue = investmentAmount * Math.pow(1 + expectedReturn/100, year);
+                const returns = futureValue - investmentAmount;
+
+                const row = document.createElement('tr');
+                
+                if (year === investmentPeriod) {
+                    row.style.background = '#e8f4fc';
+                    row.style.fontWeight = 'bold';
+                }
+                
+                row.innerHTML = `
+                    <td>Year ${year}</td>
+                    <td>₹${Math.round(investmentAmount).toLocaleString('en-IN')}</td>
+                    <td style="color: #27ae60; font-weight: bold;">₹${Math.round(returns).toLocaleString('en-IN')}</td>
+                    <td>₹${Math.round(futureValue).toLocaleString('en-IN')}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            }
+
+            // Always show final year if not already shown
+            if (investmentPeriod % step !== 0) {
+                const finalValue = investmentAmount * Math.pow(1 + expectedReturn/100, investmentPeriod);
+                const finalReturns = finalValue - investmentAmount;
+
+                const finalRow = document.createElement('tr');
+                finalRow.style.background = '#e8f4fc';
+                finalRow.style.fontWeight = 'bold';
+                finalRow.innerHTML = `
+                    <td>Year ${investmentPeriod}</td>
+                    <td>₹${Math.round(investmentAmount).toLocaleString('en-IN')}</td>
+                    <td style="color: #27ae60;">₹${Math.round(finalReturns).toLocaleString('en-IN')}</td>
+                    <td>₹${Math.round(finalValue).toLocaleString('en-IN')}</td>
+                `;
+                tableBody.appendChild(finalRow);
+            }
+        }
+
+        function resetCalculator() {
+            document.getElementById('investmentAmount').value = '100000';
+            document.getElementById('investmentPeriod').value = '10';
+            document.getElementById('expectedReturn').value = '12';
+            document.getElementById('fundCategory').selectedIndex = 0;
+            
+            // Reset category active state
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.category-item')[0].classList.add('active');
+            
+            calculateReturns();
+        }
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateReturns();
+        };
+
+        // Auto-calculate when inputs change
+        document.getElementById('investmentAmount').addEventListener('input', calculateReturns);
+        document.getElementById('investmentPeriod').addEventListener('input', calculateReturns);
+        document.getElementById('expectedReturn').addEventListener('input', calculateReturns);
+        document.getElementById('fundCategory').addEventListener('change', calculateReturns);
+    </script>
+</body>
+</html>

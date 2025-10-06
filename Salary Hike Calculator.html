@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Hike Calculator - Plan Your Raise</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .hike-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .hike-option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .hike-option.active {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+
+        .hike-option h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .hike-option .desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .scenario-comparison {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .comparison-chart {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .bar-container {
+            margin: 15px 0;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .bar {
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1s ease-in-out;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+        }
+
+        .bar-fill.old {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .decrease-indicator {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .yearly-projection {
+            margin-top: 25px;
+        }
+
+        .projection-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .projection-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .projection-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .projection-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .tips {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tips h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .tips ul {
+            list-style-position: inside;
+            color: #856404;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Salary Hike Calculator</h1>
+            <p>Plan Your Raise and Compare Different Scenarios</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Salary Details</h2>
+                
+                <div class="input-group">
+                    <label for="currentSalary">Current Annual Salary (₹)</label>
+                    <input type="number" id="currentSalary" placeholder="Enter your current salary" min="0" step="1000" value="800000">
+                </div>
+
+                <div class="input-group">
+                    <label for="hikePercentage">Hike Percentage (%)</label>
+                    <input type="number" id="hikePercentage" placeholder="Enter hike percentage" min="0" max="100" step="0.1" value="15">
+                </div>
+
+                <div class="input-group">
+                    <label for="hikeType">Hike Type</label>
+                    <div class="hike-types">
+                        <div class="hike-option active" onclick="selectHikeType('percentage')">
+                            <h4>Percentage Hike</h4>
+                            <div class="desc">Fixed % increase</div>
+                        </div>
+                        <div class="hike-option" onclick="selectHikeType('fixed')">
+                            <h4>Fixed Amount</h4>
+                            <div class="desc">Specific ₹ amount</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group" id="fixedAmountGroup" style="display: none;">
+                    <label for="fixedAmount">Fixed Amount Hike (₹)</label>
+                    <input type="number" id="fixedAmount" placeholder="Enter fixed amount" min="0" step="1000">
+                </div>
+
+                <div class="input-group">
+                    <label for="bonus">Bonus/One-time Payment (₹)</label>
+                    <input type="number" id="bonus" placeholder="Enter bonus amount" min="0" step="1000" value="0">
+                </div>
+
+                <div class="input-group">
+                    <label for="taxRate">Approximate Tax Rate (%)</label>
+                    <input type="number" id="taxRate" placeholder="Enter tax rate" min="0" max="50" step="0.1" value="20">
+                </div>
+
+                <div class="scenario-comparison">
+                    <h4>Compare Multiple Scenarios</h4>
+                    <div class="input-group">
+                        <label for="scenario2">Scenario 2 - Hike (%)</label>
+                        <input type="number" id="scenario2" placeholder="Enter second scenario" min="0" max="100" step="0.1" value="20">
+                    </div>
+                    <div class="input-group">
+                        <label for="scenario3">Scenario 3 - Hike (%)</label>
+                        <input type="number" id="scenario3" placeholder="Enter third scenario" min="0" max="100" step="0.1" value="25">
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateHike()">Calculate Salary Hike</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="tips">
+                    <h3>💡 Negotiation Tips</h3>
+                    <ul>
+                        <li>Research industry standards for your role</li>
+                        <li>Highlight your accomplishments and value</li>
+                        <li>Consider total compensation (bonuses, benefits)</li>
+                        <li>Be prepared to justify your requested hike</li>
+                        <li>Practice your negotiation conversation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Salary Analysis</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Current Salary</div>
+                        <div class="result-value" id="currentSalaryDisplay">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">New Salary</div>
+                        <div class="result-value" id="newSalaryDisplay">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Annual Increase</div>
+                        <div class="result-value increase-indicator" id="annualIncrease">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Monthly Increase</div>
+                        <div class="result-value increase-indicator" id="monthlyIncrease">₹0</div>
+                    </div>
+                </div>
+
+                <div class="comparison-chart">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Salary Comparison</h3>
+                    <div class="bar-container">
+                        <div class="bar-label">
+                            <span>Current Salary</span>
+                            <span id="currentBarLabel">₹0</span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill old" id="currentBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="bar-container">
+                        <div class="bar-label">
+                            <span>New Salary</span>
+                            <span id="newBarLabel">₹0</span>
+                        </div>
+                        <div class="bar">
+                            <div class="bar-fill" id="newBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Detailed Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Basic Salary Increase:</span>
+                        <span id="breakdownBasic">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Bonus/One-time:</span>
+                        <span id="breakdownBonus">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Approx. Tax Deduction:</span>
+                        <span id="breakdownTax">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Take-home Increase:</span>
+                        <span id="breakdownTakehome">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Total Annual Increase:</span>
+                        <span class="increase-indicator" id="breakdownTotal">₹0</span>
+                    </div>
+                </div>
+
+                <div class="yearly-projection">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Scenario Comparison</h3>
+                    <div class="projection-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr>
+                                    <th>Scenario</th>
+                                    <th>Hike %</th>
+                                    <th>New Salary</th>
+                                    <th>Increase</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scenarioTableBody">
+                                <!-- Scenario data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentHikeType = 'percentage';
+
+        function selectHikeType(type) {
+            currentHikeType = type;
+            const percentageOption = document.querySelector('.hike-option:nth-child(1)');
+            const fixedOption = document.querySelector('.hike-option:nth-child(2)');
+            const fixedAmountGroup = document.getElementById('fixedAmountGroup');
+
+            if (type === 'percentage') {
+                percentageOption.classList.add('active');
+                fixedOption.classList.remove('active');
+                fixedAmountGroup.style.display = 'none';
+            } else {
+                percentageOption.classList.remove('active');
+                fixedOption.classList.add('active');
+                fixedAmountGroup.style.display = 'block';
+            }
+        }
+
+        function calculateHike() {
+            // Get input values
+            const currentSalary = parseFloat(document.getElementById('currentSalary').value) || 0;
+            const hikePercentage = parseFloat(document.getElementById('hikePercentage').value) || 0;
+            const fixedAmount = parseFloat(document.getElementById('fixedAmount').value) || 0;
+            const bonus = parseFloat(document.getElementById('bonus').value) || 0;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            const scenario2 = parseFloat(document.getElementById('scenario2').value) || 0;
+            const scenario3 = parseFloat(document.getElementById('scenario3').value) || 0;
+
+            // Validate inputs
+            if (currentSalary <= 0) {
+                alert('Please enter a valid current salary');
+                return;
+            }
+
+            let salaryIncrease, newSalary;
+
+            // Calculate based on hike type
+            if (currentHikeType === 'percentage') {
+                salaryIncrease = (currentSalary * hikePercentage) / 100;
+                newSalary = currentSalary + salaryIncrease;
+            } else {
+                salaryIncrease = fixedAmount;
+                newSalary = currentSalary + fixedAmount;
+                // Calculate equivalent percentage for display
+                hikePercentage = (fixedAmount / currentSalary) * 100;
+            }
+
+            // Calculate additional values
+            const annualIncrease = salaryIncrease + bonus;
+            const monthlyIncrease = annualIncrease / 12;
+            const taxDeduction = (annualIncrease * taxRate) / 100;
+            const takehomeIncrease = annualIncrease - taxDeduction;
+
+            // Display results
+            displayResults(currentSalary, newSalary, annualIncrease, monthlyIncrease, salaryIncrease, bonus, taxDeduction, takehomeIncrease);
+            
+            // Generate scenario comparison
+            generateScenarioComparison(currentSalary, hikePercentage, scenario2, scenario3, bonus, taxRate);
+        }
+
+        function displayResults(current, newSalary, annualInc, monthlyInc, basicInc, bonus, tax, takehome) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + num.toLocaleString('en-IN');
+
+            document.getElementById('currentSalaryDisplay').textContent = formatINR(current);
+            document.getElementById('newSalaryDisplay').textContent = formatINR(newSalary);
+            document.getElementById('annualIncrease').textContent = formatINR(annualInc);
+            document.getElementById('monthlyIncrease').textContent = formatINR(Math.round(monthlyInc));
+
+            // Update bar chart
+            const maxSalary = Math.max(current, newSalary) * 1.1;
+            const currentBarWidth = (current / maxSalary) * 100;
+            const newBarWidth = (newSalary / maxSalary) * 100;
+
+            document.getElementById('currentBar').style.width = currentBarWidth + '%';
+            document.getElementById('newBar').style.width = newBarWidth + '%';
+            document.getElementById('currentBarLabel').textContent = formatINR(current);
+            document.getElementById('newBarLabel').textContent = formatINR(newSalary);
+
+            // Detailed breakdown
+            document.getElementById('breakdownBasic').textContent = formatINR(basicInc);
+            document.getElementById('breakdownBonus').textContent = formatINR(bonus);
+            document.getElementById('breakdownTax').textContent = formatINR(tax);
+            document.getElementById('breakdownTakehome').textContent = formatINR(takehome);
+            document.getElementById('breakdownTotal').textContent = formatINR(annualInc);
+        }
+
+        function generateScenarioComparison(currentSalary, hike1, hike2, hike3, bonus, taxRate) {
+            const tableBody = document.getElementById('scenarioTableBody');
+            tableBody.innerHTML = '';
+
+            const scenarios = [
+                { name: 'Current Scenario', hike: hike1 },
+                { name: 'Scenario 2', hike: hike2 },
+                { name: 'Scenario 3', hike: hike3 }
+            ];
+
+            scenarios.forEach((scenario, index) => {
+                const salaryIncrease = (currentSalary * scenario.hike) / 100;
+                const newSalary = currentSalary + salaryIncrease + bonus;
+                const totalIncrease = salaryIncrease + bonus;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${scenario.name}</td>
+                    <td>${scenario.hike.toFixed(1)}%</td>
+                    <td>₹${newSalary.toLocaleString('en-IN')}</td>
+                    <td style="color: #27ae60; font-weight: bold;">+₹${totalIncrease.toLocaleString('en-IN')}</td>
+                `;
+                
+                if (index === 0) {
+                    row.style.background = '#e8f4fc';
+                }
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function resetCalculator() {
+            document.getElementById('currentSalary').value = '800000';
+            document.getElementById('hikePercentage').value = '15';
+            document.getElementById('fixedAmount').value = '';
+            document.getElementById('bonus').value = '0';
+            document.getElementById('taxRate').value = '20';
+            document.getElementById('scenario2').value = '20';
+            document.getElementById('scenario3').value = '25';
+            
+            selectHikeType('percentage');
+            calculateHike();
+        }
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateHike();
+        };
+
+        // Auto-calculate when inputs change
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', calculateHike);
+        });
+    </script>
+</body>
+</html>

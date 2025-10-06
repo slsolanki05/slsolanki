@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Period Calculator & Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 50%, #ff6b6b 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff6b6b;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff8e8e);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .cycle-info {
+            background-color: #fff5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .cycle-info h4 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .cycle-info ul {
+            padding-left: 20px;
+        }
+
+        .cycle-info li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            display: none;
+            border-left: 5px solid #ff6b6b;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .period-calendar {
+            margin-top: 25px;
+        }
+
+        .period-calendar h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .calendar-day {
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+            background-color: white;
+            border: 1px solid #e1e8ed;
+            font-weight: 500;
+        }
+
+        .calendar-day.header {
+            background-color: #ff6b6b;
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.period {
+            background-color: #ff6b6b;
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-day.fertile {
+            background-color: #ffd166;
+            color: #333;
+        }
+
+        .calendar-day.ovulation {
+            background-color: #06d6a0;
+            color: white;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #ff6b6b;
+            font-weight: bold;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .period-predictions {
+            margin-top: 25px;
+        }
+
+        .period-predictions h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .prediction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e1e8ed;
+        }
+
+        .prediction-item:last-child {
+            border-bottom: none;
+        }
+
+        .health-tips {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .health-tips h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .health-tips ul {
+            padding-left: 20px;
+        }
+
+        .health-tips li {
+            margin-bottom: 8px;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Period Calculator & Tracker</h1>
+            <p class="subtitle">Track your menstrual cycle and predict future periods</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="lastPeriod">First Day of Last Period</label>
+                    <input type="date" id="lastPeriod" required>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="cycleLength">Cycle Length (days)</label>
+                        <input type="number" id="cycleLength" min="21" max="35" value="28" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="periodLength">Period Length (days)</label>
+                        <input type="number" id="periodLength" min="3" max="7" value="5" required>
+                    </div>
+                </div>
+                
+                <button id="calculateBtn" class="calculate-btn">Calculate My Cycle</button>
+                
+                <div class="cycle-info">
+                    <h4>About Menstrual Cycles</h4>
+                    <ul>
+                        <li>Average cycle length: 28 days</li>
+                        <li>Average period length: 3-7 days</li>
+                        <li>Ovulation typically occurs 14 days before next period</li>
+                        <li>Fertile window: 5 days before ovulation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div id="result" class="result">
+                    <h2>Your Cycle Overview</h2>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-value" id="nextPeriod">-</div>
+                            <div class="result-label">Next Period</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="ovulationDay">-</div>
+                            <div class="result-label">Ovulation Day</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="fertileStart">-</div>
+                            <div class="result-label">Fertile Window Start</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="fertileEnd">-</div>
+                            <div class="result-label">Fertile Window End</div>
+                        </div>
+                    </div>
+                    
+                    <div class="period-calendar">
+                        <h3>This Month's Calendar</h3>
+                        <div class="calendar" id="calendar">
+                            <!-- Calendar will be generated here -->
+                        </div>
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #ff6b6b;"></div>
+                                <span>Period</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #ffd166;"></div>
+                                <span>Fertile</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #06d6a0;"></div>
+                                <span>Ovulation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="period-predictions">
+                        <h3>Next 3 Periods</h3>
+                        <div class="prediction-item">
+                            <span>Next Period:</span>
+                            <span id="prediction1">-</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span>Following Period:</span>
+                            <span id="prediction2">-</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span>Period After:</span>
+                            <span id="prediction3">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="health-tips">
+                        <h4>💡 Cycle Health Tips</h4>
+                        <ul>
+                            <li>Stay hydrated and maintain a balanced diet</li>
+                            <li>Exercise regularly to reduce cramps</li>
+                            <li>Track symptoms to identify patterns</li>
+                            <li>Get enough sleep during your period</li>
+                            <li>Consider iron-rich foods if you have heavy flow</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="history">
+                    <h3>Recent Calculations</h3>
+                    <div id="historyList">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultDiv = document.getElementById('result');
+        const nextPeriod = document.getElementById('nextPeriod');
+        const ovulationDay = document.getElementById('ovulationDay');
+        const fertileStart = document.getElementById('fertileStart');
+        const fertileEnd = document.getElementById('fertileEnd');
+        const prediction1 = document.getElementById('prediction1');
+        const prediction2 = document.getElementById('prediction2');
+        const prediction3 = document.getElementById('prediction3');
+        const calendar = document.getElementById('calendar');
+        const historyList = document.getElementById('historyList');
+
+        // Set default date to today
+        document.getElementById('lastPeriod').valueAsDate = new Date();
+
+        // Event listeners
+        calculateBtn.addEventListener('click', calculateCycle);
+
+        // Calculate menstrual cycle
+        function calculateCycle() {
+            const lastPeriodDate = new Date(document.getElementById('lastPeriod').value);
+            const cycleLength = parseInt(document.getElementById('cycleLength').value);
+            const periodLength = parseInt(document.getElementById('periodLength').value);
+            
+            if (!lastPeriodDate || isNaN(lastPeriodDate.getTime())) {
+                alert("Please select a valid date for your last period!");
+                return;
+            }
+            
+            // Calculate important dates
+            const nextPeriodDate = new Date(lastPeriodDate);
+            nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
+            
+            const ovulationDate = new Date(nextPeriodDate);
+            ovulationDate.setDate(ovulationDate.getDate() - 14);
+            
+            const fertileStartDate = new Date(ovulationDate);
+            fertileStartDate.setDate(fertileStartDate.getDate() - 5);
+            
+            const fertileEndDate = new Date(ovulationDate);
+            fertileEndDate.setDate(fertileEndDate.getDate() + 1);
+            
+            // Calculate future periods
+            const prediction1Date = new Date(nextPeriodDate);
+            const prediction2Date = new Date(nextPeriodDate);
+            prediction2Date.setDate(prediction2Date.getDate() + cycleLength);
+            const prediction3Date = new Date(prediction2Date);
+            prediction3Date.setDate(prediction3Date.getDate() + cycleLength);
+            
+            // Format dates for display
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            });
+            
+            // Update results
+            nextPeriod.textContent = formatter.format(nextPeriodDate);
+            ovulationDay.textContent = formatter.format(ovulationDate);
+            fertileStart.textContent = formatter.format(fertileStartDate);
+            fertileEnd.textContent = formatter.format(fertileEndDate);
+            prediction1.textContent = formatter.format(prediction1Date);
+            prediction2.textContent = formatter.format(prediction2Date);
+            prediction3.textContent = formatter.format(prediction3Date);
+            
+            // Generate calendar
+            generateCalendar(lastPeriodDate, periodLength, ovulationDate, fertileStartDate, fertileEndDate);
+            
+            // Show result section
+            resultDiv.classList.add('active');
+            
+            // Add to history
+            addToHistory(lastPeriodDate, cycleLength, periodLength);
+        }
+
+        // Generate calendar view
+        function generateCalendar(lastPeriod, periodLength, ovulation, fertileStart, fertileEnd) {
+            // Clear previous calendar
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            days.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+            
+            // Get current month and year
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            
+            // Add empty cells for days before first day of month
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendar.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const currentDate = new Date(year, month, day);
+                
+                // Check if today
+                const today = new Date();
+                if (currentDate.toDateString() === today.toDateString()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check if period day
+                const periodEnd = new Date(lastPeriod);
+                periodEnd.setDate(periodEnd.getDate() + periodLength - 1);
+                if (currentDate >= lastPeriod && currentDate <= periodEnd) {
+                    dayElement.classList.add('period');
+                }
+                
+                // Check if ovulation day
+                if (currentDate.toDateString() === ovulation.toDateString()) {
+                    dayElement.classList.add('ovulation');
+                }
+                
+                // Check if fertile window
+                if (currentDate >= fertileStart && currentDate <= fertileEnd) {
+                    dayElement.classList.add('fertile');
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        // Add calculation to history
+        function addToHistory(lastPeriod, cycleLength, periodLength) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>Last Period: ${formatter.format(lastPeriod)}</strong>
+                    <div class="history-details">Cycle: ${cycleLength} days • ${dateStr}</div>
+                </div>
+                <div class="history-period">${periodLength} days</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Add some sample history items
+            const sampleItems = [
+                { lastPeriod: new Date(2023, 9, 15), cycleLength: 28, periodLength: 5, date: '2023-10-15' },
+                { lastPeriod: new Date(2023, 9, 1), cycleLength: 30, periodLength: 6, date: '2023-10-01' },
+                { lastPeriod: new Date(2023, 8, 25), cycleLength: 26, periodLength: 4, date: '2023-09-25' }
+            ];
+            
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>Last Period: ${formatter.format(item.lastPeriod)}</strong>
+                        <div class="history-details">Cycle: ${item.cycleLength} days • ${item.date}</div>
+                    </div>
+                    <div class="history-period">${item.periodLength} days</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // Calculate initial results
+            calculateCycle();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initCalculator);
+    </script>
+</body>
+</html>

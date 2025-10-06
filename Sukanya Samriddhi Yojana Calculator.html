@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sukanya Samriddhi Yojana Calculator - SSY Scheme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e91e63;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #e91e63;
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        }
+
+        .ssy-info {
+            background: #fce4ec;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #e91e63;
+        }
+
+        .ssy-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #f8bbd9;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #e91e63;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .maturity-highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed #ffc107;
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #fce4ec;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .yearly-breakdown {
+            margin-top: 25px;
+        }
+
+        .yearly-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .yearly-table th {
+            background: #e91e63;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .yearly-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .yearly-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .tax-benefit {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tax-benefit h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: #fce4ec;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .deposit-slider {
+            margin-top: 10px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-weight: bold;
+            color: #e91e63;
+            margin-top: 5px;
+        }
+
+        .growth-chart {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .chart-label {
+            width: 100px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .chart-container {
+            flex: 1;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .chart-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease-in-out;
+        }
+
+        .chart-amount {
+            width: 100px;
+            text-align: right;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sukanya Samriddhi Yojana Calculator</h1>
+            <p>Plan Your Daughter's Future with Government-backed Savings</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">SSY Account Details</h2>
+                
+                <div class="input-group">
+                    <label for="girlName">Girl Child's Name</label>
+                    <input type="text" id="girlName" placeholder="Enter girl's name" value="Priya Sharma">
+                </div>
+
+                <div class="input-group">
+                    <label for="girlDob">Girl's Date of Birth</label>
+                    <input type="date" id="girlDob" value="2018-03-15">
+                </div>
+
+                <div class="input-group">
+                    <label for="accountOpen">Account Opening Date</label>
+                    <input type="date" id="accountOpen" value="2024-01-01">
+                </div>
+
+                <div class="input-group">
+                    <label for="annualDeposit">Annual Deposit (₹)</label>
+                    <input type="range" id="depositSlider" min="250" max="150000" step="250" value="50000" class="deposit-slider">
+                    <div class="slider-value" id="depositValue">₹50,000</div>
+                    <input type="number" id="annualDeposit" min="250" max="150000" step="250" value="50000">
+                    <small style="color: #666; font-size: 0.9em;">Minimum: ₹250, Maximum: ₹1,50,000 per year</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="depositIncrease">Annual Deposit Increase (%)</label>
+                    <input type="number" id="depositIncrease" min="0" max="20" step="0.5" value="5">
+                    <small style="color: #666; font-size: 0.9em;">Account for inflation/salary growth</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="interestRate">Interest Rate (% per annum)</label>
+                    <input type="number" id="interestRate" step="0.1" value="8.2" readonly>
+                    <small style="color: #666; font-size: 0.9em;">Current SSY interest rate (Quarterly compounded)</small>
+                </div>
+
+                <div class="ssy-info">
+                    <h4>👧 Sukanya Samriddhi Yojana Features</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Interest Rate:</strong> 8.2% p.a.
+                        </div>
+                        <div class="info-item">
+                            <strong>Account Tenure:</strong> 21 years
+                        </div>
+                        <div class="info-item">
+                            <strong>Minimum Deposit:</strong> ₹250/year
+                        </div>
+                        <div class="info-item">
+                            <strong>Maximum Deposit:</strong> ₹1,50,000/year
+                        </div>
+                        <div class="info-item">
+                            <strong>Tax Benefit:</strong> EEE (Section 80C)
+                        </div>
+                        <div class="info-item">
+                            <strong>Risk:</strong> Government backed
+                        </div>
+                        <div class="info-item">
+                            <strong>Eligibility:</strong> Girl below 10 years
+                        </div>
+                        <div class="info-item">
+                            <strong>Withdrawal:</strong> 50% at age 18
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateSSY()">Calculate SSY Returns</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="features">
+                    <h3>✅ SSY Scheme Benefits</h3>
+                    <ul>
+                        <li>Higher interest rate than most savings schemes</li>
+                        <li>Tax-free returns under Section 80C</li>
+                        <li>Complete withdrawal for higher education at 18</li>
+                        <li>Account matures when girl turns 21</li>
+                        <li>Government-backed secure investment</li>
+                        <li>Promotes girl child education and empowerment</li>
+                        <li>Flexible deposits from ₹250 to ₹1.5 lakh annually</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Investment Summary</h2>
+                
+                <div class="maturity-highlight">
+                    <div class="result-label">Maturity Value When Girl Turns 21</div>
+                    <div class="result-value" id="maturityValue">₹0</div>
+                    <div style="margin-top: 10px; font-size: 1.1em;">For <span id="girlAge">0</span> year old girl</div>
+                </div>
+
+                <div class="growth-chart">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Wealth Growth</h3>
+                    <div class="chart-bar">
+                        <div class="chart-label">Total Investment</div>
+                        <div class="chart-container">
+                            <div class="chart-fill" id="investmentBar" style="width: 0%; background: #e91e63;"></div>
+                        </div>
+                        <div class="chart-amount" id="investmentAmount">₹0</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-label">Interest Earned</div>
+                        <div class="chart-container">
+                            <div class="chart-fill" id="interestBar" style="width: 0%; background: #4caf50;"></div>
+                        </div>
+                        <div class="chart-amount" id="interestAmount">₹0</div>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-label">Maturity Value</div>
+                        <div class="chart-container">
+                            <div class="chart-fill" id="maturityBar" style="width: 0%; background: #ff9800;"></div>
+                        </div>
+                        <div class="chart-amount" id="maturityAmount">₹0</div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Total Investment</div>
+                        <div class="result-value" id="totalInvestment">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Total Interest</div>
+                        <div class="result-value" id="totalInterest">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Annual Interest</div>
+                        <div class="result-value" id="annualInterest">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Effective Yield</div>
+                        <div class="result-value" id="effectiveYield">0%</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Detailed Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Annual Deposit:</span>
+                        <span id="breakdownAnnual">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Deposit Years:</span>
+                        <span id="breakdownYears">0 years</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Interest Rate:</span>
+                        <span id="breakdownRate">8.2%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Deposits:</span>
+                        <span id="breakdownDeposits">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Interest Earned:</span>
+                        <span class="increase-indicator" id="breakdownInterest">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Maturity Value:</span>
+                        <span id="breakdownMaturity">₹0</span>
+                    </div>
+                </div>
+
+                <div class="tax-benefit">
+                    <h3>💰 Tax Benefits (Section 80C)</h3>
+                    <div class="breakdown-item">
+                        <span>Annual Tax Deduction:</span>
+                        <span id="taxDeduction">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Tax Saved (Approx.):</span>
+                        <span class="increase-indicator" id="taxSaved">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Net Investment Cost:</span>
+                        <span id="netInvestment">₹0</span>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 10px;">
+                        *Assuming 30% tax bracket. SSY offers EEE (Exempt-Exempt-Exempt) benefits
+                    </small>
+                </div>
+
+                <div class="yearly-breakdown">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Year-wise Growth</h3>
+                    <div class="yearly-table-container">
+                        <table class="yearly-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Age</th>
+                                    <th>Deposit</th>
+                                    <th>Interest</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yearlyTableBody">
+                                <!-- Yearly data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current SSY interest rate
+        const currentSSYRate = 8.2;
+
+        function calculateSSY() {
+            // Get input values
+            const girlDob = new Date(document.getElementById('girlDob').value);
+            const accountOpen = new Date(document.getElementById('accountOpen').value);
+            let annualDeposit = parseFloat(document.getElementById('annualDeposit').value) || 0;
+            const depositIncrease = parseFloat(document.getElementById('depositIncrease').value) || 0;
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+
+            // Validate inputs
+            if (annualDeposit < 250) {
+                alert('Minimum annual deposit is ₹250');
+                return;
+            }
+            if (annualDeposit > 150000) {
+                alert('Maximum annual deposit is ₹1,50,000');
+                annualDeposit = 150000;
+                document.getElementById('annualDeposit').value = 150000;
+                document.getElementById('depositSlider').value = 150000;
+                document.getElementById('depositValue').textContent = '₹1,50,000';
+            }
+
+            // Calculate girl's age and years until maturity
+            const today = new Date();
+            const girlAge = Math.floor((today - girlDob) / (365.25 * 24 * 60 * 60 * 1000));
+            const yearsToMaturity = 21 - girlAge;
+            const depositYears = Math.min(15, yearsToMaturity); // Deposits only for first 15 years
+
+            if (girlAge >= 10) {
+                alert('Girl should be below 10 years to open SSY account');
+                return;
+            }
+
+            if (yearsToMaturity <= 0) {
+                alert('Girl is already 21 or older. SSY account matures at age 21.');
+                return;
+            }
+
+            // Calculate maturity amount
+            let totalInvestment = 0;
+            let balance = 0;
+            const quarterlyRate = interestRate / 400;
+            const yearlyData = [];
+
+            for (let year = 1; year <= yearsToMaturity; year++) {
+                let yearDeposit = 0;
+                
+                // Add deposit for first 15 years only
+                if (year <= depositYears) {
+                    yearDeposit = annualDeposit * Math.pow(1 + depositIncrease/100, year-1);
+                    totalInvestment += yearDeposit;
+                    
+                    // Add deposit at beginning of year
+                    for (let quarter = 1; quarter <= 4; quarter++) {
+                        const quartersRemaining = (yearsToMaturity - year) * 4 + (4 - quarter + 1);
+                        balance += yearDeposit / 4 * Math.pow(1 + quarterlyRate, quartersRemaining);
+                    }
+                } else {
+                    // Only interest accrual for remaining years
+                    balance = balance * Math.pow(1 + quarterlyRate, 4);
+                }
+
+                // Calculate year-end balance for display
+                const yearEndBalance = calculateYearEndBalance(totalInvestment, year, yearsToMaturity, interestRate, depositIncrease);
+                yearlyData.push({
+                    year: year,
+                    age: girlAge + year,
+                    deposit: year <= depositYears ? Math.round(yearDeposit) : 0,
+                    interest: Math.round(yearEndBalance - totalInvestment),
+                    balance: Math.round(yearEndBalance)
+                });
+            }
+
+            const maturityAmount = Math.round(balance);
+            const totalInterest = maturityAmount - totalInvestment;
+            const annualInterest = totalInterest / yearsToMaturity;
+            const effectiveYield = (Math.pow(maturityAmount / totalInvestment, 1/yearsToMaturity) - 1) * 100;
+
+            // Calculate tax benefits (assuming 30% tax bracket)
+            const annualTaxDeduction = Math.min(annualDeposit, 150000);
+            const totalTaxSaved = (annualTaxDeduction * 0.3) * depositYears;
+            const netInvestment = totalInvestment - totalTaxSaved;
+
+            // Display results
+            displayResults(totalInvestment, totalInterest, maturityAmount, annualInterest, effectiveYield,
+                         annualDeposit, yearsToMaturity, depositYears, interestRate, girlAge,
+                         annualTaxDeduction, totalTaxSaved, netInvestment);
+            
+            // Generate yearly breakdown
+            generateYearlyBreakdown(yearlyData);
+        }
+
+        function calculateYearEndBalance(totalInvestment, currentYear, totalYears, interestRate, depositIncrease) {
+            // Simplified calculation for display purposes
+            const annualRate = interestRate / 100;
+            return totalInvestment * Math.pow(1 + annualRate, currentYear);
+        }
+
+        function displayResults(investment, interest, maturity, annualInterest, yield, 
+                              annualDeposit, yearsToMaturity, depositYears, rate, girlAge,
+                              taxDeduction, taxSaved, netInvestment) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+
+            document.getElementById('maturityValue').textContent = formatINR(maturity);
+            document.getElementById('totalInvestment').textContent = formatINR(investment);
+            document.getElementById('totalInterest').textContent = formatINR(interest);
+            document.getElementById('annualInterest').textContent = formatINR(annualInterest);
+            document.getElementById('effectiveYield').textContent = yield.toFixed(2) + '%';
+            document.getElementById('girlAge').textContent = girlAge;
+
+            // Update growth chart
+            const maxAmount = Math.max(investment, maturity);
+            document.getElementById('investmentBar').style.width = (investment / maxAmount) * 100 + '%';
+            document.getElementById('interestBar').style.width = (interest / maxAmount) * 100 + '%';
+            document.getElementById('maturityBar').style.width = (maturity / maxAmount) * 100 + '%';
+            
+            document.getElementById('investmentAmount').textContent = formatINR(investment);
+            document.getElementById('interestAmount').textContent = formatINR(interest);
+            document.getElementById('maturityAmount').textContent = formatINR(maturity);
+
+            // Detailed breakdown
+            document.getElementById('breakdownAnnual').textContent = formatINR(annualDeposit);
+            document.getElementById('breakdownYears').textContent = depositYears + ' years deposit, ' + yearsToMaturity + ' years total';
+            document.getElementById('breakdownRate').textContent = rate + '%';
+            document.getElementById('breakdownDeposits').textContent = formatINR(investment);
+            document.getElementById('breakdownInterest').textContent = formatINR(interest);
+            document.getElementById('breakdownMaturity').textContent = formatINR(maturity);
+
+            // Tax benefits
+            document.getElementById('taxDeduction').textContent = formatINR(taxDeduction);
+            document.getElementById('taxSaved').textContent = formatINR(taxSaved);
+            document.getElementById('netInvestment').textContent = formatINR(netInvestment);
+        }
+
+        function generateYearlyBreakdown(yearlyData) {
+            const tableBody = document.getElementById('yearlyTableBody');
+            tableBody.innerHTML = '';
+
+            yearlyData.forEach(data => {
+                const row = document.createElement('tr');
+                
+                // Highlight important years
+                if (data.age === 18) {
+                    row.style.background = '#e8f4fc';
+                    row.innerHTML = `
+                        <td><strong>Year ${data.year}</strong></td>
+                        <td><strong>${data.age}*</strong></td>
+                        <td>₹${data.deposit.toLocaleString('en-IN')}</td>
+                        <td style="color: #27ae60; font-weight: bold;">₹${data.interest.toLocaleString('en-IN')}</td>
+                        <td>₹${data.balance.toLocaleString('en-IN')}</td>
+                    `;
+                } else if (data.age === 21) {
+                    row.style.background = '#fff3cd';
+                    row.style.fontWeight = 'bold';
+                    row.innerHTML = `
+                        <td><strong>Year ${data.year}</strong></td>
+                        <td><strong>${data.age}**</strong></td>
+                        <td>₹${data.deposit.toLocaleString('en-IN')}</td>
+                        <td style="color: #27ae60; font-weight: bold;">₹${data.interest.toLocaleString('en-IN')}</td>
+                        <td>₹${data.balance.toLocaleString('en-IN')}</td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td>Year ${data.year}</td>
+                        <td>${data.age}</td>
+                        <td>₹${data.deposit.toLocaleString('en-IN')}</td>
+                        <td style="color: #27ae60;">₹${data.interest.toLocaleString('en-IN')}</td>
+                        <td>₹${data.balance.toLocaleString('en-IN')}</td>
+                    `;
+                }
+                
+                tableBody.appendChild(row);
+            });
+
+            // Add footnotes
+            const footnoteRow = document.createElement('tr');
+            footnoteRow.innerHTML = `
+                <td colspan="5" style="font-size: 0.8em; color: #666; padding: 10px;">
+                    * Age 18: Up to 50% withdrawal allowed for higher education<br>
+                    ** Age 21: Account matures, full withdrawal possible
+                </td>
+            `;
+            tableBody.appendChild(footnoteRow);
+        }
+
+        function resetCalculator() {
+            document.getElementById('girlName').value = 'Priya Sharma';
+            document.getElementById('girlDob').value = '2018-03-15';
+            document.getElementById('accountOpen').value = '2024-01-01';
+            document.getElementById('annualDeposit').value = '50000';
+            document.getElementById('depositSlider').value = '50000';
+            document.getElementById('depositValue').textContent = '₹50,000';
+            document.getElementById('depositIncrease').value = '5';
+            document.getElementById('interestRate').value = currentSSYRate;
+            
+            calculateSSY();
+        }
+
+        // Sync slider and input field
+        document.getElementById('depositSlider').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('annualDeposit').value = value;
+            document.getElementById('depositValue').textContent = '₹' + parseInt(value).toLocaleString('en-IN');
+            calculateSSY();
+        });
+
+        document.getElementById('annualDeposit').addEventListener('input', function() {
+            const value = this.value;
+            document.getElementById('depositSlider').value = value;
+            document.getElementById('depositValue').textContent = '₹' + parseInt(value).toLocaleString('en-IN');
+            calculateSSY();
+        });
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateSSY();
+        };
+
+        // Auto-calculate when inputs change
+        document.getElementById('girlDob').addEventListener('change', calculateSSY);
+        document.getElementById('accountOpen').addEventListener('change', calculateSSY);
+        document.getElementById('depositIncrease').addEventListener('input', calculateSSY);
+    </script>
+</body>
+</html>

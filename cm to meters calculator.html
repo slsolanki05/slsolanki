@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM to Meters Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f9c74f;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .calculator-form {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .calculator-result {
+            background: var(--light);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .conversion-result {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .conversion-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .conversion-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .conversion-option:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .conversion-option.active {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .conversion-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .unit-conversion {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .unit-conversion h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .conversion-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .conversion-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .conversion-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .conversion-result {
+                font-size: 2rem;
+                padding: 20px;
+            }
+            
+            .conversion-types {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-with-icon input {
+            padding-left: 45px;
+        }
+        
+        .visual-scale {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .scale-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .scale-value {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .scale-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .scale-bar {
+            height: 4px;
+            background: var(--primary);
+            border-radius: 2px;
+            margin: 0 10px;
+            flex-grow: 1;
+        }
+        
+        .comparison {
+            margin-top: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .comparison h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-item:last-child {
+            border-bottom: none;
+        }
+        
+        .decimal-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .decimal-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .decimal-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .decimal-btn:hover:not(.active) {
+            background: var(--light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-ruler"></i> CM to Meters Calculator</h1>
+                <p class="subtitle">Convert between centimeters and meters with precision and ease</p>
+            </div>
+        </header>
+        
+        <div class="calculator-content">
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label><i class="fas fa-exchange-alt"></i> Conversion Direction</label>
+                    <div class="conversion-types">
+                        <div class="conversion-option active" data-direction="cm-to-m">
+                            <div class="conversion-icon"><i class="fas fa-long-arrow-alt-right"></i></div>
+                            <span>Centimeters to Meters</span>
+                        </div>
+                        <div class="conversion-option" data-direction="m-to-cm">
+                            <div class="conversion-icon"><i class="fas fa-long-arrow-alt-left"></i></div>
+                            <span>Meters to Centimeters</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inputValue" id="inputLabel"><i class="fas fa-ruler"></i> Centimeters</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-hashtag"></i>
+                        <input type="number" id="inputValue" step="0.01" placeholder="Enter value">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-sliders-h"></i> Decimal Places</label>
+                    <div class="decimal-controls">
+                        <button class="decimal-btn active" data-decimals="2">2 Decimals</button>
+                        <button class="decimal-btn" data-decimals="4">4 Decimals</button>
+                        <button class="decimal-btn" data-decimals="6">6 Decimals</button>
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculateConversion">
+                    <i class="fas fa-calculator"></i> Convert
+                </button>
+                
+                <div class="visual-scale" id="visualScale">
+                    <div class="scale-item">
+                        <div class="scale-value">0 cm</div>
+                        <div class="scale-label">0 m</div>
+                    </div>
+                    <div class="scale-bar"></div>
+                    <div class="scale-item">
+                        <div class="scale-value">100 cm</div>
+                        <div class="scale-label">1 m</div>
+                    </div>
+                </div>
+                
+                <div class="unit-conversion">
+                    <h3><i class="fas fa-info-circle"></i> Conversion Reference</h3>
+                    <div class="conversion-grid">
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Centimeter</span>
+                            <span class="conversion-value">0.01 Meters</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Meter</span>
+                            <span class="conversion-value">100 Centimeters</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Centimeter</span>
+                            <span class="conversion-value">10 Millimeters</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Meter</span>
+                            <span class="conversion-value">1000 Millimeters</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-result">
+                <h2 class="result-title"><i class="fas fa-ruler-combined"></i> Conversion Result</h2>
+                
+                <div class="conversion-result" id="conversionDisplay">
+                    0 m
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Input Value</span>
+                        <span class="result-value" id="inputResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Conversion</span>
+                        <span class="result-value" id="conversionType">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Formula Used</span>
+                        <span class="result-value" id="formulaResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Precision</span>
+                        <span class="result-value" id="precisionResult">-</span>
+                    </div>
+                </div>
+                
+                <div class="comparison">
+                    <h3><i class="fas fa-balance-scale"></i> Common Comparisons</h3>
+                    <div class="comparison-item">
+                        <span>Standard Door Height</span>
+                        <span>~203 cm (2.03 m)</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Average Human Height</span>
+                        <span>~170 cm (1.70 m)</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Basketball Hoop Height</span>
+                        <span>~305 cm (3.05 m)</span>
+                    </div>
+                    <div class="comparison-item">
+                        <span>Smartphone Length</span>
+                        <span>~15 cm (0.15 m)</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <h3 style="margin-bottom: 10px; color: var(--dark);">Additional Conversions</h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">Millimeters</span>
+                            <span class="result-value" id="mmResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Inches</span>
+                            <span class="result-value" id="inchesResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Feet</span>
+                            <span class="result-value" id="feetResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Yards</span>
+                            <span class="result-value" id="yardsResult">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>CM to Meters Calculator &copy; 2023 | For educational and practical purposes</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const conversionOptions = document.querySelectorAll('.conversion-option');
+        const decimalButtons = document.querySelectorAll('.decimal-btn');
+        const inputLabel = document.getElementById('inputLabel');
+        const inputValue = document.getElementById('inputValue');
+        const calculateButton = document.getElementById('calculateConversion');
+        const visualScale = document.getElementById('visualScale');
+        
+        // Result Elements
+        const conversionDisplay = document.getElementById('conversionDisplay');
+        const inputResult = document.getElementById('inputResult');
+        const conversionType = document.getElementById('conversionType');
+        const formulaResult = document.getElementById('formulaResult');
+        const precisionResult = document.getElementById('precisionResult');
+        const mmResult = document.getElementById('mmResult');
+        const inchesResult = document.getElementById('inchesResult');
+        const feetResult = document.getElementById('feetResult');
+        const yardsResult = document.getElementById('yardsResult');
+        
+        // Current conversion direction and decimal places
+        let currentDirection = 'cm-to-m';
+        let decimalPlaces = 2;
+        
+        // Event Listeners
+        conversionOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                conversionOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked option
+                option.classList.add('active');
+                
+                // Get the direction from data attribute
+                currentDirection = option.getAttribute('data-direction');
+                
+                // Update input label and placeholder
+                if (currentDirection === 'cm-to-m') {
+                    inputLabel.innerHTML = '<i class="fas fa-ruler"></i> Centimeters';
+                    inputValue.placeholder = 'Enter centimeters';
+                    updateVisualScale('cm-to-m');
+                } else {
+                    inputLabel.innerHTML = '<i class="fas fa-ruler"></i> Meters';
+                    inputValue.placeholder = 'Enter meters';
+                    updateVisualScale('m-to-cm');
+                }
+                
+                // Clear results
+                clearResults();
+            });
+        });
+        
+        decimalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                decimalButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                
+                // Get decimal places from data attribute
+                decimalPlaces = parseInt(button.getAttribute('data-decimals'));
+                
+                // Recalculate if we have a value
+                if (inputValue.value) {
+                    calculateConversion();
+                }
+            });
+        });
+        
+        calculateButton.addEventListener('click', calculateConversion);
+        
+        // Update visual scale based on conversion direction
+        function updateVisualScale(direction) {
+            if (direction === 'cm-to-m') {
+                visualScale.innerHTML = `
+                    <div class="scale-item">
+                        <div class="scale-value">0 cm</div>
+                        <div class="scale-label">0 m</div>
+                    </div>
+                    <div class="scale-bar"></div>
+                    <div class="scale-item">
+                        <div class="scale-value">100 cm</div>
+                        <div class="scale-label">1 m</div>
+                    </div>
+                `;
+            } else {
+                visualScale.innerHTML = `
+                    <div class="scale-item">
+                        <div class="scale-value">0 m</div>
+                        <div class="scale-label">0 cm</div>
+                    </div>
+                    <div class="scale-bar"></div>
+                    <div class="scale-item">
+                        <div class="scale-value">1 m</div>
+                        <div class="scale-label">100 cm</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Calculate conversion based on direction
+        function calculateConversion() {
+            const value = parseFloat(inputValue.value);
+            
+            // Input validation
+            if (isNaN(value) || value < 0) {
+                alert('Please enter a valid positive number.');
+                return;
+            }
+            
+            let result = 0;
+            let inputUnit = '';
+            let resultUnit = '';
+            let formula = '';
+            
+            if (currentDirection === 'cm-to-m') {
+                // Centimeters to Meters conversion
+                result = value / 100;
+                inputUnit = 'cm';
+                resultUnit = 'm';
+                formula = 'meters = centimeters ÷ 100';
+                conversionType.textContent = 'Centimeters to Meters';
+            } else {
+                // Meters to Centimeters conversion
+                result = value * 100;
+                inputUnit = 'm';
+                resultUnit = 'cm';
+                formula = 'centimeters = meters × 100';
+                conversionType.textContent = 'Meters to Centimeters';
+            }
+            
+            // Update result elements
+            inputResult.textContent = `${value} ${inputUnit}`;
+            conversionDisplay.textContent = `${result.toFixed(decimalPlaces)} ${resultUnit}`;
+            formulaResult.textContent = formula;
+            precisionResult.textContent = `${decimalPlaces} decimal places`;
+            
+            // Update additional conversions
+            updateAdditionalConversions(value, currentDirection);
+            
+            // Add animation to result
+            conversionDisplay.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                conversionDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Update additional conversion values
+        function updateAdditionalConversions(value, direction) {
+            if (direction === 'cm-to-m') {
+                // Convert from centimeters to other units
+                mmResult.textContent = (value * 10).toFixed(decimalPlaces);
+                inchesResult.textContent = (value / 2.54).toFixed(decimalPlaces);
+                feetResult.textContent = (value / 30.48).toFixed(decimalPlaces);
+                yardsResult.textContent = (value / 91.44).toFixed(decimalPlaces);
+            } else {
+                // Convert from meters to other units
+                mmResult.textContent = (value * 1000).toFixed(decimalPlaces);
+                inchesResult.textContent = (value * 39.37).toFixed(decimalPlaces);
+                feetResult.textContent = (value * 3.281).toFixed(decimalPlaces);
+                yardsResult.textContent = (value * 1.094).toFixed(decimalPlaces);
+            }
+        }
+        
+        // Clear all results
+        function clearResults() {
+            conversionDisplay.textContent = `0 ${currentDirection === 'cm-to-m' ? 'm' : 'cm'}`;
+            inputResult.textContent = '-';
+            conversionType.textContent = '-';
+            formulaResult.textContent = '-';
+            precisionResult.textContent = '-';
+            mmResult.textContent = '0';
+            inchesResult.textContent = '0';
+            feetResult.textContent = '0';
+            yardsResult.textContent = '0';
+        }
+        
+        // Initialize the calculator with default values
+        function initializeCalculator() {
+            inputValue.value = '150';
+            calculateConversion();
+        }
+        
+        // Initialize the calculator when the page loads
+        window.onload = initializeCalculator;
+    </script>
+</body>
+</html>

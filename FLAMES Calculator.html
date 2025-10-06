@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAMES Calculator - Relationship Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .flames-acronym {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .flame-letter {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+            transform: scale(1.02);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .relationship-status {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .relationship-desc {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .compatibility-score {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: white;
+            border-radius: 6px;
+            transition: width 1s ease-in-out;
+        }
+
+        .flames-animation {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .flame {
+            width: 30px;
+            height: 40px;
+            background: #ff6b6b;
+            border-radius: 50% 50% 20% 20%;
+            position: relative;
+            animation: flicker 1.5s infinite alternate;
+            opacity: 0.7;
+        }
+
+        .flame:nth-child(2) { animation-delay: 0.2s; background: #ff8e8e; }
+        .flame:nth-child(3) { animation-delay: 0.4s; background: #ff5252; }
+        .flame:nth-child(4) { animation-delay: 0.6s; background: #ff8e8e; }
+        .flame:nth-child(5) { animation-delay: 0.8s; background: #ff6b6b; }
+        .flame:nth-child(6) { animation-delay: 1.0s; background: #ff5252; }
+
+        @keyframes flicker {
+            0%, 100% { transform: scaleY(1) translateY(0); opacity: 0.7; }
+            50% { transform: scaleY(1.1) translateY(-5px); opacity: 1; }
+        }
+
+        .meaning-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            text-align: left;
+        }
+
+        .meaning-section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .meaning-item {
+            padding: 10px;
+            border-left: 4px solid #4ecdc4;
+            margin: 8px 0;
+            background: white;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .reset-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            .content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>FLAMES Calculator</h1>
+            <p>Discover Your Relationship Status</p>
+            <div class="flames-acronym">
+                <div class="flame-letter">F - Friends</div>
+                <div class="flame-letter">L - Lovers</div>
+                <div class="flame-letter">A - Affectionate</div>
+                <div class="flame-letter">M - Marriage</div>
+                <div class="flame-letter">E - Enemies</div>
+                <div class="flame-letter">S - Siblings</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="instructions">
+                💡 <strong>How it works:</strong> Enter two names to calculate your FLAMES relationship status. The game counts common letters and determines your relationship type!
+            </div>
+
+            <div class="input-group">
+                <label for="name1">Your Name</label>
+                <input type="text" id="name1" placeholder="Enter first name" autocomplete="off">
+            </div>
+
+            <div class="input-group">
+                <label for="name2">Partner's Name</label>
+                <input type="text" id="name2" placeholder="Enter second name" autocomplete="off">
+            </div>
+
+            <button class="calculate-btn" onclick="calculateFlames()">
+                🔥 Calculate FLAMES
+            </button>
+
+            <div class="result-section" id="resultSection">
+                <div class="flames-animation">
+                    <div class="flame"></div>
+                    <div class="flame"></div>
+                    <div class="flame"></div>
+                    <div class="flame"></div>
+                    <div class="flame"></div>
+                    <div class="flame"></div>
+                </div>
+
+                <div class="result-card">
+                    <div class="relationship-status" id="relationshipStatus">Friends</div>
+                    <div class="relationship-desc" id="relationshipDesc">You have a strong friendship bond!</div>
+                    
+                    <div class="compatibility-score" id="compatibilityScore">75%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="compatibilityProgress" style="width: 75%"></div>
+                    </div>
+                </div>
+
+                <div class="meaning-section">
+                    <h3>What This Means</h3>
+                    <div id="meaningContent">
+                        <div class="meaning-item">
+                            <strong>Friends:</strong> You share a great platonic relationship with trust and understanding.
+                        </div>
+                    </div>
+                </div>
+
+                <button class="reset-btn" onclick="resetCalculator()">
+                    🔄 Calculate Again
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const flamesMeanings = {
+            'F': {
+                status: 'Friends',
+                description: 'You have a strong friendship bond!',
+                meaning: 'You share a great platonic relationship built on trust, understanding, and mutual respect. You enjoy each other\'s company and can rely on each other through thick and thin.',
+                score: 70
+            },
+            'L': {
+                status: 'Lovers',
+                description: 'There\'s romantic love between you!',
+                meaning: 'You share a deep romantic connection filled with passion and affection. Your hearts beat as one, and you have strong chemistry that could lead to a beautiful relationship.',
+                score: 95
+            },
+            'A': {
+                status: 'Affectionate',
+                description: 'You care deeply for each other!',
+                meaning: 'You have a warm, caring relationship with strong emotional attachment. While it may not be romantic love, you share a special bond of affection and concern for each other\'s well-being.',
+                score: 80
+            },
+            'M': {
+                status: 'Marriage',
+                description: 'You are destined to be together!',
+                meaning: 'Your connection is so strong that it could lead to a lifelong commitment. You complement each other perfectly and have the potential for a successful, long-term partnership.',
+                score: 90
+            },
+            'E': {
+                status: 'Enemies',
+                description: 'There might be some conflicts ahead!',
+                meaning: 'Your personalities might clash, leading to misunderstandings and conflicts. However, remember that enemies can become friends with understanding and communication.',
+                score: 30
+            },
+            'S': {
+                status: 'Siblings',
+                description: 'You share a brother-sister bond!',
+                meaning: 'You have a protective, caring relationship similar to siblings. You look out for each other and share a bond that goes beyond friendship, but without romantic feelings.',
+                score: 65
+            }
+        };
+
+        function calculateFlames() {
+            const name1 = document.getElementById('name1').value.trim().toLowerCase();
+            const name2 = document.getElementById('name2').value.trim().toLowerCase();
+
+            if (!name1 || !name2) {
+                alert('Please enter both names!');
+                return;
+            }
+
+            if (name1 === name2) {
+                alert('Please enter two different names!');
+                return;
+            }
+
+            // Remove spaces and convert to arrays
+            const name1Chars = name1.replace(/\s/g, '').split('');
+            const name2Chars = name2.replace(/\s/g, '').split('');
+
+            // Count common letters
+            let commonCount = 0;
+            const name2Copy = [...name2Chars];
+
+            for (let char of name1Chars) {
+                const index = name2Copy.indexOf(char);
+                if (index !== -1) {
+                    commonCount++;
+                    name2Copy.splice(index, 1);
+                }
+            }
+
+            // Calculate total unique letters
+            const totalLetters = name1Chars.length + name2Chars.length - (2 * commonCount);
+
+            // FLAMES calculation
+            const flames = ['F', 'L', 'A', 'M', 'E', 'S'];
+            let currentIndex = 0;
+
+            while (flames.length > 1) {
+                currentIndex = (currentIndex + totalLetters - 1) % flames.length;
+                flames.splice(currentIndex, 1);
+            }
+
+            const result = flames[0];
+            const resultData = flamesMeanings[result];
+
+            // Display results with animation
+            setTimeout(() => {
+                document.getElementById('relationshipStatus').textContent = resultData.status;
+                document.getElementById('relationshipDesc').textContent = resultData.description;
+                document.getElementById('compatibilityScore').textContent = resultData.score + '%';
+                document.getElementById('compatibilityProgress').style.width = resultData.score + '%';
+                
+                document.getElementById('meaningContent').innerHTML = `
+                    <div class="meaning-item">
+                        <strong>${resultData.status}:</strong> ${resultData.meaning}
+                    </div>
+                `;
+
+                document.getElementById('resultSection').style.display = 'block';
+                
+                // Smooth scroll to results
+                document.getElementById('resultSection').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 500);
+        }
+
+        function resetCalculator() {
+            document.getElementById('name1').value = '';
+            document.getElementById('name2').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+            document.getElementById('name1').focus();
+        }
+
+        // Allow pressing Enter to calculate
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                calculateFlames();
+            }
+        });
+
+        // Add some fun input effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value.length > 0) {
+                    this.style.borderColor = '#4ecdc4';
+                } else {
+                    this.style.borderColor = '#e0e0e0';
+                }
+            });
+        });
+
+        // Initialize with focus on first input
+        window.onload = function() {
+            document.getElementById('name1').focus();
+        };
+    </script>
+</body>
+</html>

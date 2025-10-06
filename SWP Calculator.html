@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SWP Calculator - Systematic Withdrawal Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .withdrawal-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .withdrawal-type {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .withdrawal-type.active {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+
+        .withdrawal-type h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .withdrawal-type .desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .swp-info {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .swp-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #b8dcff;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .withdrawal-summary {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed #ffc107;
+        }
+
+        .balance-tracker {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tracker-bar {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .tracker-label {
+            width: 120px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .tracker-container {
+            flex: 1;
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 0 15px;
+        }
+
+        .tracker-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1s ease-in-out;
+        }
+
+        .tracker-amount {
+            width: 120px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .yearly-breakdown {
+            margin-top: 25px;
+        }
+
+        .yearly-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .yearly-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .yearly-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .yearly-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .decrease-indicator {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            color: #856404;
+        }
+
+        .monthly-income {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SWP Calculator</h1>
+            <p>Systematic Withdrawal Plan - Generate Regular Income from Investments</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">SWP Details</h2>
+                
+                <div class="input-group">
+                    <label for="investmentAmount">Total Investment (₹)</label>
+                    <input type="number" id="investmentAmount" placeholder="Enter investment amount" min="100000" step="10000" value="5000000">
+                    <small style="color: #666; font-size: 0.9em;">Minimum typically ₹1,00,000 for SWP</small>
+                </div>
+
+                <div class="input-group">
+                    <label>Withdrawal Type</label>
+                    <div class="withdrawal-types">
+                        <div class="withdrawal-type active" onclick="selectWithdrawalType('monthly')">
+                            <h4>Monthly Withdrawal</h4>
+                            <div class="desc">Fixed amount every month</div>
+                        </div>
+                        <div class="withdrawal-type" onclick="selectWithdrawalType('percentage')">
+                            <h4>Percentage Based</h4>
+                            <div class="desc">% of corpus monthly</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group" id="monthlyWithdrawalInput">
+                    <label for="monthlyWithdrawal">Monthly Withdrawal Amount (₹)</label>
+                    <input type="number" id="monthlyWithdrawal" placeholder="Enter monthly withdrawal" min="1000" step="1000" value="25000">
+                </div>
+
+                <div class="input-group" id="percentageWithdrawalInput" style="display: none;">
+                    <label for="withdrawalPercentage">Monthly Withdrawal Percentage (%)</label>
+                    <input type="number" id="withdrawalPercentage" placeholder="Enter percentage" min="0.1" max="10" step="0.1" value="0.5">
+                    <small style="color: #666; font-size: 0.9em;">Typically 0.5% to 1% per month</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="withdrawalPeriod">Withdrawal Period (Years)</label>
+                    <input type="number" id="withdrawalPeriod" placeholder="Enter years" min="1" max="30" step="1" value="20">
+                </div>
+
+                <div class="input-group">
+                    <label for="expectedReturn">Expected Annual Return (%)</label>
+                    <input type="number" id="expectedReturn" placeholder="Expected annual return" min="1" max="20" step="0.1" value="10">
+                </div>
+
+                <div class="input-group">
+                    <label for="inflationRate">Expected Inflation Rate (%)</label>
+                    <input type="number" id="inflationRate" placeholder="Expected inflation" min="0" max="10" step="0.1" value="6">
+                </div>
+
+                <div class="swp-info">
+                    <h4>💡 SWP Benefits</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Regular Income:</strong> Monthly cash flow
+                        </div>
+                        <div class="info-item">
+                            <strong>Tax Efficiency:</strong> Only gains are taxed
+                        </div>
+                        <div class="info-item">
+                            <strong>Capital Preservation:</strong> Principal remains
+                        </div>
+                        <div class="info-item">
+                            <strong>Flexibility:</strong> Adjust withdrawals
+                        </div>
+                        <div class="info-item">
+                            <strong>Liquidity:</strong> Access to funds
+                        </div>
+                        <div class="info-item">
+                            <strong>Inflation Hedge:</strong> Potential growth
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateSWP()">Calculate SWP</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="features">
+                    <h3>✅ When to Use SWP</h3>
+                    <ul>
+                        <li>Retirement planning for regular income</li>
+                        <li>Education expenses for children</li>
+                        <li>Supplementing monthly income</li>
+                        <li>Managing large lump sum amounts</li>
+                        <li>Creating pension-like income stream</li>
+                        <li>Tax-efficient withdrawal strategy</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">SWP Analysis</h2>
+                
+                <div class="withdrawal-summary">
+                    <div class="result-label">Monthly Income</div>
+                    <div class="result-value" id="monthlyIncome">₹0</div>
+                    <div style="margin-top: 10px; font-size: 1.1em;">For <span id="periodDisplay">0</span> years</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Total Investment</div>
+                        <div class="result-value" id="totalInvestment">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Total Withdrawals</div>
+                        <div class="result-value" id="totalWithdrawals">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Final Corpus</div>
+                        <div class="result-value" id="finalCorpus">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">SWP Success</div>
+                        <div class="result-value" id="swpSuccess">0%</div>
+                    </div>
+                </div>
+
+                <div class="balance-tracker">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Corpus Balance Tracking</h3>
+                    <div class="tracker-bar">
+                        <div class="tracker-label">Initial Corpus</div>
+                        <div class="tracker-container">
+                            <div class="tracker-fill" id="initialBar" style="width: 100%; background: #2c3e50;"></div>
+                        </div>
+                        <div class="tracker-amount" id="initialAmount">₹0</div>
+                    </div>
+                    <div class="tracker-bar">
+                        <div class="tracker-label">Total Withdrawn</div>
+                        <div class="tracker-container">
+                            <div class="tracker-fill" id="withdrawnBar" style="width: 0%; background: #3498db;"></div>
+                        </div>
+                        <div class="tracker-amount" id="withdrawnAmount">₹0</div>
+                    </div>
+                    <div class="tracker-bar">
+                        <div class="tracker-label">Remaining Corpus</div>
+                        <div class="tracker-container">
+                            <div class="tracker-fill" id="remainingBar" style="width: 100%; background: #27ae60;"></div>
+                        </div>
+                        <div class="tracker-amount" id="remainingAmount">₹0</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">SWP Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Initial Investment:</span>
+                        <span id="breakdownInitial">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Monthly Withdrawal:</span>
+                        <span id="breakdownMonthly">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Withdrawal Period:</span>
+                        <span id="breakdownPeriod">0 years</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Expected Return:</span>
+                        <span id="breakdownReturn">0%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Withdrawals:</span>
+                        <span class="increase-indicator" id="breakdownWithdrawals">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Final Corpus Value:</span>
+                        <span id="breakdownFinal">₹0</span>
+                    </div>
+                </div>
+
+                <div id="warningMessage" class="warning-message" style="display: none;">
+                    <strong>⚠️ Warning:</strong> Your withdrawals may deplete the corpus before the end of the period. Consider reducing withdrawal amount.
+                </div>
+
+                <div class="monthly-income">
+                    <h3 style="margin-bottom: 15px; color: #155724;">Monthly Income Analysis</h3>
+                    <div class="breakdown-item">
+                        <span>Monthly Withdrawal:</span>
+                        <span id="incomeMonthly">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Annual Withdrawal:</span>
+                        <span id="incomeAnnual">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Withdrawal Rate:</span>
+                        <span id="incomeRate">0%</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Safe Withdrawal Rate:</span>
+                        <span>4-6% annually</span>
+                    </div>
+                </div>
+
+                <div class="yearly-breakdown">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Year-wise Corpus Status</h3>
+                    <div class="yearly-table-container">
+                        <table class="yearly-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Withdrawals</th>
+                                    <th>Returns</th>
+                                    <th>Corpus Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yearlyTableBody">
+                                <!-- Yearly data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWithdrawalType = 'monthly';
+
+        function selectWithdrawalType(type) {
+            currentWithdrawalType = type;
+            
+            // Update active state
+            document.querySelectorAll('.withdrawal-type').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Show/hide relevant inputs
+            if (type === 'monthly') {
+                document.getElementById('monthlyWithdrawalInput').style.display = 'block';
+                document.getElementById('percentageWithdrawalInput').style.display = 'none';
+            } else {
+                document.getElementById('monthlyWithdrawalInput').style.display = 'none';
+                document.getElementById('percentageWithdrawalInput').style.display = 'block';
+            }
+            
+            calculateSWP();
+        }
+
+        function calculateSWP() {
+            // Get input values
+            const investmentAmount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const withdrawalPeriod = parseFloat(document.getElementById('withdrawalPeriod').value) || 0;
+            const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) || 0;
+            const inflationRate = parseFloat(document.getElementById('inflationRate').value) || 0;
+
+            let monthlyWithdrawal;
+
+            // Calculate monthly withdrawal based on type
+            if (currentWithdrawalType === 'monthly') {
+                monthlyWithdrawal = parseFloat(document.getElementById('monthlyWithdrawal').value) || 0;
+            } else {
+                const withdrawalPercentage = parseFloat(document.getElementById('withdrawalPercentage').value) || 0;
+                monthlyWithdrawal = (investmentAmount * withdrawalPercentage) / 100;
+            }
+
+            // Validate inputs
+            if (investmentAmount < 100000) {
+                alert('Minimum investment for SWP is typically ₹1,00,000');
+                return;
+            }
+
+            if (monthlyWithdrawal <= 0) {
+                alert('Monthly withdrawal amount must be greater than 0');
+                return;
+            }
+
+            if (withdrawalPeriod < 1) {
+                alert('Withdrawal period should be at least 1 year');
+                return;
+            }
+
+            // Calculate SWP
+            let corpus = investmentAmount;
+            const monthlyRate = expectedReturn / 1200; // Monthly return rate
+            const monthlyInflation = inflationRate / 1200;
+            let totalWithdrawn = 0;
+            let yearlyData = [];
+            let corpusDepleted = false;
+
+            for (let year = 1; year <= withdrawalPeriod; year++) {
+                let yearlyWithdrawal = 0;
+                let yearlyReturns = 0;
+
+                for (let month = 1; month <= 12; month++) {
+                    if (corpus <= 0) {
+                        corpusDepleted = true;
+                        break;
+                    }
+
+                    // Add monthly returns
+                    const monthlyReturn = corpus * monthlyRate;
+                    yearlyReturns += monthlyReturn;
+                    corpus += monthlyReturn;
+
+                    // Withdraw monthly amount (adjusted for inflation)
+                    const currentMonthlyWithdrawal = monthlyWithdrawal * Math.pow(1 + monthlyInflation, (year - 1) * 12 + month - 1);
+                    
+                    if (corpus >= currentMonthlyWithdrawal) {
+                        corpus -= currentMonthlyWithdrawal;
+                        yearlyWithdrawal += currentMonthlyWithdrawal;
+                        totalWithdrawn += currentMonthlyWithdrawal;
+                    } else {
+                        yearlyWithdrawal += corpus;
+                        totalWithdrawn += corpus;
+                        corpus = 0;
+                        corpusDepleted = true;
+                    }
+                }
+
+                yearlyData.push({
+                    year: year,
+                    withdrawals: yearlyWithdrawal,
+                    returns: yearlyReturns,
+                    balance: corpus
+                });
+
+                if (corpusDepleted) break;
+            }
+
+            const finalCorpus = Math.max(0, corpus);
+            const swpSuccess = corpusDepleted ? 
+                (yearlyData.length / withdrawalPeriod) * 100 : 
+                100;
+
+            // Calculate withdrawal rate
+            const annualWithdrawal = monthlyWithdrawal * 12;
+            const withdrawalRate = (annualWithdrawal / investmentAmount) * 100;
+
+            // Display results
+            displayResults(investmentAmount, totalWithdrawn, finalCorpus, swpSuccess, 
+                         monthlyWithdrawal, withdrawalPeriod, expectedReturn, withdrawalRate, annualWithdrawal);
+            
+            // Generate yearly breakdown
+            generateYearlyBreakdown(yearlyData);
+            
+            // Show warning if corpus depleted
+            document.getElementById('warningMessage').style.display = corpusDepleted ? 'block' : 'none';
+        }
+
+        function displayResults(investment, withdrawn, finalCorpus, success, monthly, period, expectedReturn, withdrawalRate, annualWithdrawal) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+
+            document.getElementById('monthlyIncome').textContent = formatINR(monthly);
+            document.getElementById('totalInvestment').textContent = formatINR(investment);
+            document.getElementById('totalWithdrawals').textContent = formatINR(withdrawn);
+            document.getElementById('finalCorpus').textContent = formatINR(finalCorpus);
+            document.getElementById('swpSuccess').textContent = success.toFixed(1) + '%';
+            document.getElementById('periodDisplay').textContent = period;
+
+            // Update balance tracker
+            const maxAmount = Math.max(investment, withdrawn + finalCorpus);
+            document.getElementById('initialBar').style.width = '100%';
+            document.getElementById('withdrawnBar').style.width = (withdrawn / maxAmount) * 100 + '%';
+            document.getElementById('remainingBar').style.width = (finalCorpus / maxAmount) * 100 + '%';
+            
+            document.getElementById('initialAmount').textContent = formatINR(investment);
+            document.getElementById('withdrawnAmount').textContent = formatINR(withdrawn);
+            document.getElementById('remainingAmount').textContent = formatINR(finalCorpus);
+
+            // Detailed breakdown
+            document.getElementById('breakdownInitial').textContent = formatINR(investment);
+            document.getElementById('breakdownMonthly').textContent = formatINR(monthly);
+            document.getElementById('breakdownPeriod').textContent = period + ' years';
+            document.getElementById('breakdownReturn').textContent = expectedReturn + '%';
+            document.getElementById('breakdownWithdrawals').textContent = formatINR(withdrawn);
+            document.getElementById('breakdownFinal').textContent = formatINR(finalCorpus);
+
+            // Monthly income analysis
+            document.getElementById('incomeMonthly').textContent = formatINR(monthly);
+            document.getElementById('incomeAnnual').textContent = formatINR(annualWithdrawal);
+            document.getElementById('incomeRate').textContent = withdrawalRate.toFixed(1) + '%';
+        }
+
+        function generateYearlyBreakdown(yearlyData) {
+            const tableBody = document.getElementById('yearlyTableBody');
+            tableBody.innerHTML = '';
+
+            yearlyData.forEach(data => {
+                const row = document.createElement('tr');
+                
+                // Color code based on balance status
+                if (data.balance <= 0) {
+                    row.style.background = '#ffe6e6';
+                } else if (data.balance < yearlyData[0].balance * 0.3) {
+                    row.style.background = '#fff3cd';
+                }
+                
+                row.innerHTML = `
+                    <td>Year ${data.year}</td>
+                    <td>₹${Math.round(data.withdrawals).toLocaleString('en-IN')}</td>
+                    <td style="color: #27ae60;">₹${Math.round(data.returns).toLocaleString('en-IN')}</td>
+                    <td>₹${Math.round(data.balance).toLocaleString('en-IN')}</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function resetCalculator() {
+            document.getElementById('investmentAmount').value = '5000000';
+            document.getElementById('monthlyWithdrawal').value = '25000';
+            document.getElementById('withdrawalPercentage').value = '0.5';
+            document.getElementById('withdrawalPeriod').value = '20';
+            document.getElementById('expectedReturn').value = '10';
+            document.getElementById('inflationRate').value = '6';
+            
+            // Reset withdrawal type
+            currentWithdrawalType = 'monthly';
+            document.querySelectorAll('.withdrawal-type').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.withdrawal-type')[0].classList.add('active');
+            document.getElementById('monthlyWithdrawalInput').style.display = 'block';
+            document.getElementById('percentageWithdrawalInput').style.display = 'none';
+            
+            calculateSWP();
+        }
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateSWP();
+        };
+
+        // Auto-calculate when inputs change
+        document.getElementById('investmentAmount').addEventListener('input', calculateSWP);
+        document.getElementById('monthlyWithdrawal').addEventListener('input', calculateSWP);
+        document.getElementById('withdrawalPercentage').addEventListener('input', calculateSWP);
+        document.getElementById('withdrawalPeriod').addEventListener('input', calculateSWP);
+        document.getElementById('expectedReturn').addEventListener('input', calculateSWP);
+        document.getElementById('inflationRate').addEventListener('input', calculateSWP);
+    </script>
+</body>
+</html>

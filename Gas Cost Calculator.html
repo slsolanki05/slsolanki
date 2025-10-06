@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gas Cost Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .units {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .unit-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .unit-option input {
+            width: auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+            border-left: 5px solid #3498db;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .cost-breakdown {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+        }
+
+        .cost-breakdown h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e1e8ed;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .savings-tip {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .savings-tip h4 {
+            color: #27ae60;
+            margin-bottom: 8px;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .calculator {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gas Cost Calculator</h1>
+            <p class="subtitle">Calculate your trip fuel costs and save money</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="units">
+                <div class="unit-option">
+                    <input type="radio" id="metric" name="unit" value="metric" checked>
+                    <label for="metric">Metric (km, L)</label>
+                </div>
+                <div class="unit-option">
+                    <input type="radio" id="imperial" name="unit" value="imperial">
+                    <label for="imperial">Imperial (miles, gal)</label>
+                </div>
+            </div>
+            
+            <form id="gasCalculator">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="tripDistance">Trip Distance</label>
+                        <input type="number" id="tripDistance" min="1" step="0.1" required>
+                        <span class="unit-label" id="distance-unit">kilometers</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="fuelEfficiency">Fuel Efficiency</label>
+                        <input type="number" id="fuelEfficiency" min="1" step="0.1" required>
+                        <span class="unit-label" id="efficiency-unit">L/100km</span>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="fuelPrice">Fuel Price</label>
+                        <input type="number" id="fuelPrice" min="0.1" step="0.01" required>
+                        <span class="unit-label" id="price-unit">per liter</span>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="persons">Number of People</label>
+                        <input type="number" id="persons" min="1" value="1">
+                        <span class="unit-label">sharing cost</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="calculate-btn">Calculate Gas Cost</button>
+            </form>
+            
+            <div id="result" class="result">
+                <h2>Trip Cost Breakdown</h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-value" id="totalCost">-</div>
+                        <div class="result-label">Total Fuel Cost</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="fuelNeeded">-</div>
+                        <div class="result-label">Fuel Needed</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="costPerPerson">-</div>
+                        <div class="result-label">Cost Per Person</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-value" id="costPerDistance">-</div>
+                        <div class="result-label">Cost Per 100 km/mi</div>
+                    </div>
+                </div>
+                
+                <div class="cost-breakdown">
+                    <h3>Cost Breakdown</h3>
+                    <div class="breakdown-item">
+                        <span>Distance:</span>
+                        <span id="breakdown-distance">-</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Fuel Efficiency:</span>
+                        <span id="breakdown-efficiency">-</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Fuel Price:</span>
+                        <span id="breakdown-price">-</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Fuel Required:</span>
+                        <span id="breakdown-fuel">-</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Total Cost:</span>
+                        <span id="breakdown-total">-</span>
+                    </div>
+                </div>
+                
+                <div class="savings-tip">
+                    <h4>💡 Money Saving Tip</h4>
+                    <p id="savingsTip">Maintain proper tire pressure to improve fuel efficiency by up to 3%.</p>
+                </div>
+            </div>
+            
+            <div class="history">
+                <h3>Recent Calculations</h3>
+                <div id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const unitRadios = document.querySelectorAll('input[name="unit"]');
+        const gasForm = document.getElementById('gasCalculator');
+        const resultDiv = document.getElementById('result');
+        
+        // Update units when selection changes
+        unitRadios.forEach(radio => {
+            radio.addEventListener('change', updateUnits);
+        });
+        
+        function updateUnits() {
+            const isMetric = document.getElementById('metric').checked;
+            
+            // Update labels
+            document.getElementById('distance-unit').textContent = isMetric ? 'kilometers' : 'miles';
+            document.getElementById('efficiency-unit').textContent = isMetric ? 'L/100km' : 'MPG';
+            document.getElementById('price-unit').textContent = isMetric ? 'per liter' : 'per gallon';
+        }
+        
+        // Form submission
+        gasForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const isMetric = document.getElementById('metric').checked;
+            const distance = parseFloat(document.getElementById('tripDistance').value);
+            const efficiency = parseFloat(document.getElementById('fuelEfficiency').value);
+            const fuelPrice = parseFloat(document.getElementById('fuelPrice').value);
+            const persons = parseInt(document.getElementById('persons').value) || 1;
+            
+            // Calculate fuel needed
+            let fuelNeeded;
+            if (isMetric) {
+                // For metric: fuel needed = (distance / 100) * efficiency
+                fuelNeeded = (distance / 100) * efficiency;
+            } else {
+                // For imperial: fuel needed = distance / efficiency
+                fuelNeeded = distance / efficiency;
+            }
+            
+            // Calculate costs
+            const totalCost = fuelNeeded * fuelPrice;
+            const costPerPerson = totalCost / persons;
+            const costPerDistance = (totalCost / distance) * (isMetric ? 100 : 1);
+            
+            // Display results
+            document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+            document.getElementById('fuelNeeded').textContent = fuelNeeded.toFixed(2) + (isMetric ? ' L' : ' gal');
+            document.getElementById('costPerPerson').textContent = formatCurrency(costPerPerson);
+            document.getElementById('costPerDistance').textContent = formatCurrency(costPerDistance) + (isMetric ? '/100km' : '/100mi');
+            
+            // Update breakdown
+            document.getElementById('breakdown-distance').textContent = 
+                distance.toFixed(1) + (isMetric ? ' km' : ' mi');
+            document.getElementById('breakdown-efficiency').textContent = 
+                efficiency.toFixed(1) + (isMetric ? ' L/100km' : ' MPG');
+            document.getElementById('breakdown-price').textContent = 
+                formatCurrency(fuelPrice) + (isMetric ? '/L' : '/gal');
+            document.getElementById('breakdown-fuel').textContent = 
+                fuelNeeded.toFixed(2) + (isMetric ? ' liters' : ' gallons');
+            document.getElementById('breakdown-total').textContent = formatCurrency(totalCost);
+            
+            // Generate savings tip
+            document.getElementById('savingsTip').textContent = generateSavingsTip(efficiency, isMetric);
+            
+            // Show results
+            resultDiv.style.display = 'block';
+            
+            // Add to history
+            addToHistory(distance, efficiency, fuelPrice, totalCost, isMetric);
+        });
+        
+        // Utility functions
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2);
+        }
+        
+        function generateSavingsTip(efficiency, isMetric) {
+            const tips = [
+                "Maintain proper tire pressure to improve fuel efficiency by up to 3%.",
+                "Reduce your speed by 5-10 mph to improve fuel economy by 7-14%.",
+                "Avoid aggressive driving (rapid acceleration and braking) to save up to 30% on gas.",
+                "Remove excess weight from your vehicle to improve fuel efficiency.",
+                "Use cruise control on highways to maintain a constant speed and save fuel.",
+                "Combine errands into one trip to avoid multiple cold starts.",
+                "Keep your engine properly tuned to improve gas mileage by an average of 4%.",
+                "Replace dirty air filters to improve gas mileage and acceleration."
+            ];
+            
+            // Select a random tip
+            return tips[Math.floor(Math.random() * tips.length)];
+        }
+        
+        function addToHistory(distance, efficiency, fuelPrice, totalCost, isMetric) {
+            const historyList = document.getElementById('historyList');
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${distance.toFixed(1)} ${isMetric ? 'km' : 'mi'}</strong>
+                    <div class="history-details">${efficiency.toFixed(1)} ${isMetric ? 'L/100km' : 'MPG'}</div>
+                </div>
+                <div class="history-cost">${formatCurrency(totalCost)}</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+        
+        // Initialize units on page load
+        updateUnits();
+        
+        // Add some sample history items
+        window.addEventListener('load', function() {
+            const historyList = document.getElementById('historyList');
+            const sampleItems = [
+                { distance: 350, efficiency: 8.5, cost: 42.50, isMetric: true },
+                { distance: 120, efficiency: 9.2, cost: 16.80, isMetric: true },
+                { distance: 75, efficiency: 7.8, cost: 8.45, isMetric: true }
+            ];
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${item.distance} km</strong>
+                        <div class="history-details">${item.efficiency} L/100km</div>
+                    </div>
+                    <div class="history-cost">${formatCurrency(item.cost)}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Female Body Figure Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+        }
+        
+        .calculator-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .measurement-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .unit-selector {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .unit-selector label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: normal;
+        }
+        
+        .calculate-btn {
+            grid-column: span 2;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .figure-type {
+            font-size: 24px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+        
+        .figure-description {
+            margin-bottom: 15px;
+        }
+        
+        .measurement-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .measurement-value {
+            font-weight: bold;
+        }
+        
+        .styling-tips {
+            margin-top: 20px;
+        }
+        
+        .styling-tips h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        
+        .styling-tips ul {
+            padding-left: 20px;
+        }
+        
+        .styling-tips li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 600px) {
+            .calculator-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .calculate-btn {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Female Body Figure Calculator</h1>
+        <p class="description">Enter your measurements to discover your body shape and get personalized styling tips.</p>
+        
+        <div class="unit-selector">
+            <label><input type="radio" name="unit" value="cm" checked> Centimeters (cm)</label>
+            <label><input type="radio" name="unit" value="inch"> Inches</label>
+        </div>
+        
+        <form id="figureCalculator" class="calculator-form">
+            <div class="measurement-group">
+                <label for="bust">Bust</label>
+                <input type="number" id="bust" min="1" step="0.1" required>
+            </div>
+            
+            <div class="measurement-group">
+                <label for="waist">Waist</label>
+                <input type="number" id="waist" min="1" step="0.1" required>
+            </div>
+            
+            <div class="measurement-group">
+                <label for="hips">Hips</label>
+                <input type="number" id="hips" min="1" step="0.1" required>
+            </div>
+            
+            <div class="measurement-group">
+                <label for="highHip">High Hip (optional)</label>
+                <input type="number" id="highHip" min="1" step="0.1">
+                <small>Measure around the fullest part of your hips, about 3-4 inches below your waist</small>
+            </div>
+            
+            <button type="submit" class="calculate-btn">Calculate My Body Shape</button>
+        </form>
+        
+        <div id="result" class="result">
+            <h2>Your Body Shape</h2>
+            <div id="figureType" class="figure-type"></div>
+            <div id="figureDescription" class="figure-description"></div>
+            
+            <div class="measurement-display">
+                <div>Bust: <span id="displayBust" class="measurement-value"></span></div>
+                <div>Waist: <span id="displayWaist" class="measurement-value"></span></div>
+                <div>Hips: <span id="displayHips" class="measurement-value"></span></div>
+                <div>Waist-to-Hip Ratio: <span id="whRatio" class="measurement-value"></span></div>
+            </div>
+            
+            <div class="styling-tips">
+                <h3>Styling Tips</h3>
+                <ul id="stylingTipsList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('figureCalculator').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get unit type
+            const unit = document.querySelector('input[name="unit"]:checked').value;
+            
+            // Get measurements
+            const bust = parseFloat(document.getElementById('bust').value);
+            const waist = parseFloat(document.getElementById('waist').value);
+            const hips = parseFloat(document.getElementById('hips').value);
+            const highHip = document.getElementById('highHip').value ? parseFloat(document.getElementById('highHip').value) : null;
+            
+            // Calculate body shape
+            const result = calculateBodyShape(bust, waist, hips, highHip);
+            
+            // Display results
+            document.getElementById('displayBust').textContent = bust + unit;
+            document.getElementById('displayWaist').textContent = waist + unit;
+            document.getElementById('displayHips').textContent = hips + unit;
+            document.getElementById('whRatio').textContent = (waist/hips).toFixed(2);
+            
+            document.getElementById('figureType').textContent = result.shape;
+            document.getElementById('figureDescription').textContent = result.description;
+            
+            const tipsList = document.getElementById('stylingTipsList');
+            tipsList.innerHTML = '';
+            result.tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                tipsList.appendChild(li);
+            });
+            
+            document.getElementById('result').style.display = 'block';
+        });
+        
+        function calculateBodyShape(bust, waist, hips, highHip) {
+            // Calculate ratios
+            const bustWaistRatio = bust / waist;
+            const waistHipRatio = waist / hips;
+            const bustHipRatio = bust / hips;
+            
+            // Determine body shape
+            let shape, description;
+            const tips = [];
+            
+            if (waistHipRatio < 0.75) {
+                if (bustHipRatio < 0.95) {
+                    shape = "Pear Shape";
+                    description = "Your hips are wider than your bust, with a well-defined waist.";
+                    tips.push("Emphasize your upper body with detailed necklines and sleeves");
+                    tips.push("Wear A-line skirts and dresses to balance your proportions");
+                    tips.push("Choose darker colors for bottom half and brighter colors on top");
+                    tips.push("Try tops that end at or above your hip bone");
+                } else if (bustHipRatio > 1.05) {
+                    shape = "Inverted Triangle";
+                    description = "Your bust and shoulders are wider than your hips.";
+                    tips.push("Draw attention downward with flared or wide-leg pants");
+                    tips.push("Choose V-neck tops to elongate your torso");
+                    tips.push("Wear darker colors on top and lighter colors on bottom");
+                    tips.push("Avoid shoulder pads and wide necklines");
+                } else {
+                    shape = "Hourglass";
+                    description = "Your bust and hips are well-balanced with a defined waist.";
+                    tips.push("Highlight your waist with belts and fitted clothing");
+                    tips.push("Choose wrap dresses and tailored pieces");
+                    tips.push("Avoid shapeless or boxy silhouettes");
+                    tips.push("V-neck and sweetheart necklines work well");
+                }
+            } else {
+                if (bustWaistRatio < 1.1 && waistHipRatio < 1.1) {
+                    shape = "Rectangle";
+                    description = "Your bust, waist, and hips are similar in measurement.";
+                    tips.push("Create curves with peplum tops and belted dresses");
+                    tips.push("Try different necklines to add dimension");
+                    tips.push("Use color blocking to create the illusion of curves");
+                    tips.push("Wrap dresses and fit-and-flare styles work well");
+                } else {
+                    shape = "Apple Shape";
+                    description = "Your waist is less defined with weight carried in the midsection.";
+                    tips.push("Choose empire waist dresses and tops");
+                    tips.push("Wear V-neck tops to elongate your torso");
+                    tips.push("Look for A-line skirts and dresses");
+                    tips.push("Avoid tight clothing around the midsection");
+                }
+            }
+            
+            // Consider high hip measurement for more accuracy
+            if (highHip && highHip > hips * 0.9) {
+                if (shape === "Pear Shape") {
+                    shape = "Spoon Shape";
+                    description = "Similar to pear shape but with a more pronounced curve at the high hip.";
+                    tips.push("Focus on balancing your upper and lower body");
+                    tips.push("Wear structured jackets that end at the hip bone");
+                    tips.push("Choose dresses with defined waistlines");
+                }
+            }
+            
+            return {
+                shape: shape,
+                description: description,
+                tips: tips
+            };
+        }
+    </script>
+</body>
+</html>

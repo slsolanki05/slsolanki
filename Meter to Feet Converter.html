@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meter to Feet Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2d3436;
+            font-size: 1.1em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #74b9ff;
+            box-shadow: 0 0 0 3px rgba(116, 185, 255, 0.1);
+        }
+
+        .unit-toggle {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: #74b9ff;
+            color: white;
+        }
+
+        .results {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .result-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .result-unit {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .conversion-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .conversion-details h3 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .convert-btn {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+        }
+
+        .swap-btn {
+            background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .formula {
+            background: #2d3436;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 480px) {
+            .actions {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .result-value {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Meter to Feet Converter</h1>
+            <p>Quick and accurate length conversions</p>
+        </div>
+
+        <div class="calculator">
+            <div class="unit-toggle">
+                <button class="toggle-btn active" id="meterToFeetBtn">Meter → Feet</button>
+                <button class="toggle-btn" id="feetToMeterBtn">Feet → Meter</button>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label id="inputLabel">Enter Meters:</label>
+                    <input type="number" id="inputValue" placeholder="Enter length..." step="0.01" min="0">
+                </div>
+            </div>
+
+            <div class="results">
+                <div class="result-label" id="resultLabel">Conversion Result:</div>
+                <div class="result-value" id="resultValue">0.00</div>
+                <div class="result-unit" id="resultUnit">feet</div>
+            </div>
+
+            <div class="conversion-details">
+                <h3>Conversion Details</h3>
+                <div class="detail-item">
+                    <span>Conversion Factor:</span>
+                    <span>1 meter = 3.28084 feet</span>
+                </div>
+                <div class="detail-item">
+                    <span>Precision:</span>
+                    <span>6 decimal places</span>
+                </div>
+                <div class="detail-item">
+                    <span>Formula:</span>
+                    <span>feet = meters × 3.28084</span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="convert-btn" onclick="convert()">Convert</button>
+                <button class="swap-btn" onclick="swapUnits()">Swap Units</button>
+                <button class="reset-btn" onclick="resetConverter()">Reset</button>
+            </div>
+
+            <div class="formula">
+                1 Meter = 3.28084 Feet | 1 Foot = 0.3048 Meters
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isMeterToFeet = true;
+        const conversionFactor = 3.28084;
+
+        function convert() {
+            const input = document.getElementById('inputValue');
+            const resultValue = document.getElementById('resultValue');
+            const resultUnit = document.getElementById('resultUnit');
+            
+            const inputVal = parseFloat(input.value);
+            
+            if (isNaN(inputVal)) {
+                resultValue.textContent = '0.00';
+                return;
+            }
+
+            let result;
+            if (isMeterToFeet) {
+                result = inputVal * conversionFactor;
+                resultUnit.textContent = 'feet';
+            } else {
+                result = inputVal / conversionFactor;
+                resultUnit.textContent = 'meters';
+            }
+
+            resultValue.textContent = result.toFixed(6);
+        }
+
+        function swapUnits() {
+            isMeterToFeet = !isMeterToFeet;
+            
+            const meterToFeetBtn = document.getElementById('meterToFeetBtn');
+            const feetToMeterBtn = document.getElementById('feetToMeterBtn');
+            const inputLabel = document.getElementById('inputLabel');
+            const resultLabel = document.getElementById('resultLabel');
+            const input = document.getElementById('inputValue');
+            
+            if (isMeterToFeet) {
+                meterToFeetBtn.classList.add('active');
+                feetToMeterBtn.classList.remove('active');
+                inputLabel.textContent = 'Enter Meters:';
+                resultLabel.textContent = 'Conversion Result:';
+            } else {
+                meterToFeetBtn.classList.remove('active');
+                feetToMeterBtn.classList.add('active');
+                inputLabel.textContent = 'Enter Feet:';
+                resultLabel.textContent = 'Conversion Result:';
+            }
+            
+            // Convert current value if input exists
+            if (input.value) {
+                convert();
+            }
+        }
+
+        function resetConverter() {
+            document.getElementById('inputValue').value = '';
+            document.getElementById('resultValue').textContent = '0.00';
+            document.getElementById('resultUnit').textContent = 'feet';
+            
+            // Reset to meter to feet
+            if (!isMeterToFeet) {
+                swapUnits();
+            }
+        }
+
+        // Real-time conversion
+        document.getElementById('inputValue').addEventListener('input', convert);
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                convert();
+            }
+            if (e.key === 's' || e.key === 'S') {
+                swapUnits();
+            }
+            if (e.key === 'Escape') {
+                resetConverter();
+            }
+        });
+    </script>
+</body>
+</html>

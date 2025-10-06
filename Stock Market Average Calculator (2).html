@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Market Average Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #0d47a1;
+            --secondary: #34a853;
+            --danger: #ea4335;
+            --warning: #f9ab00;
+            --light: #f8f9fa;
+            --dark: #202124;
+            --gray: #5f6368;
+            --border: #dadce0;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-add {
+            background: var(--secondary);
+        }
+        
+        .btn-add:hover {
+            background: #2d8c47;
+        }
+        
+        .btn-reset {
+            background: var(--danger);
+        }
+        
+        .btn-reset:hover {
+            background: #d33426;
+        }
+        
+        .btn-calculate {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .transactions {
+            margin-top: 25px;
+        }
+        
+        .transactions h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--light);
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s;
+        }
+        
+        .transaction-item:hover {
+            background: #e8f0fe;
+            transform: translateX(5px);
+        }
+        
+        .transaction-details {
+            flex: 1;
+        }
+        
+        .transaction-symbol {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .transaction-meta {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        .transaction-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .transaction-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .transaction-actions button:hover {
+            color: var(--danger);
+        }
+        
+        .result-card {
+            background: var(--light);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .profit {
+            color: var(--secondary);
+        }
+        
+        .loss {
+            color: var(--danger);
+        }
+        
+        .chart-container {
+            margin-top: 30px;
+            height: 280px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .instructions {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+        }
+        
+        .instructions h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .step {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .step-content p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>Stock Market Average Calculator</h1>
+                <p class="subtitle">Calculate your average stock price and track your investment performance with ease</p>
+            </div>
+        </header>
+        
+        <div class="instructions">
+            <h2><i class="fas fa-info-circle"></i> How to Use This Calculator</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Enter Stock Details</h3>
+                        <p>Input the stock symbol and your first purchase details (quantity and price).</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Add Transactions</h3>
+                        <p>Click "Add Transaction" to record additional purchases of the same stock.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Calculate Average</h3>
+                        <p>Click "Calculate Average" to see your average price and investment performance.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Track Performance</h3>
+                        <p>Enter the current market price to see your profit/loss and return percentage.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="app-container">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-calculator"></i> Input Transactions</h2>
+                
+                <div class="form-group">
+                    <label for="stockSymbol">Stock Symbol</label>
+                    <input type="text" id="stockSymbol" placeholder="e.g., AAPL, TSLA, MSFT">
+                </div>
+                
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" placeholder="Number of shares">
+                </div>
+                
+                <div class="form-group">
+                    <label for="price">Price per Share ($)</label>
+                    <input type="number" id="price" step="0.01" placeholder="Price per share">
+                </div>
+                
+                <button class="btn btn-add" id="addTransaction">
+                    <i class="fas fa-plus-circle"></i> Add Transaction
+                </button>
+                <button class="btn btn-calculate" id="calculate">
+                    <i class="fas fa-chart-line"></i> Calculate Average
+                </button>
+                <button class="btn btn-reset" id="reset">
+                    <i class="fas fa-redo"></i> Reset All
+                </button>
+                
+                <div class="transactions">
+                    <h3><i class="fas fa-list"></i> Your Transactions</h3>
+                    <div id="transactions">
+                        <div class="empty-state">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                            <p>No transactions added yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-chart-bar"></i> Results</h2>
+                
+                <div class="result-card">
+                    <div class="result-title"><i class="fas fa-chart-pie"></i> Average Price & Investment Summary</div>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">Stock Symbol</span>
+                            <span class="result-value" id="resultSymbol">-</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Total Shares</span>
+                            <span class="result-value" id="totalShares">0</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Total Investment</span>
+                            <span class="result-value" id="totalInvestment">$0.00</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Average Price</span>
+                            <span class="result-value" id="averagePrice">$0.00</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Current Price</span>
+                            <span class="result-value" id="currentPrice">$0.00</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Current Value</span>
+                            <span class="result-value" id="currentValue">$0.00</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Profit/Loss</span>
+                            <span class="result-value" id="profitLoss">$0.00</span>
+                        </div>
+                        
+                        <div class="result-item">
+                            <span class="result-label">Return %</span>
+                            <span class="result-value" id="returnPercent">0.00%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="currentMarketPrice">Enter Current Market Price ($)</label>
+                    <input type="number" id="currentMarketPrice" step="0.01" placeholder="Current market price">
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <div class="footer-content">
+                <p>Stock Market Average Calculator &copy; 2023</p>
+                <p>For educational and informational purposes only</p>
+                <div class="footer-links">
+                    <a href="#"><i class="fas fa-shield-alt"></i> Privacy Policy</a>
+                    <a href="#"><i class="fas fa-file-contract"></i> Terms of Service</a>
+                    <a href="#"><i class="fas fa-envelope"></i> Contact Us</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize transactions array
+        let transactions = [];
+        
+        // DOM elements
+        const stockSymbolInput = document.getElementById('stockSymbol');
+        const quantityInput = document.getElementById('quantity');
+        const priceInput = document.getElementById('price');
+        const addTransactionBtn = document.getElementById('addTransaction');
+        const calculateBtn = document.getElementById('calculate');
+        const resetBtn = document.getElementById('reset');
+        const transactionsContainer = document.getElementById('transactions');
+        const currentMarketPriceInput = document.getElementById('currentMarketPrice');
+        
+        // Result elements
+        const resultSymbol = document.getElementById('resultSymbol');
+        const totalShares = document.getElementById('totalShares');
+        const totalInvestment = document.getElementById('totalInvestment');
+        const averagePrice = document.getElementById('averagePrice');
+        const currentPrice = document.getElementById('currentPrice');
+        const currentValue = document.getElementById('currentValue');
+        const profitLoss = document.getElementById('profitLoss');
+        const returnPercent = document.getElementById('returnPercent');
+        
+        // Chart initialization
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        let performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Investment', 'Current Value'],
+                datasets: [{
+                    label: 'Amount ($)',
+                    data: [0, 0],
+                    backgroundColor: [
+                        'rgba(26, 115, 232, 0.7)',
+                        'rgba(52, 168, 83, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(26, 115, 232, 1)',
+                        'rgba(52, 168, 83, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Event listeners
+        addTransactionBtn.addEventListener('click', addTransaction);
+        calculateBtn.addEventListener('click', calculateAverage);
+        resetBtn.addEventListener('click', resetCalculator);
+        currentMarketPriceInput.addEventListener('input', updateResults);
+        
+        // Add transaction to the list
+        function addTransaction() {
+            const symbol = stockSymbolInput.value.trim().toUpperCase();
+            const quantity = parseInt(quantityInput.value);
+            const price = parseFloat(priceInput.value);
+            
+            if (!symbol || isNaN(quantity) || quantity <= 0 || isNaN(price) || price <= 0) {
+                alert('Please enter valid values for all fields.');
+                return;
+            }
+            
+            const transaction = {
+                symbol,
+                quantity,
+                price,
+                id: Date.now() // Unique ID for each transaction
+            };
+            
+            transactions.push(transaction);
+            renderTransactions();
+            clearInputs();
+        }
+        
+        // Render transactions list
+        function renderTransactions() {
+            transactionsContainer.innerHTML = '';
+            
+            if (transactions.length === 0) {
+                transactionsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <p>No transactions added yet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            transactions.forEach(transaction => {
+                const transactionElement = document.createElement('div');
+                transactionElement.className = 'transaction-item';
+                transactionElement.innerHTML = `
+                    <div class="transaction-details">
+                        <div class="transaction-symbol">${transaction.symbol}</div>
+                        <div class="transaction-meta">${transaction.quantity} shares @ $${transaction.price.toFixed(2)} each</div>
+                    </div>
+                    <div class="transaction-actions">
+                        <button onclick="removeTransaction(${transaction.id})" title="Remove transaction">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                transactionsContainer.appendChild(transactionElement);
+            });
+        }
+        
+        // Remove transaction
+        function removeTransaction(id) {
+            transactions = transactions.filter(transaction => transaction.id !== id);
+            renderTransactions();
+        }
+        
+        // Clear input fields
+        function clearInputs() {
+            quantityInput.value = '';
+            priceInput.value = '';
+        }
+        
+        // Calculate average price and update results
+        function calculateAverage() {
+            if (transactions.length === 0) {
+                alert('Please add at least one transaction.');
+                return;
+            }
+            
+            updateResults();
+        }
+        
+        // Update results based on current market price
+        function updateResults() {
+            if (transactions.length === 0) return;
+            
+            const currentMarketPrice = parseFloat(currentMarketPriceInput.value) || 0;
+            const symbol = transactions[0].symbol;
+            
+            let totalQuantity = 0;
+            let totalCost = 0;
+            
+            transactions.forEach(transaction => {
+                totalQuantity += transaction.quantity;
+                totalCost += transaction.quantity * transaction.price;
+            });
+            
+            const avgPrice = totalCost / totalQuantity;
+            const currentVal = totalQuantity * currentMarketPrice;
+            const profitLossValue = currentVal - totalCost;
+            const returnPercentage = (profitLossValue / totalCost) * 100;
+            
+            // Update result elements
+            resultSymbol.textContent = symbol;
+            totalShares.textContent = totalQuantity.toLocaleString();
+            totalInvestment.textContent = `$${totalCost.toFixed(2)}`;
+            averagePrice.textContent = `$${avgPrice.toFixed(2)}`;
+            currentPrice.textContent = `$${currentMarketPrice.toFixed(2)}`;
+            currentValue.textContent = `$${currentVal.toFixed(2)}`;
+            
+            // Style profit/loss based on value
+            profitLoss.textContent = `$${profitLossValue.toFixed(2)}`;
+            profitLoss.className = profitLossValue >= 0 ? 'result-value profit' : 'result-value loss';
+            
+            returnPercent.textContent = `${returnPercentage.toFixed(2)}%`;
+            returnPercent.className = returnPercentage >= 0 ? 'result-value profit' : 'result-value loss';
+            
+            // Update chart
+            performanceChart.data.datasets[0].data = [totalCost, currentVal];
+            performanceChart.update();
+        }
+        
+        // Reset calculator
+        function resetCalculator() {
+            transactions = [];
+            stockSymbolInput.value = '';
+            clearInputs();
+            currentMarketPriceInput.value = '';
+            renderTransactions();
+            
+            // Reset result elements
+            resultSymbol.textContent = '-';
+            totalShares.textContent = '0';
+            totalInvestment.textContent = '$0.00';
+            averagePrice.textContent = '$0.00';
+            currentPrice.textContent = '$0.00';
+            currentValue.textContent = '$0.00';
+            profitLoss.textContent = '$0.00';
+            profitLoss.className = 'result-value';
+            returnPercent.textContent = '0.00%';
+            returnPercent.className = 'result-value';
+            
+            // Reset chart
+            performanceChart.data.datasets[0].data = [0, 0];
+            performanceChart.update();
+        }
+        
+        // Initialize the page
+        renderTransactions();
+        
+        // Add some sample transactions for demonstration
+        window.onload = function() {
+            // Uncomment the lines below to add sample data for demonstration
+            /*
+            transactions = [
+                { symbol: 'AAPL', quantity: 10, price: 150.25, id: 1 },
+                { symbol: 'AAPL', quantity: 5, price: 155.75, id: 2 },
+                { symbol: 'AAPL', quantity: 8, price: 148.50, id: 3 }
+            ];
+            renderTransactions();
+            currentMarketPriceInput.value = '160.25';
+            updateResults();
+            */
+        };
+    </script>
+</body>
+</html>

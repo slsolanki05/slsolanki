@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FT² Calculator - Square Footage Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f9c74f;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .calculator-form {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .calculator-result {
+            background: var(--light);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .area-result {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .shape-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .shape-option {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .shape-option:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.05);
+        }
+        
+        .shape-option.active {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+        
+        .shape-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .shape-inputs {
+            display: none;
+        }
+        
+        .shape-inputs.active {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .unit-conversion {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .unit-conversion h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .conversion-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .conversion-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .conversion-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .conversion-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .area-result {
+                font-size: 2rem;
+                padding: 20px;
+            }
+            
+            .shape-selector {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-with-icon input {
+            padding-left: 45px;
+        }
+        
+        .select-with-icon {
+            position: relative;
+        }
+        
+        .select-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+        
+        .select-with-icon select {
+            padding-left: 45px;
+            appearance: none;
+        }
+        
+        .select-with-icon::after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+        
+        .dimension-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-ruler-combined"></i> FT² Calculator</h1>
+                <p class="subtitle">Calculate square footage for various shapes and convert between area units</p>
+            </div>
+        </header>
+        
+        <div class="calculator-content">
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label><i class="fas fa-shapes"></i> Select Shape</label>
+                    <div class="shape-selector">
+                        <div class="shape-option active" data-shape="rectangle">
+                            <div class="shape-icon"><i class="fas fa-square"></i></div>
+                            <span>Rectangle</span>
+                        </div>
+                        <div class="shape-option" data-shape="square">
+                            <div class="shape-icon"><i class="fas fa-square-full"></i></div>
+                            <span>Square</span>
+                        </div>
+                        <div class="shape-option" data-shape="triangle">
+                            <div class="shape-icon"><i class="fas fa-play"></i></div>
+                            <span>Triangle</span>
+                        </div>
+                        <div class="shape-option" data-shape="circle">
+                            <div class="shape-icon"><i class="fas fa-circle"></i></div>
+                            <span>Circle</span>
+                        </div>
+                        <div class="shape-option" data-shape="trapezoid">
+                            <div class="shape-icon"><i class="fas fa-shapes"></i></div>
+                            <span>Trapezoid</span>
+                        </div>
+                        <div class="shape-option" data-shape="ellipse">
+                            <div class="shape-icon"><i class="fas fa-egg"></i></div>
+                            <span>Ellipse</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Rectangle Inputs -->
+                <div class="shape-inputs active" id="rectangle-inputs">
+                    <div class="input-row">
+                        <div class="form-group">
+                            <label for="rectangle-length"><i class="fas fa-ruler-horizontal"></i> Length</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <input type="number" id="rectangle-length" step="0.01" placeholder="Enter length">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rectangle-width"><i class="fas fa-ruler-vertical"></i> Width</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                <input type="number" id="rectangle-width" step="0.01" placeholder="Enter width">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="rectangle-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="rectangle-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Square Inputs -->
+                <div class="shape-inputs" id="square-inputs">
+                    <div class="form-group">
+                        <label for="square-side"><i class="fas fa-ruler"></i> Side Length</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-square"></i>
+                            <input type="number" id="square-side" step="0.01" placeholder="Enter side length">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="square-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="square-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Triangle Inputs -->
+                <div class="shape-inputs" id="triangle-inputs">
+                    <div class="input-row">
+                        <div class="form-group">
+                            <label for="triangle-base"><i class="fas fa-ruler-horizontal"></i> Base</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <input type="number" id="triangle-base" step="0.01" placeholder="Enter base">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="triangle-height"><i class="fas fa-ruler-vertical"></i> Height</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                <input type="number" id="triangle-height" step="0.01" placeholder="Enter height">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="triangle-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="triangle-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Circle Inputs -->
+                <div class="shape-inputs" id="circle-inputs">
+                    <div class="form-group">
+                        <label for="circle-radius"><i class="fas fa-circle"></i> Radius</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-dot-circle"></i>
+                            <input type="number" id="circle-radius" step="0.01" placeholder="Enter radius">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="circle-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="circle-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Trapezoid Inputs -->
+                <div class="shape-inputs" id="trapezoid-inputs">
+                    <div class="input-row">
+                        <div class="form-group">
+                            <label for="trapezoid-base1"><i class="fas fa-ruler-horizontal"></i> Base 1</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <input type="number" id="trapezoid-base1" step="0.01" placeholder="Enter base 1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="trapezoid-base2"><i class="fas fa-ruler-horizontal"></i> Base 2</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <input type="number" id="trapezoid-base2" step="0.01" placeholder="Enter base 2">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trapezoid-height"><i class="fas fa-ruler-vertical"></i> Height</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-arrows-alt-v"></i>
+                            <input type="number" id="trapezoid-height" step="0.01" placeholder="Enter height">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="trapezoid-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="trapezoid-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ellipse Inputs -->
+                <div class="shape-inputs" id="ellipse-inputs">
+                    <div class="input-row">
+                        <div class="form-group">
+                            <label for="ellipse-major"><i class="fas fa-arrows-alt-h"></i> Major Axis</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-h"></i>
+                                <input type="number" id="ellipse-major" step="0.01" placeholder="Enter major axis">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="ellipse-minor"><i class="fas fa-arrows-alt-v"></i> Minor Axis</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-arrows-alt-v"></i>
+                                <input type="number" id="ellipse-minor" step="0.01" placeholder="Enter minor axis">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="ellipse-unit"><i class="fas fa-ruler"></i> Unit</label>
+                        <div class="select-with-icon">
+                            <i class="fas fa-weight-hanging"></i>
+                            <select id="ellipse-unit">
+                                <option value="ft">Feet (ft)</option>
+                                <option value="in">Inches (in)</option>
+                                <option value="yd">Yards (yd)</option>
+                                <option value="m">Meters (m)</option>
+                                <option value="cm">Centimeters (cm)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculateArea">
+                    <i class="fas fa-calculator"></i> Calculate Area
+                </button>
+                
+                <div class="unit-conversion">
+                    <h3><i class="fas fa-exchange-alt"></i> Unit Conversion Reference</h3>
+                    <div class="conversion-grid">
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Square Foot</span>
+                            <span class="conversion-value">144 Square Inches</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Square Foot</span>
+                            <span class="conversion-value">0.111 Square Yards</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Square Foot</span>
+                            <span class="conversion-value">0.093 Square Meters</span>
+                        </div>
+                        <div class="conversion-item">
+                            <span class="conversion-label">1 Square Meter</span>
+                            <span class="conversion-value">10.764 Square Feet</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-result">
+                <h2 class="result-title"><i class="fas fa-chart-area"></i> Area Calculation</h2>
+                
+                <div class="area-result" id="areaDisplay">
+                    0 ft²
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Shape</span>
+                        <span class="result-value" id="shapeResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Dimensions</span>
+                        <span class="result-value" id="dimensionsResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Formula Used</span>
+                        <span class="result-value" id="formulaResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Input Unit</span>
+                        <span class="result-value" id="unitResult">-</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <h3 style="margin-bottom: 10px; color: var(--dark);">Area Conversions</h3>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">Square Feet</span>
+                            <span class="result-value" id="sqftResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Square Inches</span>
+                            <span class="result-value" id="sqinResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Square Yards</span>
+                            <span class="result-value" id="sqydResult">0</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">Square Meters</span>
+                            <span class="result-value" id="sqmResult">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>FT² Calculator &copy; 2023 | For educational and practical purposes</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const shapeOptions = document.querySelectorAll('.shape-option');
+        const shapeInputs = document.querySelectorAll('.shape-inputs');
+        const calculateButton = document.getElementById('calculateArea');
+        
+        // Result Elements
+        const areaDisplay = document.getElementById('areaDisplay');
+        const shapeResult = document.getElementById('shapeResult');
+        const dimensionsResult = document.getElementById('dimensionsResult');
+        const formulaResult = document.getElementById('formulaResult');
+        const unitResult = document.getElementById('unitResult');
+        const sqftResult = document.getElementById('sqftResult');
+        const sqinResult = document.getElementById('sqinResult');
+        const sqydResult = document.getElementById('sqydResult');
+        const sqmResult = document.getElementById('sqmResult');
+        
+        // Current selected shape
+        let currentShape = 'rectangle';
+        
+        // Event Listeners
+        shapeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Remove active class from all options
+                shapeOptions.forEach(opt => opt.classList.remove('active'));
+                // Add active class to clicked option
+                option.classList.add('active');
+                
+                // Get the shape from data attribute
+                currentShape = option.getAttribute('data-shape');
+                
+                // Hide all shape inputs
+                shapeInputs.forEach(input => input.classList.remove('active'));
+                // Show the selected shape inputs
+                document.getElementById(`${currentShape}-inputs`).classList.add('active');
+            });
+        });
+        
+        calculateButton.addEventListener('click', calculateArea);
+        
+        // Calculate area based on selected shape and inputs
+        function calculateArea() {
+            let area = 0;
+            let dimensions = '';
+            let formula = '';
+            let unit = '';
+            
+            // Get values based on current shape
+            switch(currentShape) {
+                case 'rectangle':
+                    const length = parseFloat(document.getElementById('rectangle-length').value);
+                    const width = parseFloat(document.getElementById('rectangle-width').value);
+                    unit = document.getElementById('rectangle-unit').value;
+                    
+                    if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
+                        alert('Please enter valid positive numbers for length and width.');
+                        return;
+                    }
+                    
+                    area = length * width;
+                    dimensions = `${length} × ${width} ${unit}`;
+                    formula = 'Area = Length × Width';
+                    break;
+                    
+                case 'square':
+                    const side = parseFloat(document.getElementById('square-side').value);
+                    unit = document.getElementById('square-unit').value;
+                    
+                    if (isNaN(side) || side <= 0) {
+                        alert('Please enter a valid positive number for side length.');
+                        return;
+                    }
+                    
+                    area = side * side;
+                    dimensions = `${side} ${unit} sides`;
+                    formula = 'Area = Side × Side';
+                    break;
+                    
+                case 'triangle':
+                    const base = parseFloat(document.getElementById('triangle-base').value);
+                    const height = parseFloat(document.getElementById('triangle-height').value);
+                    unit = document.getElementById('triangle-unit').value;
+                    
+                    if (isNaN(base) || isNaN(height) || base <= 0 || height <= 0) {
+                        alert('Please enter valid positive numbers for base and height.');
+                        return;
+                    }
+                    
+                    area = 0.5 * base * height;
+                    dimensions = `Base: ${base} ${unit}, Height: ${height} ${unit}`;
+                    formula = 'Area = ½ × Base × Height';
+                    break;
+                    
+                case 'circle':
+                    const radius = parseFloat(document.getElementById('circle-radius').value);
+                    unit = document.getElementById('circle-unit').value;
+                    
+                    if (isNaN(radius) || radius <= 0) {
+                        alert('Please enter a valid positive number for radius.');
+                        return;
+                    }
+                    
+                    area = Math.PI * radius * radius;
+                    dimensions = `Radius: ${radius} ${unit}`;
+                    formula = 'Area = π × Radius²';
+                    break;
+                    
+                case 'trapezoid':
+                    const base1 = parseFloat(document.getElementById('trapezoid-base1').value);
+                    const base2 = parseFloat(document.getElementById('trapezoid-base2').value);
+                    const trapHeight = parseFloat(document.getElementById('trapezoid-height').value);
+                    unit = document.getElementById('trapezoid-unit').value;
+                    
+                    if (isNaN(base1) || isNaN(base2) || isNaN(trapHeight) || 
+                        base1 <= 0 || base2 <= 0 || trapHeight <= 0) {
+                        alert('Please enter valid positive numbers for both bases and height.');
+                        return;
+                    }
+                    
+                    area = 0.5 * (base1 + base2) * trapHeight;
+                    dimensions = `Bases: ${base1} & ${base2} ${unit}, Height: ${trapHeight} ${unit}`;
+                    formula = 'Area = ½ × (Base1 + Base2) × Height';
+                    break;
+                    
+                case 'ellipse':
+                    const major = parseFloat(document.getElementById('ellipse-major').value);
+                    const minor = parseFloat(document.getElementById('ellipse-minor').value);
+                    unit = document.getElementById('ellipse-unit').value;
+                    
+                    if (isNaN(major) || isNaN(minor) || major <= 0 || minor <= 0) {
+                        alert('Please enter valid positive numbers for both axes.');
+                        return;
+                    }
+                    
+                    area = Math.PI * (major / 2) * (minor / 2);
+                    dimensions = `Major: ${major} ${unit}, Minor: ${minor} ${unit}`;
+                    formula = 'Area = π × (Major/2) × (Minor/2)';
+                    break;
+            }
+            
+            // Convert area to square feet based on input unit
+            let areaSqFt = convertToSqFt(area, unit);
+            
+            // Update result elements
+            shapeResult.textContent = currentShape.charAt(0).toUpperCase() + currentShape.slice(1);
+            dimensionsResult.textContent = dimensions;
+            formulaResult.textContent = formula;
+            unitResult.textContent = unit;
+            
+            // Format area display
+            areaDisplay.textContent = `${areaSqFt.toFixed(2)} ft²`;
+            
+            // Update conversion results
+            updateConversions(areaSqFt);
+            
+            // Add animation to result
+            areaDisplay.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                areaDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Convert area to square feet based on input unit
+        function convertToSqFt(area, unit) {
+            switch(unit) {
+                case 'ft':
+                    return area;
+                case 'in':
+                    return area / 144;
+                case 'yd':
+                    return area * 9;
+                case 'm':
+                    return area * 10.7639;
+                case 'cm':
+                    return area / 929.03;
+                default:
+                    return area;
+            }
+        }
+        
+        // Update all conversion values
+        function updateConversions(areaSqFt) {
+            sqftResult.textContent = areaSqFt.toFixed(2);
+            sqinResult.textContent = (areaSqFt * 144).toFixed(2);
+            sqydResult.textContent = (areaSqFt / 9).toFixed(2);
+            sqmResult.textContent = (areaSqFt / 10.7639).toFixed(2);
+        }
+        
+        // Initialize the calculator with default values
+        function initializeCalculator() {
+            document.getElementById('rectangle-length').value = '10';
+            document.getElementById('rectangle-width').value = '8';
+            calculateArea();
+        }
+        
+        // Initialize the calculator when the page loads
+        window.onload = initializeCalculator;
+    </script>
+</body>
+</html>

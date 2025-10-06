@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bra Size Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #8a2387, #e94057, #f27121);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .units {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .unit-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .unit-option input {
+            width: auto;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #e94057;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(233, 64, 87, 0.2);
+        }
+
+        .measurement-guide {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #8a2387;
+        }
+
+        .measurement-guide h4 {
+            color: #8a2387;
+            margin-bottom: 10px;
+        }
+
+        .measurement-guide ul {
+            padding-left: 20px;
+        }
+
+        .measurement-guide li {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #8a2387, #e94057);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            display: none;
+            border-left: 5px solid #e94057;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .size-result {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .bra-size {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #e94057;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .sister-sizes {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .result-data {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .fit-guide {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .fit-guide h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .fit-tips {
+            margin-top: 20px;
+        }
+
+        .fit-tips h4 {
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+
+        .fit-tips ul {
+            padding-left: 20px;
+        }
+
+        .fit-tips li {
+            margin-bottom: 8px;
+        }
+
+        .size-chart {
+            margin-top: 25px;
+        }
+
+        .size-chart h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .chart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .chart-table th, .chart-table td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #e1e8ed;
+        }
+
+        .chart-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .chart-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .highlight {
+            background-color: #fff9e6 !important;
+            font-weight: bold;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bra Size Calculator</h1>
+            <p class="subtitle">Find your perfect fit with accurate measurements</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <div class="units">
+                    <div class="unit-option">
+                        <input type="radio" id="inches" name="unit" value="inches" checked>
+                        <label for="inches">Inches</label>
+                    </div>
+                    <div class="unit-option">
+                        <input type="radio" id="cm" name="unit" value="cm">
+                        <label for="cm">Centimeters</label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="band">Band Measurement (Underbust)</label>
+                    <input type="number" id="band" min="20" max="60" step="0.5" required>
+                    <span class="unit-label" id="band-unit">inches</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bust">Bust Measurement (Fullest Part)</label>
+                    <input type="number" id="bust" min="25" max="70" step="0.5" required>
+                    <span class="unit-label" id="bust-unit">inches</span>
+                </div>
+                
+                <div class="measurement-guide">
+                    <h4>How to Measure Correctly</h4>
+                    <ul>
+                        <li><strong>Band:</strong> Measure snugly around your ribcage, directly under your bust</li>
+                        <li><strong>Bust:</strong> Measure around the fullest part of your bust, keeping the tape parallel to the floor</li>
+                        <li>Wear a non-padded bra or no bra for most accurate results</li>
+                        <li>Keep the measuring tape snug but not tight</li>
+                    </ul>
+                </div>
+                
+                <button id="calculateBtn" class="calculate-btn">Calculate My Bra Size</button>
+            </div>
+            
+            <div class="results-section">
+                <div id="result" class="result">
+                    <h2>Your Recommended Bra Size</h2>
+                    
+                    <div class="size-result">
+                        <div class="bra-size" id="braSize">32B</div>
+                        <div class="sister-sizes" id="sisterSizes">Sister sizes: 30C, 34A</div>
+                    </div>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-label">Band Size</div>
+                            <div class="result-data" id="bandSize">32</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Cup Size</div>
+                            <div class="result-data" id="cupSize">B</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Band Measurement</div>
+                            <div class="result-data" id="bandMeasurement">-</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-label">Bust Measurement</div>
+                            <div class="result-data" id="bustMeasurement">-</div>
+                        </div>
+                    </div>
+                    
+                    <div class="fit-guide">
+                        <h4>Fit Guide</h4>
+                        <p id="fitDescription">Based on your measurements, this size should provide a comfortable fit with proper support.</p>
+                    </div>
+                    
+                    <div class="fit-tips">
+                        <h4>Signs of a Good Fit</h4>
+                        <ul>
+                            <li>The band is snug and parallel to the floor</li>
+                            <li>The center gore lies flat against your chest</li>
+                            <li>Your breasts fully fill the cups without spillage</li>
+                            <li>Straps stay in place without digging in</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="size-chart">
+                    <h3>Bra Size Conversion Chart</h3>
+                    <table class="chart-table">
+                        <thead>
+                            <tr>
+                                <th>US Size</th>
+                                <th>UK Size</th>
+                                <th>EU Size</th>
+                                <th>FR Size</th>
+                                <th>AU Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>32A</td>
+                                <td>32A</td>
+                                <td>70A</td>
+                                <td>85A</td>
+                                <td>10A</td>
+                            </tr>
+                            <tr>
+                                <td>32B</td>
+                                <td>32B</td>
+                                <td>70B</td>
+                                <td>85B</td>
+                                <td>10B</td>
+                            </tr>
+                            <tr>
+                                <td>34B</td>
+                                <td>34B</td>
+                                <td>75B</td>
+                                <td>90B</td>
+                                <td>12B</td>
+                            </tr>
+                            <tr>
+                                <td>36C</td>
+                                <td>36C</td>
+                                <td>80C</td>
+                                <td>95C</td>
+                                <td>14C</td>
+                            </tr>
+                            <tr>
+                                <td>38D</td>
+                                <td>38D</td>
+                                <td>85D</td>
+                                <td>100D</td>
+                                <td>16D</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="history">
+                    <h3>Measurement History</h3>
+                    <div id="historyList">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const unitRadios = document.querySelectorAll('input[name="unit"]');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultDiv = document.getElementById('result');
+        const braSize = document.getElementById('braSize');
+        const sisterSizes = document.getElementById('sisterSizes');
+        const bandSize = document.getElementById('bandSize');
+        const cupSize = document.getElementById('cupSize');
+        const bandMeasurement = document.getElementById('bandMeasurement');
+        const bustMeasurement = document.getElementById('bustMeasurement');
+        const fitDescription = document.getElementById('fitDescription');
+        const historyList = document.getElementById('historyList');
+
+        // Cup sizes array
+        const cupSizes = ['AA', 'A', 'B', 'C', 'D', 'DD/E', 'DDD/F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'];
+
+        // Event listeners
+        unitRadios.forEach(radio => {
+            radio.addEventListener('change', updateUnits);
+        });
+
+        calculateBtn.addEventListener('click', calculateBraSize);
+
+        // Update units when selection changes
+        function updateUnits() {
+            const isInches = document.getElementById('inches').checked;
+            
+            // Update labels
+            document.getElementById('band-unit').textContent = isInches ? 'inches' : 'cm';
+            document.getElementById('bust-unit').textContent = isInches ? 'inches' : 'cm';
+            
+            // Update input placeholders and values if needed
+            const bandInput = document.getElementById('band');
+            const bustInput = document.getElementById('bust');
+            
+            if (!isInches && bandInput.value) {
+                // Convert from inches to cm
+                bandInput.value = (parseFloat(bandInput.value) * 2.54).toFixed(1);
+            } else if (isInches && bandInput.value) {
+                // Convert from cm to inches
+                bandInput.value = (parseFloat(bandInput.value) / 2.54).toFixed(1);
+            }
+            
+            if (!isInches && bustInput.value) {
+                // Convert from inches to cm
+                bustInput.value = (parseFloat(bustInput.value) * 2.54).toFixed(1);
+            } else if (isInches && bustInput.value) {
+                // Convert from cm to inches
+                bustInput.value = (parseFloat(bustInput.value) / 2.54).toFixed(1);
+            }
+        }
+
+        // Calculate bra size
+        function calculateBraSize() {
+            // Get input values
+            const isInches = document.getElementById('inches').checked;
+            let bandMeasurementValue = parseFloat(document.getElementById('band').value);
+            let bustMeasurementValue = parseFloat(document.getElementById('bust').value);
+            
+            // Convert to inches if needed for calculation
+            if (!isInches) {
+                bandMeasurementValue = bandMeasurementValue / 2.54;
+                bustMeasurementValue = bustMeasurementValue / 2.54;
+            }
+            
+            // Calculate band size (round to nearest even number)
+            let calculatedBandSize = Math.round(bandMeasurementValue);
+            if (calculatedBandSize % 2 !== 0) {
+                calculatedBandSize = (Math.round(bandMeasurementValue / 2) * 2);
+            }
+            
+            // Ensure band size is within reasonable range
+            calculatedBandSize = Math.max(28, Math.min(56, calculatedBandSize));
+            
+            // Calculate cup size
+            const difference = bustMeasurementValue - bandMeasurementValue;
+            let cupIndex = 0;
+            
+            if (difference < 0.5) {
+                cupIndex = 0; // AA
+            } else if (difference < 1) {
+                cupIndex = 0; // AA (some systems)
+            } else if (difference < 2) {
+                cupIndex = 1; // A
+            } else if (difference < 3) {
+                cupIndex = 2; // B
+            } else if (difference < 4) {
+                cupIndex = 3; // C
+            } else if (difference < 5) {
+                cupIndex = 4; // D
+            } else if (difference < 6) {
+                cupIndex = 5; // DD/E
+            } else if (difference < 7) {
+                cupIndex = 6; // DDD/F
+            } else if (difference < 8) {
+                cupIndex = 7; // G
+            } else if (difference < 9) {
+                cupIndex = 8; // H
+            } else if (difference < 10) {
+                cupIndex = 9; // I
+            } else if (difference < 11) {
+                cupIndex = 10; // J
+            } else if (difference < 12) {
+                cupIndex = 11; // K
+            } else if (difference < 13) {
+                cupIndex = 12; // L
+            } else if (difference < 14) {
+                cupIndex = 13; // M
+            } else {
+                cupIndex = 14; // N
+            }
+            
+            // Ensure cup index is within array bounds
+            cupIndex = Math.min(cupSizes.length - 1, Math.max(0, cupIndex));
+            const calculatedCupSize = cupSizes[cupIndex];
+            
+            // Calculate sister sizes
+            let sisterSizeUp = '', sisterSizeDown = '';
+            
+            if (calculatedBandSize > 28) {
+                sisterSizeDown = `${calculatedBandSize - 2}${cupSizes[Math.min(cupSizes.length - 1, cupIndex + 1)]}`;
+            }
+            
+            if (calculatedBandSize < 56) {
+                sisterSizeUp = `${calculatedBandSize + 2}${cupSizes[Math.max(0, cupIndex - 1)]}`;
+            }
+            
+            // Format sister sizes text
+            let sisterSizesText = 'Sister sizes: ';
+            if (sisterSizeDown && sisterSizeUp) {
+                sisterSizesText += `${sisterSizeDown}, ${sisterSizeUp}`;
+            } else if (sisterSizeDown) {
+                sisterSizesText += sisterSizeDown;
+            } else if (sisterSizeUp) {
+                sisterSizesText += sisterSizeUp;
+            } else {
+                sisterSizesText = 'No sister sizes available';
+            }
+            
+            // Generate fit description
+            const fitDescriptionText = generateFitDescription(calculatedBandSize, cupIndex);
+            
+            // Display results
+            braSize.textContent = `${calculatedBandSize}${calculatedCupSize}`;
+            sisterSizes.textContent = sisterSizesText;
+            bandSize.textContent = calculatedBandSize;
+            cupSize.textContent = calculatedCupSize;
+            bandMeasurement.textContent = isInches ? 
+                `${bandMeasurementValue.toFixed(1)} inches` : 
+                `${(bandMeasurementValue * 2.54).toFixed(1)} cm`;
+            bustMeasurement.textContent = isInches ? 
+                `${bustMeasurementValue.toFixed(1)} inches` : 
+                `${(bustMeasurementValue * 2.54).toFixed(1)} cm`;
+            fitDescription.textContent = fitDescriptionText;
+            
+            // Show result section
+            resultDiv.classList.add('active');
+            
+            // Add to history
+            addToHistory(calculatedBandSize, calculatedCupSize, isInches);
+        }
+
+        // Generate fit description based on measurements
+        function generateFitDescription(bandSize, cupIndex) {
+            if (bandSize < 32) {
+                if (cupIndex < 2) {
+                    return "Your petite frame may benefit from bras with narrower straps and smaller cups for optimal comfort.";
+                } else {
+                    return "Your combination of a smaller band with fuller cups may require specialized bras for proper support.";
+                }
+            } else if (bandSize < 38) {
+                if (cupIndex < 3) {
+                    return "This is a common size range with many style options available. Look for bras with medium coverage.";
+                } else if (cupIndex < 6) {
+                    return "Your fuller bust will benefit from bras with good support features like wider bands and three-part cups.";
+                } else {
+                    return "Consider bras with full coverage and strong support features to ensure comfort throughout the day.";
+                }
+            } else {
+                if (cupIndex < 4) {
+                    return "Look for bras with wider bands and full coverage for optimal support and comfort.";
+                } else {
+                    return "Your combination of a larger band and fuller cups requires bras with maximum support features.";
+                }
+            }
+        }
+
+        // Add calculation to history
+        function addToHistory(band, cup, isInches) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${band}${cup}</strong>
+                    <div class="history-details">${dateStr}</div>
+                </div>
+                <div class="history-unit">${isInches ? 'inches' : 'cm'}</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            updateUnits();
+            
+            // Add some sample history items
+            const sampleItems = [
+                { band: 34, cup: 'B', date: '2023-10-15', unit: 'inches' },
+                { band: 32, cup: 'C', date: '2023-09-28', unit: 'inches' },
+                { band: 36, cup: 'D', date: '2023-09-10', unit: 'inches' }
+            ];
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${item.band}${item.cup}</strong>
+                        <div class="history-details">${item.date}</div>
+                    </div>
+                    <div class="history-unit">${item.unit}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initCalculator);
+    </script>
+</body>
+</html>

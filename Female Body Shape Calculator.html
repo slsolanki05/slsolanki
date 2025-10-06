@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Female Body Shape Calculator - Discover Your Body Type</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            padding: 30px;
+        }
+
+        .measurement-guide {
+            background: #fce4ec;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #e91e63;
+        }
+
+        .guide-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .guide-step {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .step-number {
+            background: #e91e63;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #e91e63;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #e91e63;
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        }
+
+        .unit-toggle {
+            display: flex;
+            background: #e8f4fc;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            background: #e91e63;
+            color: white;
+        }
+
+        .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+            display: none;
+        }
+
+        .shape-result {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .result-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .result-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .shape-visual {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+        }
+
+        .shape-silhouette {
+            width: 150px;
+            height: 300px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .silhouette-hourglass {
+            background: #fce4ec;
+            border-radius: 75px 75px 100px 100px;
+            width: 150px;
+            height: 300px;
+            position: relative;
+        }
+
+        .silhouette-hourglass::before {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #e91e63;
+            border-radius: 50%;
+            top: 50px;
+            left: 35px;
+        }
+
+        .silhouette-hourglass::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #e91e63;
+            border-radius: 50%;
+            bottom: 50px;
+            left: 25px;
+        }
+
+        .measurement-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .styling-tips {
+            background: #fce4ec;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .tip-category {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .tip-category h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e91e63;
+            padding-bottom: 5px;
+        }
+
+        .tip-list {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .tip-list li {
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        .body-shapes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .shape-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #e91e63;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .shape-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .shape-card.active {
+            background: #fce4ec;
+        }
+
+        .shape-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .shape-characteristics {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #e91e63 0%, #ad1457 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .privacy-note {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .health-info {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .celebrity-examples {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .celebrity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .celebrity-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .celebrity-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .guide-steps, .tips-grid, .body-shapes, .celebrity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ratio-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .fashion-recommendations {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Female Body Shape Calculator</h1>
+            <p>Discover Your Body Type & Get Personalized Fashion Advice</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="measurement-guide">
+                <h2 class="section-title">How to Measure Your Body</h2>
+                <div class="guide-steps">
+                    <div class="guide-step">
+                        <div class="step-number">1</div>
+                        <h4>Shoulders</h4>
+                        <p>Measure across the broadest part of your shoulders and back</p>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-number">2</div>
+                        <h4>Bust</h4>
+                        <p>Measure around the fullest part of your bust, keeping tape parallel to floor</p>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-number">3</div>
+                        <h4>Waist</h4>
+                        <p>Measure around the narrowest part of your natural waistline</p>
+                    </div>
+                    <div class="guide-step">
+                        <div class="step-number">4</div>
+                        <h4>Hips</h4>
+                        <p>Measure around the fullest part of your hips and buttocks</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h2 class="section-title">Enter Your Measurements</h2>
+                
+                <div class="unit-toggle">
+                    <button class="toggle-btn active" id="cmBtn" onclick="setUnit('cm')">Centimeters (cm)</button>
+                    <button class="toggle-btn" id="inchesBtn" onclick="setUnit('inches')">Inches</button>
+                </div>
+
+                <div class="input-group">
+                    <label for="shoulders" id="shouldersLabel">Shoulder Measurement</label>
+                    <input type="number" id="shoulders" placeholder="Enter shoulder measurement" min="30" max="200" step="0.5" value="40">
+                </div>
+
+                <div class="input-group">
+                    <label for="bust" id="bustLabel">Bust Measurement</label>
+                    <input type="number" id="bust" placeholder="Enter bust measurement" min="30" max="200" step="0.5" value="92">
+                </div>
+
+                <div class="input-group">
+                    <label for="waist" id="waistLabel">Waist Measurement</label>
+                    <input type="number" id="waist" placeholder="Enter waist measurement" min="25" max="150" step="0.5" value="76">
+                </div>
+
+                <div class="input-group">
+                    <label for="hips" id="hipsLabel">Hip Measurement</label>
+                    <input type="number" id="hips" placeholder="Enter hip measurement" min="30" max="200" step="0.5" value="96">
+                </div>
+
+                <div class="input-group">
+                    <label for="height">Height</label>
+                    <input type="number" id="height" placeholder="Enter your height" min="100" max="250" step="0.5" value="165">
+                    <select id="heightUnit" style="margin-top: 8px;">
+                        <option value="cm">Centimeters</option>
+                        <option value="ft">Feet & Inches</option>
+                    </select>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateBodyShape()">Discover My Body Shape</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h2 class="section-title">Your Body Shape Analysis</h2>
+                
+                <div class="shape-result">
+                    <div class="result-label">Your Body Shape Is</div>
+                    <div class="result-value" id="bodyShape">Hourglass</div>
+                    <div class="result-label" id="shapeDescription">Balanced proportions with defined waist</div>
+                </div>
+
+                <div class="highlight">
+                    <strong>About Your Shape:</strong> <span id="shapeDetails">The hourglass shape is characterized by balanced shoulder and hip measurements with a significantly smaller waist, creating a classic feminine silhouette.</span>
+                </div>
+
+                <div class="measurement-details">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Your Measurements & Ratios</h3>
+                    <div class="detail-item">
+                        <span>Shoulders:</span>
+                        <span id="detailShoulders">40 cm</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Bust:</span>
+                        <span id="detailBust">92 cm</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Waist:</span>
+                        <span id="detailWaist">76 cm</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Hips:</span>
+                        <span id="detailHips">96 cm</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Waist-to-Hip Ratio:</span>
+                        <span class="ratio-indicator" id="whRatio">0.79</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Body Shape Index:</span>
+                        <span class="ratio-indicator" id="shapeIndex">0.42</span>
+                    </div>
+                </div>
+
+                <div class="health-info">
+                    <h3 style="margin-bottom: 15px; color: #155724;">Health Information</h3>
+                    <div class="detail-item">
+                        <span>Waist-to-Hip Ratio Category:</span>
+                        <span id="healthCategory">Healthy</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Recommended WHR:</span>
+                        <span>&lt; 0.85 for women</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Your Status:</span>
+                        <span class="ratio-indicator" id="healthStatus">Excellent</span>
+                    </div>
+                </div>
+
+                <div class="styling-tips">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Personalized Styling Tips</h3>
+                    <div class="tips-grid">
+                        <div class="tip-category">
+                            <h4>👗 Dresses & Tops</h4>
+                            <ul class="tip-list" id="dressTips">
+                                <li>Wrap dresses</li>
+                                <li>Fitted tops</li>
+                                <li>V-necklines</li>
+                                <li>Peplum tops</li>
+                            </ul>
+                        </div>
+                        <div class="tip-category">
+                            <h4>👖 Bottoms & Jeans</h4>
+                            <ul class="tip-list" id="bottomTips">
+                                <li>High-waisted jeans</li>
+                                <li>A-line skirts</li>
+                                <li>Bootcut pants</li>
+                                <li>Pencil skirts</li>
+                            </ul>
+                        </div>
+                        <div class="tip-category">
+                            <h4>🎯 Emphasize</h4>
+                            <ul class="tip-list" id="emphasizeTips">
+                                <li>Your defined waist</li>
+                                <li>Balanced proportions</li>
+                                <li>Curvy silhouette</li>
+                            </ul>
+                        </div>
+                        <div class="tip-category">
+                            <h4>⚡ Avoid</h4>
+                            <ul class="tip-list" id="avoidTips">
+                                <li>Baggy clothing</li>
+                                <li>Boxy silhouettes</li>
+                                <li>Unstructured pieces</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="fashion-recommendations">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Perfect Outfits for Your Shape</h3>
+                    <div class="tips-grid">
+                        <div class="tip-category">
+                            <h4>💼 Work Wear</h4>
+                            <ul class="tip-list" id="workWear">
+                                <li>Fitted blazers</li>
+                                <li>Wrap dresses</li>
+                                <li>High-waisted trousers</li>
+                                <li>Pencil skirts</li>
+                            </ul>
+                        </div>
+                        <div class="tip-category">
+                            <h4>🎉 Evening Wear</h4>
+                            <ul class="tip-list" id="eveningWear">
+                                <li>Bodycon dresses</li>
+                                <li>Off-shoulder tops</li>
+                                <li>Mermaid silhouettes</li>
+                                <li>Belted outfits</li>
+                            </ul>
+                        </div>
+                        <div class="tip-category">
+                            <h4>🛍️ Casual Wear</h4>
+                            <ul class="tip-list" id="casualWear">
+                                <li>Fitted t-shirts</li>
+                                <li>High-waisted jeans</li>
+                                <li>Wrap tops</li>
+                                <li>A-line dresses</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="celebrity-examples">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Celebrities with Similar Shape</h3>
+                    <div class="celebrity-grid" id="celebrityExamples">
+                        <!-- Celebrity examples will be populated here -->
+                    </div>
+                </div>
+
+                <div class="body-shapes">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50; text-align: center;">Female Body Shapes Guide</h3>
+                    <div class="shape-card" onclick="showShapeInfo('hourglass')">
+                        <div class="shape-name">Hourglass</div>
+                        <div class="shape-characteristics">Balanced bust and hips with defined waist</div>
+                    </div>
+                    <div class="shape-card" onclick="showShapeInfo('pear')">
+                        <div class="shape-name">Pear Shape</div>
+                        <div class="shape-characteristics">Hips wider than bust, defined waist</div>
+                    </div>
+                    <div class="shape-card" onclick="showShapeInfo('apple')">
+                        <div class="shape-name">Apple Shape</div>
+                        <div class="shape-characteristics">Wider waist, bust and hips similar</div>
+                    </div>
+                    <div class="shape-card" onclick="showShapeInfo('rectangle')">
+                        <div class="shape-name">Rectangle</div>
+                        <div class="shape-characteristics">Bust, waist, and hips similar measurements</div>
+                    </div>
+                    <div class="shape-card" onclick="showShapeInfo('invertedTriangle')">
+                        <div class="shape-name">Inverted Triangle</div>
+                        <div class="shape-characteristics">Shoulders/bust wider than hips</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="privacy-note">
+                🔒 <strong>Your Privacy Matters:</strong> All calculations are done locally in your browser. 
+                No measurement data is stored or transmitted to any server.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUnit = 'cm';
+
+        // Female body shape definitions with detailed styling advice
+        const femaleBodyShapes = {
+            hourglass: {
+                name: 'Hourglass',
+                description: 'Balanced proportions with defined waist',
+                details: 'Your shoulders and hips are balanced with a significantly smaller waist, creating a classic feminine hourglass silhouette that is often considered the ideal feminine shape.',
+                dressTips: ['Wrap dresses', 'Fitted tops', 'V-necklines', 'Bodycon dresses', 'Peplum tops'],
+                bottomTips: ['High-waisted jeans', 'A-line skirts', 'Pencil skirts', 'Bootcut pants', 'Tailored trousers'],
+                emphasize: ['Your defined waist', 'Balanced proportions', 'Curvy silhouette', 'Feminine curves'],
+                avoid: ['Baggy clothing', 'Boxy silhouettes', 'Unstructured pieces', 'Tent dresses', 'Shapeless outfits'],
+                workWear: ['Fitted blazers', 'Wrap dresses', 'High-waisted trousers', 'Pencil skirts', 'Belted shirts'],
+                eveningWear: ['Bodycon dresses', 'Off-shoulder tops', 'Mermaid silhouettes', 'Belted outfits', 'Corset tops'],
+                casualWear: ['Fitted t-shirts', 'High-waisted jeans', 'Wrap tops', 'A-line dresses', 'Slim-fit cardigans'],
+                celebrities: ['Scarlett Johansson', 'Salma Hayek', 'Kim Kardashian', 'Sophia Loren', 'Marilyn Monroe'],
+                healthInfo: 'Excellent waist-to-hip ratio indicates good health profile'
+            },
+            pear: {
+                name: 'Pear Shape',
+                description: 'Hips wider than bust with defined waist',
+                details: 'Your hips are wider than your bust with a defined waist, creating a pear-shaped silhouette that is feminine and curvy.',
+                dressTips: ['A-line dresses', 'Empire waist', 'Fit and flare', 'Wrap dresses', 'V-necklines'],
+                bottomTips: ['Dark wash jeans', 'A-line skirts', 'Bootcut pants', 'Flared skirts', 'Straight-leg pants'],
+                emphasize: ['Your upper body', 'Waist definition', 'Shoulders and bust', 'Neckline area'],
+                avoid: ['Tight hip area', 'Light colored bottoms', 'Cropped tops', 'Low-rise pants'],
+                workWear: ['Structured blazers', 'Dark trousers', 'A-line skirts', 'Empire waist tops', 'Statement necklaces'],
+                eveningWear: ['Off-shoulder tops', 'Detailed bodices', 'Flowy skirts', 'Bold accessories', 'Sweetheart necklines'],
+                casualWear: ['Fitted tops', 'Dark jeans', 'Layered necklaces', 'Structured jackets', 'Vertical stripes'],
+                celebrities: ['Rihanna', 'Jennifer Lopez', 'Beyoncé', 'Shakira', 'Queen Latifah'],
+                healthInfo: 'Healthy weight distribution pattern'
+            },
+            apple: {
+                name: 'Apple Shape',
+                description: 'Wider waist with bust and hips similar',
+                details: 'Your waist is wider than your bust and hips, with weight carried in the midsection, creating a rounded apple silhouette.',
+                dressTips: ['Empire waist dresses', 'V-neck tops', 'A-line silhouettes', 'Wrap dresses', 'Shift dresses'],
+                bottomTips: ['Bootcut pants', 'Flared jeans', 'A-line skirts', 'Straight-leg pants', 'Dark bottoms'],
+                emphasize: ['Bust and legs', 'Vertical lines', 'Shoulders', 'Neckline area'],
+                avoid: ['High-waisted pants', 'Crop tops', 'Tight waistbands', 'Bodycon dresses'],
+                workWear: ['Structured blazers', 'Empire waist tops', 'Dark trousers', 'V-neck blouses', 'Layered outfits'],
+                eveningWear: ['Flow maxi dresses', 'Embellished necklines', 'A-line gowns', 'Open cardigans', 'Statement jewelry'],
+                casualWear: ['Tunic tops', 'Leggings', 'Long cardigans', 'V-neck tees', 'Vertical stripes'],
+                celebrities: ['Oprah Winfrey', 'Drew Barrymore', 'Queen Latifah', 'Mindy Kaling', 'Amy Schumer'],
+                healthInfo: 'Consider maintaining healthy waist circumference for optimal health'
+            },
+            rectangle: {
+                name: 'Rectangle',
+                description: 'Bust, waist, and hips have similar measurements',
+                details: 'Your bust, waist, and hips have similar measurements, creating a straight athletic silhouette that is modern and versatile.',
+                dressTips: ['Belted dresses', 'Peplum tops', 'Ruffled details', 'Layered outfits', 'Color blocking'],
+                bottomTips: ['High-waisted pants', 'Pleated skirts', 'Tailored shorts', 'Structured jeans', 'A-line skirts'],
+                emphasize: ['Creating curves', 'Waist definition', 'Layered looks', 'Texture and details'],
+                avoid: ['Boxy silhouettes', 'Unstructured clothing', 'Oversized fits', 'Shapeless outfits'],
+                workWear: ['Tailored suits', 'Belted dresses', 'Structured tops', 'Pencil skirts', 'Layered blouses'],
+                eveningWear: ['Ruched dresses', 'Asymmetrical hems', 'Detailed bodices', 'Belted gowns', 'Statement belts'],
+                casualWear: ['Fitted styles', 'High-waisted jeans', 'Cropped tops', 'Layered tanks', 'Textured fabrics'],
+                celebrities: ['Cameron Diaz', 'Keira Knightley', 'Kate Hudson', 'Gwyneth Paltrow', 'Natalie Portman'],
+                healthInfo: 'Athletic build with balanced proportions'
+            },
+            invertedTriangle: {
+                name: 'Inverted Triangle',
+                description: 'Shoulders/bust wider than hips',
+                details: 'Your shoulders or bust are wider than your hips, creating an inverted triangle silhouette that is strong and athletic.',
+                dressTips: ['V-neck dresses', 'A-line silhouettes', 'Wrap styles', 'Empire waist', 'Dark tops'],
+                bottomTips: ['A-line skirts', 'Flared pants', 'Wide-leg jeans', 'Patterned bottoms', 'Light colors'],
+                emphasize: ['Lower body', 'Hips and legs', 'Vertical lines', 'Waist definition'],
+                avoid: ['Shoulder pads', 'Wide necklines', 'Puffed sleeves', 'Bold shoulder details'],
+                workWear: ['V-neck blouses', 'A-line skirts', 'Straight-leg pants', 'Structured dresses', 'Minimal shoulders'],
+                eveningWear: ['Mermaid dresses', 'Trumpet skirts', 'Detailed hems', 'Belted waists', 'Flow skirts'],
+                casualWear: ['Scoop neck tops', 'Bootcut jeans', 'Flared pants', 'A-line dresses', 'Horizontal stripes on bottom'],
+                celebrities: ['Angelina Jolie', 'Naomi Campbell', 'Renée Zellweger', 'Sigourney Weaver', 'Michelle Obama'],
+                healthInfo: 'Athletic upper body build'
+            }
+        };
+
+        function setUnit(unit) {
+            currentUnit = unit;
+            
+            // Update active state
+            document.getElementById('cmBtn').classList.remove('active');
+            document.getElementById('inchesBtn').classList.remove('active');
+            document.getElementById(unit + 'Btn').classList.add('active');
+            
+            // Update labels
+            const unitLabel = unit === 'cm' ? 'cm' : 'inches';
+            document.getElementById('shouldersLabel').textContent = `Shoulder Measurement (${unitLabel})`;
+            document.getElementById('bustLabel').textContent = `Bust Measurement (${unitLabel})`;
+            document.getElementById('waistLabel').textContent = `Waist Measurement (${unitLabel})`;
+            document.getElementById('hipsLabel').textContent = `Hip Measurement (${unitLabel})`;
+            
+            // Convert values if needed
+            convertMeasurements(unit);
+        }
+
+        function convertMeasurements(toUnit) {
+            const measurements = ['shoulders', 'bust', 'waist', 'hips', 'height'];
+            
+            measurements.forEach(measurement => {
+                const input = document.getElementById(measurement);
+                if (toUnit === 'cm' && currentUnit === 'inches') {
+                    // Convert inches to cm
+                    input.value = (parseFloat(input.value) * 2.54).toFixed(1);
+                } else if (toUnit === 'inches' && currentUnit === 'cm') {
+                    // Convert cm to inches
+                    input.value = (parseFloat(input.value) / 2.54).toFixed(1);
+                }
+            });
+        }
+
+        function calculateBodyShape() {
+            // Get input values
+            let shoulders = parseFloat(document.getElementById('shoulders').value) || 0;
+            let bust = parseFloat(document.getElementById('bust').value) || 0;
+            let waist = parseFloat(document.getElementById('waist').value) || 0;
+            let hips = parseFloat(document.getElementById('hips').value) || 0;
+            let height = parseFloat(document.getElementById('height').value) || 0;
+
+            // Validate inputs
+            if (shoulders <= 0 || bust <= 0 || waist <= 0 || hips <= 0 || height <= 0) {
+                alert('Please enter all valid measurements');
+                return;
+            }
+
+            // Convert to cm if in inches
+            if (currentUnit === 'inches') {
+                shoulders = shoulders * 2.54;
+                bust = bust * 2.54;
+                waist = waist * 2.54;
+                hips = hips * 2.54;
+                height = height * 2.54;
+            }
+
+            // Calculate ratios
+            const waistHipRatio = (waist / hips).toFixed(2);
+            const shoulderHipRatio = (shoulders / hips).toFixed(2);
+            const bustHipRatio = (bust / hips).toFixed(2);
+
+            // Determine body shape
+            const shape = determineBodyShape(shoulders, bust, waist, hips, waistHipRatio, shoulderHipRatio, bustHipRatio);
+
+            // Display results
+            displayResults(shape, shoulders, bust, waist, hips, waistHipRatio, shoulderHipRatio);
+            
+            // Show results section
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+
+        function determineBodyShape(shoulders, bust, waist, hips, whRatio, shRatio, bhRatio) {
+            // Calculate differences
+            const shoulderHipDiff = Math.abs(shoulders - hips);
+            const bustHipDiff = Math.abs(bust - hips);
+            const waistDefinition = ((bust + hips) / 2) - waist;
+
+            // Determine shape based on ratios and differences
+            if (whRatio < 0.75 && shoulderHipDiff < 5 && bustHipDiff < 5 && waistDefinition > 20) {
+                return 'hourglass';
+            } else if (hips > bust + 5 && hips > shoulders + 5 && whRatio < 0.8) {
+                return 'pear';
+            } else if (waist > bust && waist > hips) {
+                return 'apple';
+            } else if (shoulders > hips + 5 && shoulders > bust + 5) {
+                return 'invertedTriangle';
+            } else if (shoulderHipDiff < 5 && bustHipDiff < 5 && waistDefinition < 15) {
+                return 'rectangle';
+            } else {
+                // Default based on strongest characteristic
+                if (waistDefinition > 15) return 'hourglass';
+                if (hips > bust + 5) return 'pear';
+                if (shoulders > hips + 5) return 'invertedTriangle';
+                if (waist > bust) return 'apple';
+                return 'rectangle';
+            }
+        }
+
+        function displayResults(shapeKey, shoulders, bust, waist, hips, whRatio, shRatio) {
+            const shape = femaleBodyShapes[shapeKey];
+            const unitLabel = currentUnit === 'cm' ? 'cm' : 'inches';
+            
+            // Display main results
+            document.getElementById('bodyShape').textContent = shape.name;
+            document.getElementById('shapeDescription').textContent = shape.description;
+            document.getElementById('shapeDetails').textContent = shape.details;
+            
+            // Display measurements
+            document.getElementById('detailShoulders').textContent = shoulders.toFixed(1) + ' ' + unitLabel;
+            document.getElementById('detailBust').textContent = bust.toFixed(1) + ' ' + unitLabel;
+            document.getElementById('detailWaist').textContent = waist.toFixed(1) + ' ' + unitLabel;
+            document.getElementById('detailHips').textContent = hips.toFixed(1) + ' ' + unitLabel;
+            document.getElementById('whRatio').textContent = whRatio;
+            document.getElementById('shapeIndex').textContent = shRatio;
+            
+            // Display health information
+            document.getElementById('healthCategory').textContent = getHealthCategory(whRatio);
+            document.getElementById('healthStatus').textContent = getHealthStatus(whRatio);
+            
+            // Display styling tips
+            displayTips('dressTips', shape.dressTips);
+            displayTips('bottomTips', shape.bottomTips);
+            displayTips('emphasizeTips', shape.emphasize);
+            displayTips('avoidTips', shape.avoid);
+            displayTips('workWear', shape.workWear);
+            displayTips('eveningWear', shape.eveningWear);
+            displayTips('casualWear', shape.casualWear);
+            
+            // Display celebrity examples
+            displayCelebrities(shape.celebrities);
+        }
+
+        function getHealthCategory(whRatio) {
+            if (whRatio < 0.75) return 'Excellent';
+            if (whRatio < 0.80) return 'Good';
+            if (whRatio < 0.85) return 'Average';
+            return 'Needs Attention';
+        }
+
+        function getHealthStatus(whRatio) {
+            return whRatio < 0.85 ? 'Healthy' : 'Consider Consultation';
+        }
+
+        function displayTips(elementId, tips) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '';
+            tips.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                element.appendChild(li);
+            });
+        }
+
+        function displayCelebrities(celebrities) {
+            const container = document.getElementById('celebrityExamples');
+            container.innerHTML = '';
+            
+            celebrities.forEach(celebrity => {
+                const div = document.createElement('div');
+                div.className = 'celebrity-item';
+                div.innerHTML = `
+                    <div>⭐</div>
+                    <div class="celebrity-name">${celebrity}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function showShapeInfo(shapeKey) {
+            const shape = femaleBodyShapes[shapeKey];
+            alert(`${shape.name}\n\n${shape.description}\n\n${shape.details}`);
+        }
+
+        function resetCalculator() {
+            document.getElementById('shoulders').value = '40';
+            document.getElementById('bust').value = '92';
+            document.getElementById('waist').value = '76';
+            document.getElementById('hips').value = '96';
+            document.getElementById('height').value = '165';
+            document.getElementById('heightUnit').selectedIndex = 0;
+            
+            // Reset unit to cm
+            currentUnit = 'cm';
+            document.getElementById('cmBtn').classList.add('active');
+            document.getElementById('inchesBtn').classList.remove('active');
+            updateLabels();
+            
+            // Hide results
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        function updateLabels() {
+            const unitLabel = currentUnit === 'cm' ? 'cm' : 'inches';
+            document.getElementById('shouldersLabel').textContent = `Shoulder Measurement (${unitLabel})`;
+            document.getElementById('bustLabel').textContent = `Bust Measurement (${unitLabel})`;
+            document.getElementById('waistLabel').textContent = `Waist Measurement (${unitLabel})`;
+            document.getElementById('hipsLabel').textContent = `Hip Measurement (${unitLabel})`;
+        }
+
+        // Auto-calculate when inputs change
+        document.getElementById('shoulders').addEventListener('input', calculateBodyShape);
+        document.getElementById('bust').addEventListener('input', calculateBodyShape);
+        document.getElementById('waist').addEventListener('input', calculateBodyShape);
+        document.getElementById('hips').addEventListener('input', calculateBodyShape);
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateBodyShape();
+        };
+    </script>
+</body>
+</html>

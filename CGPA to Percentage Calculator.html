@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA to Percentage Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f9c74f;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .calculator-form {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input, select {
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .calculator-result {
+            background: var(--light);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .conversion-result {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+        
+        .grade-display {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .grade-a-plus {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .grade-a {
+            background: #8bc34a;
+            color: white;
+        }
+        
+        .grade-b {
+            background: #ffc107;
+            color: black;
+        }
+        
+        .grade-c {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .grade-d {
+            background: #ff5722;
+            color: white;
+        }
+        
+        .grade-f {
+            background: #f44336;
+            color: white;
+        }
+        
+        .formula-info {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .formula-info h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .formula-info ul {
+            padding-left: 20px;
+        }
+        
+        .formula-info li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .formula-info strong {
+            color: var(--primary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .conversion-result {
+                font-size: 2rem;
+                padding: 20px;
+            }
+        }
+        
+        .custom-multiplier-group {
+            display: none;
+        }
+        
+        .cgpa-scale {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-with-icon input {
+            padding-left: 45px;
+        }
+        
+        .select-with-icon {
+            position: relative;
+        }
+        
+        .select-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+        
+        .select-with-icon select {
+            padding-left: 45px;
+            appearance: none;
+        }
+        
+        .select-with-icon::after {
+            content: "\f078";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-graduation-cap"></i> CGPA to Percentage Calculator</h1>
+                <p class="subtitle">Convert your CGPA score to percentage using various conversion formulas</p>
+            </div>
+        </header>
+        
+        <div class="calculator-content">
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="cgpaScore"><i class="fas fa-calculator"></i> Enter CGPA Score</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-sliders-h"></i>
+                        <input type="number" id="cgpaScore" step="0.01" min="0" max="10" placeholder="e.g., 8.5">
+                    </div>
+                    <div class="cgpa-scale">
+                        <span>0.0 (Minimum)</span>
+                        <span>10.0 (Maximum)</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="conversionFormula"><i class="fas fa-ruler"></i> Conversion Formula</label>
+                    <div class="select-with-icon">
+                        <i class="fas fa-cogs"></i>
+                        <select id="conversionFormula">
+                            <option value="standard">Standard Formula (CGPA × 9.5)</option>
+                            <option value="vtu">VTU Formula (CGPA × 10) - 7.5</option>
+                            <option value="anna">Anna University (CGPA × 10)</option>
+                            <option value="mu">Mumbai University (CGPA × 7.1) + 12</option>
+                            <option value="custom">Custom Multiplier</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group custom-multiplier-group" id="customMultiplierGroup">
+                    <label for="customMultiplier"><i class="fas fa-edit"></i> Custom Multiplier</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-times"></i>
+                        <input type="number" id="customMultiplier" step="0.1" value="9.5">
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculatePercentage">
+                    <i class="fas fa-calculator"></i> Calculate Percentage
+                </button>
+                
+                <div class="formula-info">
+                    <h3><i class="fas fa-info-circle"></i> About CGPA Conversion</h3>
+                    <ul>
+                        <li><strong>Standard Formula:</strong> CGPA × 9.5 (Most commonly used in India)</li>
+                        <li><strong>VTU Formula:</strong> (CGPA × 10) - 7.5 (Visvesvaraya Technological University)</li>
+                        <li><strong>Anna University:</strong> CGPA × 10 (Anna University, Chennai)</li>
+                        <li><strong>Mumbai University:</strong> (CGPA × 7.1) + 12 (University of Mumbai)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="calculator-result">
+                <h2 class="result-title"><i class="fas fa-percentage"></i> Conversion Result</h2>
+                
+                <div class="conversion-result" id="percentageDisplay">
+                    0%
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">CGPA Score</span>
+                        <span class="result-value" id="cgpaDisplay">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Formula Used</span>
+                        <span class="result-value" id="formulaUsed">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Grade</span>
+                        <span class="result-value" id="gradeResult">-</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Status</span>
+                        <span class="result-value" id="statusResult">-</span>
+                    </div>
+                </div>
+                
+                <div id="gradeDisplay" class="grade-display" style="display: none;">
+                    <!-- Grade will be displayed here -->
+                </div>
+                
+                <div style="margin-top: 25px;">
+                    <h3 style="margin-bottom: 10px; color: var(--dark);">Grading System:</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div style="background: #4caf50; color: white; padding: 8px; border-radius: 5px; text-align: center;">
+                            A+ (90% and above)
+                        </div>
+                        <div style="background: #8bc34a; color: white; padding: 8px; border-radius: 5px; text-align: center;">
+                            A (80% to 89%)
+                        </div>
+                        <div style="background: #ffc107; color: black; padding: 8px; border-radius: 5px; text-align: center;">
+                            B (70% to 79%)
+                        </div>
+                        <div style="background: #ff9800; color: white; padding: 8px; border-radius: 5px; text-align: center;">
+                            C (60% to 69%)
+                        </div>
+                        <div style="background: #ff5722; color: white; padding: 8px; border-radius: 5px; text-align: center;">
+                            D (50% to 59%)
+                        </div>
+                        <div style="background: #f44336; color: white; padding: 8px; border-radius: 5px; text-align: center;">
+                            F (Below 50%)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>CGPA to Percentage Calculator &copy; 2023 | For educational purposes only</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const cgpaScoreInput = document.getElementById('cgpaScore');
+        const conversionFormulaSelect = document.getElementById('conversionFormula');
+        const customMultiplierGroup = document.getElementById('customMultiplierGroup');
+        const customMultiplierInput = document.getElementById('customMultiplier');
+        const calculateButton = document.getElementById('calculatePercentage');
+        
+        // Result Elements
+        const percentageDisplay = document.getElementById('percentageDisplay');
+        const cgpaDisplay = document.getElementById('cgpaDisplay');
+        const formulaUsed = document.getElementById('formulaUsed');
+        const gradeResult = document.getElementById('gradeResult');
+        const statusResult = document.getElementById('statusResult');
+        const gradeDisplay = document.getElementById('gradeDisplay');
+        
+        // Event Listeners
+        conversionFormulaSelect.addEventListener('change', toggleCustomMultiplier);
+        calculateButton.addEventListener('click', calculatePercentage);
+        
+        // Toggle custom multiplier input based on formula selection
+        function toggleCustomMultiplier() {
+            if (conversionFormulaSelect.value === 'custom') {
+                customMultiplierGroup.style.display = 'flex';
+            } else {
+                customMultiplierGroup.style.display = 'none';
+            }
+        }
+        
+        // Calculate percentage based on CGPA and selected formula
+        function calculatePercentage() {
+            const cgpa = parseFloat(cgpaScoreInput.value);
+            const formula = conversionFormulaSelect.value;
+            
+            // Input validation
+            if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+                alert('Please enter a valid CGPA between 0 and 10.');
+                return;
+            }
+            
+            let percentage = 0;
+            let formulaText = '';
+            
+            // Calculate percentage based on selected formula
+            switch(formula) {
+                case 'standard':
+                    percentage = cgpa * 9.5;
+                    formulaText = 'CGPA × 9.5';
+                    break;
+                case 'custom':
+                    const multiplier = parseFloat(customMultiplierInput.value);
+                    percentage = cgpa * multiplier;
+                    formulaText = `CGPA × ${multiplier}`;
+                    break;
+                case 'vtu':
+                    percentage = (cgpa * 10) - 7.5;
+                    formulaText = '(CGPA × 10) - 7.5';
+                    break;
+                case 'anna':
+                    percentage = cgpa * 10;
+                    formulaText = 'CGPA × 10';
+                    break;
+                case 'mu':
+                    percentage = (cgpa * 7.1) + 12;
+                    formulaText = '(CGPA × 7.1) + 12';
+                    break;
+                default:
+                    percentage = cgpa * 9.5;
+                    formulaText = 'CGPA × 9.5';
+            }
+            
+            // Ensure percentage is within valid range
+            if (percentage > 100) percentage = 100;
+            if (percentage < 0) percentage = 0;
+            
+            // Determine grade and status
+            let grade = '';
+            let status = '';
+            let gradeClass = '';
+            
+            if (percentage >= 90) {
+                grade = 'A+';
+                status = 'Excellent';
+                gradeClass = 'grade-a-plus';
+            } else if (percentage >= 80) {
+                grade = 'A';
+                status = 'Very Good';
+                gradeClass = 'grade-a';
+            } else if (percentage >= 70) {
+                grade = 'B';
+                status = 'Good';
+                gradeClass = 'grade-b';
+            } else if (percentage >= 60) {
+                grade = 'C';
+                status = 'Average';
+                gradeClass = 'grade-c';
+            } else if (percentage >= 50) {
+                grade = 'D';
+                status = 'Below Average';
+                gradeClass = 'grade-d';
+            } else {
+                grade = 'F';
+                status = 'Fail';
+                gradeClass = 'grade-f';
+            }
+            
+            // Update result elements
+            cgpaDisplay.textContent = cgpa.toFixed(2);
+            percentageDisplay.textContent = `${percentage.toFixed(2)}%`;
+            formulaUsed.textContent = formulaText;
+            gradeResult.textContent = grade;
+            statusResult.textContent = status;
+            
+            // Update grade display
+            gradeDisplay.textContent = `Grade: ${grade} (${status})`;
+            gradeDisplay.className = `grade-display ${gradeClass}`;
+            gradeDisplay.style.display = 'block';
+            
+            // Add animation to result
+            percentageDisplay.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                percentageDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Initialize the calculator with default values
+        function initializeCalculator() {
+            cgpaScoreInput.value = '8.5';
+            calculatePercentage();
+        }
+        
+        // Initialize the calculator when the page loads
+        window.onload = initializeCalculator;
+    </script>
+</body>
+</html>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PPF Calculator - Public Provident Fund</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #2E8B57;
+            --primary-dark: #267349;
+            --secondary: #4682B4;
+            --accent: #32CD32;
+            --light: #F5F5F5;
+            --dark: #2C3E50;
+            --gray: #7F8C8D;
+            --border: #BDC3C7;
+            --profit: #27AE60;
+            --investment: #3498DB;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d1ecf1 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 35px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .calculator-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+        
+        .calculator-form {
+            padding: 35px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            background: var(--light);
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(46, 139, 87, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(46, 139, 87, 0.4);
+        }
+        
+        .calculator-result {
+            padding: 35px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .maturity-result {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin: 25px 0;
+            padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 8px 25px rgba(46, 139, 87, 0.3);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+        
+        .result-item {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--dark);
+        }
+        
+        .ppf-info {
+            background: #E8F5E9;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .ppf-info h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--gray);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            background: var(--light);
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-content {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .maturity-result {
+                font-size: 2.2rem;
+                padding: 25px;
+            }
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-with-icon i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .input-with-icon input {
+            padding-left: 55px;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .chart-container {
+            margin-top: 30px;
+            height: 250px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .chart-bars {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 180px;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .bar {
+            width: 80%;
+            border-radius: 8px 8px 0 0;
+            transition: height 0.8s ease;
+        }
+        
+        .bar-investment {
+            background: var(--investment);
+        }
+        
+        .bar-interest {
+            background: var(--profit);
+        }
+        
+        .bar-label {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .bar-value {
+            font-weight: 600;
+            margin-top: 5px;
+            font-size: 1rem;
+        }
+        
+        .yearly-breakdown {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .breakdown-table th {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        
+        .breakdown-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .breakdown-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .breakdown-table tr:hover {
+            background: #e9f7e9;
+        }
+        
+        .contribution-slider {
+            margin-top: 10px;
+        }
+        
+        .slider-value {
+            text-align: center;
+            font-weight: 600;
+            margin-top: 5px;
+            color: var(--primary);
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .summary-card {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .card-investment {
+            background: rgba(52, 152, 219, 0.1);
+            border-left: 4px solid var(--investment);
+        }
+        
+        .card-interest {
+            background: rgba(39, 174, 96, 0.1);
+            border-left: 4px solid var(--profit);
+        }
+        
+        .card-title {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 5px;
+        }
+        
+        .card-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><i class="fas fa-piggy-bank"></i> PPF Calculator</h1>
+                <p class="subtitle">Calculate your Public Provident Fund returns with detailed projections and breakdowns</p>
+            </div>
+        </header>
+        
+        <div class="calculator-content">
+            <div class="calculator-form">
+                <div class="form-group">
+                    <label for="monthlyInvestment"><i class="fas fa-rupee-sign"></i> Monthly Investment</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <input type="number" id="monthlyInvestment" min="500" max="12500" value="5000" step="100">
+                    </div>
+                    <div class="contribution-slider">
+                        <input type="range" id="investmentSlider" min="500" max="12500" value="5000" step="100">
+                        <div class="slider-value">₹5,000 per month</div>
+                    </div>
+                    <small style="color: var(--gray); margin-top: 5px;">Minimum: ₹500, Maximum: ₹12,500 per month</small>
+                </div>
+                
+                <div class="input-row">
+                    <div class="form-group">
+                        <label for="investmentPeriod"><i class="fas fa-calendar-alt"></i> Investment Period</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-clock"></i>
+                            <input type="number" id="investmentPeriod" min="15" max="50" value="15" step="1">
+                        </div>
+                        <small style="color: var(--gray); margin-top: 5px;">Minimum: 15 years, extendable in 5-year blocks</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="interestRate"><i class="fas fa-percentage"></i> Interest Rate</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-chart-line"></i>
+                            <input type="number" id="interestRate" min="1" max="20" value="7.1" step="0.1">
+                        </div>
+                        <small style="color: var(--gray); margin-top: 5px;">Current PPF rate: 7.1% (as of 2023)</small>
+                    </div>
+                </div>
+                
+                <button class="btn" id="calculatePPF">
+                    <i class="fas fa-calculator"></i> Calculate PPF Returns
+                </button>
+                
+                <div class="ppf-info">
+                    <h3><i class="fas fa-info-circle"></i> PPF Key Features</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Tax Benefits</span>
+                            <span class="info-value">E.E.E (Exempt-Exempt-Exempt)</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Lock-in Period</span>
+                            <span class="info-value">15 Years</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Risk Level</span>
+                            <span class="info-value">Sovereign Guarantee</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Partial Withdrawal</span>
+                            <span class="info-value">After 6 Years</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calculator-result">
+                <h2 class="result-title"><i class="fas fa-chart-pie"></i> Investment Summary</h2>
+                
+                <div class="maturity-result" id="maturityDisplay">
+                    ₹0
+                </div>
+                
+                <div class="summary-cards">
+                    <div class="summary-card card-investment">
+                        <div class="card-title">Total Investment</div>
+                        <div class="card-value" id="totalInvestmentDisplay">₹0</div>
+                    </div>
+                    <div class="summary-card card-interest">
+                        <div class="card-title">Total Interest</div>
+                        <div class="card-value" id="totalInterestDisplay">₹0</div>
+                    </div>
+                </div>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Annual Investment</span>
+                        <span class="result-value" id="annualInvestment">₹0</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Investment Period</span>
+                        <span class="result-value" id="periodDisplay">0 Years</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Interest Rate</span>
+                        <span class="result-value" id="rateDisplay">0%</span>
+                    </div>
+                    
+                    <div class="result-item">
+                        <span class="result-label">Effective Yield</span>
+                        <span class="result-value" id="effectiveYield">0%</span>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3 style="margin-bottom: 15px; text-align: center;">Investment vs Returns</h3>
+                    <div class="chart-bars" id="chartBars">
+                        <div class="chart-bar">
+                            <div class="bar bar-investment" style="height: 0%;"></div>
+                            <div class="bar-label">Investment</div>
+                            <div class="bar-value">₹0</div>
+                        </div>
+                        <div class="chart-bar">
+                            <div class="bar bar-interest" style="height: 0%;"></div>
+                            <div class="bar-label">Interest</div>
+                            <div class="bar-value">₹0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="yearly-breakdown">
+                    <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-table"></i> Yearly Breakdown
+                    </h3>
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Investment</th>
+                                <th>Interest</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdownBody">
+                            <!-- Yearly data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>PPF Calculator &copy; 2023 | For financial planning and investment analysis</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const monthlyInvestmentInput = document.getElementById('monthlyInvestment');
+        const investmentSlider = document.getElementById('investmentSlider');
+        const investmentPeriodInput = document.getElementById('investmentPeriod');
+        const interestRateInput = document.getElementById('interestRate');
+        const calculateButton = document.getElementById('calculatePPF');
+        
+        // Result Elements
+        const maturityDisplay = document.getElementById('maturityDisplay');
+        const totalInvestmentDisplay = document.getElementById('totalInvestmentDisplay');
+        const totalInterestDisplay = document.getElementById('totalInterestDisplay');
+        const annualInvestment = document.getElementById('annualInvestment');
+        const periodDisplay = document.getElementById('periodDisplay');
+        const rateDisplay = document.getElementById('rateDisplay');
+        const effectiveYield = document.getElementById('effectiveYield');
+        const chartBars = document.getElementById('chartBars');
+        const breakdownBody = document.getElementById('breakdownBody');
+        
+        // Event Listeners
+        monthlyInvestmentInput.addEventListener('input', updateSlider);
+        investmentSlider.addEventListener('input', updateInvestmentInput);
+        calculateButton.addEventListener('click', calculatePPF);
+        
+        // Sync slider with input
+        function updateSlider() {
+            const value = monthlyInvestmentInput.value;
+            investmentSlider.value = value;
+            updateSliderDisplay(value);
+        }
+        
+        function updateInvestmentInput() {
+            const value = investmentSlider.value;
+            monthlyInvestmentInput.value = value;
+            updateSliderDisplay(value);
+        }
+        
+        function updateSliderDisplay(value) {
+            document.querySelector('.slider-value').textContent = `₹${Number(value).toLocaleString('en-IN')} per month`;
+        }
+        
+        // Calculate PPF returns
+        function calculatePPF() {
+            const monthlyInvestment = parseFloat(monthlyInvestmentInput.value);
+            const investmentPeriod = parseInt(investmentPeriodInput.value);
+            const interestRate = parseFloat(interestRateInput.value);
+            
+            // Input validation
+            if (monthlyInvestment < 500 || monthlyInvestment > 12500) {
+                alert('Monthly investment must be between ₹500 and ₹12,500.');
+                return;
+            }
+            
+            if (investmentPeriod < 15 || investmentPeriod > 50) {
+                alert('Investment period must be between 15 and 50 years.');
+                return;
+            }
+            
+            if (interestRate <= 0 || interestRate > 20) {
+                alert('Please enter a valid interest rate between 0.1% and 20%.');
+                return;
+            }
+            
+            // Calculate PPF returns
+            const annualInvestmentValue = monthlyInvestment * 12;
+            const monthlyRate = interestRate / 100 / 12;
+            const totalMonths = investmentPeriod * 12;
+            
+            let balance = 0;
+            let totalInterest = 0;
+            const yearlyData = [];
+            
+            // Calculate year by year
+            for (let year = 1; year <= investmentPeriod; year++) {
+                let yearInvestment = 0;
+                let yearInterest = 0;
+                
+                // Calculate monthly for this year
+                for (let month = 1; month <= 12; month++) {
+                    // Add monthly investment at the beginning of the month
+                    balance += monthlyInvestment;
+                    yearInvestment += monthlyInvestment;
+                    
+                    // Calculate interest at the end of the month
+                    const monthlyInterest = balance * monthlyRate;
+                    balance += monthlyInterest;
+                    yearInterest += monthlyInterest;
+                    totalInterest += monthlyInterest;
+                }
+                
+                yearlyData.push({
+                    year: year,
+                    investment: yearInvestment,
+                    interest: yearInterest,
+                    balance: balance
+                });
+            }
+            
+            const totalInvestment = annualInvestmentValue * investmentPeriod;
+            const maturityValue = balance;
+            
+            // Update result elements
+            maturityDisplay.textContent = `₹${maturityValue.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+            totalInvestmentDisplay.textContent = `₹${totalInvestment.toLocaleString('en-IN')}`;
+            totalInterestDisplay.textContent = `₹${totalInterest.toLocaleString('en-IN', {maximumFractionDigits: 0})}`;
+            annualInvestment.textContent = `₹${annualInvestmentValue.toLocaleString('en-IN')}`;
+            periodDisplay.textContent = `${investmentPeriod} Years`;
+            rateDisplay.textContent = `${interestRate}%`;
+            
+            // Calculate effective yield
+            const effectiveYieldValue = (Math.pow(maturityValue / totalInvestment, 1/investmentPeriod) - 1) * 100;
+            effectiveYield.textContent = `${effectiveYieldValue.toFixed(2)}%`;
+            
+            // Update chart
+            updateChart(totalInvestment, totalInterest);
+            
+            // Update yearly breakdown
+            updateYearlyBreakdown(yearlyData);
+            
+            // Add animation to result
+            maturityDisplay.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                maturityDisplay.style.transform = 'scale(1)';
+            }, 300);
+        }
+        
+        // Update the chart visualization
+        function updateChart(totalInvestment, totalInterest) {
+            const maxValue = Math.max(totalInvestment, totalInvestment + totalInterest);
+            const investmentHeight = (totalInvestment / maxValue) * 100;
+            const interestHeight = (totalInterest / maxValue) * 100;
+            
+            chartBars.innerHTML = `
+                <div class="chart-bar">
+                    <div class="bar bar-investment" style="height: ${investmentHeight}%;"></div>
+                    <div class="bar-label">Investment</div>
+                    <div class="bar-value">₹${totalInvestment.toLocaleString('en-IN')}</div>
+                </div>
+                <div class="chart-bar">
+                    <div class="bar bar-interest" style="height: ${interestHeight}%;"></div>
+                    <div class="bar-label">Interest</div>
+                    <div class="bar-value">₹${totalInterest.toLocaleString('en-IN', {maximumFractionDigits: 0})}</div>
+                </div>
+            `;
+        }
+        
+        // Update yearly breakdown table
+        function updateYearlyBreakdown(yearlyData) {
+            let tableHTML = '';
+            
+            yearlyData.forEach(data => {
+                tableHTML += `
+                    <tr>
+                        <td>${data.year}</td>
+                        <td>₹${data.investment.toLocaleString('en-IN')}</td>
+                        <td>₹${data.interest.toLocaleString('en-IN', {maximumFractionDigits: 0})}</td>
+                        <td>₹${data.balance.toLocaleString('en-IN', {maximumFractionDigits: 0})}</td>
+                    </tr>
+                `;
+            });
+            
+            breakdownBody.innerHTML = tableHTML;
+        }
+        
+        // Initialize the calculator with default values
+        function initializeCalculator() {
+            updateSlider();
+            calculatePPF();
+        }
+        
+        // Initialize the calculator when the page loads
+        window.onload = initializeCalculator;
+    </script>
+</body>
+</html>

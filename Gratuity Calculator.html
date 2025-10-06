@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gratuity Calculator - Employee Retirement Benefit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .gratuity-info {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .gratuity-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #b8dcff;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .eligibility-check {
+            background: #fff3cd;
+            border: 2px dashed #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .formula-section {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 25px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .formula-title {
+            color: #3498db;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .scenario-comparison {
+            margin-top: 25px;
+        }
+
+        .scenario-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .scenario-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .scenario-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .scenario-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .tax-info {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tax-info h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .employment-type {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .employment-option {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .employment-option.active {
+            border-color: #3498db;
+            background: #e8f4fc;
+        }
+
+        .employment-option h4 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .employment-option .desc {
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Gratuity Calculator</h1>
+            <p>Calculate Your Retirement Benefit Accurately</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Employment Details</h2>
+                
+                <div class="input-group">
+                    <label>Employment Type</label>
+                    <div class="employment-type">
+                        <div class="employment-option active" onclick="selectEmploymentType('covered')">
+                            <h4>Covered Under Act</h4>
+                            <div class="desc">Factories, mines, plantations, etc.</div>
+                        </div>
+                        <div class="employment-option" onclick="selectEmploymentType('non-covered')">
+                            <h4>Not Covered Under Act</h4>
+                            <div class="desc">Other establishments</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="lastDrawnSalary">Last Drawn Salary (₹)</label>
+                    <input type="number" id="lastDrawnSalary" placeholder="Basic + DA" min="0" step="1000" value="75000">
+                    <small style="color: #666; font-size: 0.9em;">Basic salary + Dearness Allowance</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="serviceYears">Years of Service</label>
+                    <input type="number" id="serviceYears" placeholder="Total years worked" min="0" max="50" step="0.5" value="12">
+                </div>
+
+                <div class="input-group">
+                    <label for="serviceMonths">Months of Service (if any)</label>
+                    <input type="number" id="serviceMonths" placeholder="Additional months" min="0" max="11" step="1" value="6">
+                </div>
+
+                <div class="input-group">
+                    <label for="organizationType">Organization Type</label>
+                    <select id="organizationType">
+                        <option value="private">Private Company</option>
+                        <option value="government">Government Sector</option>
+                        <option value="public">Public Sector Undertaking</option>
+                        <option value="ngo">NGO/Trust</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="eligibility-check">
+                    <h4>✅ Eligibility Check</h4>
+                    <div id="eligibilityStatus">You are eligible for gratuity!</div>
+                    <small style="color: #666; display: block; margin-top: 10px;">
+                        Minimum 5 years of continuous service required
+                    </small>
+                </div>
+
+                <div class="gratuity-info">
+                    <h4>📋 Gratuity Act Information</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Covered Under Act:</strong> 10+ employees
+                        </div>
+                        <div class="info-item">
+                            <strong>Minimum Service:</strong> 5 years
+                        </div>
+                        <div class="info-item">
+                            <strong>Maximum Limit:</strong> ₹20 lakhs
+                        </div>
+                        <div class="info-item">
+                            <strong>Tax Exemption:</strong> Up to ₹20 lakhs
+                        </div>
+                        <div class="info-item">
+                            <strong>Calculation:</strong> 15 days salary per year
+                        </div>
+                        <div class="info-item">
+                            <strong>Payment Time:</strong> 30 days from application
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateGratuity()">Calculate Gratuity</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="features">
+                    <h3>✅ Gratuity Benefits</h3>
+                    <ul>
+                        <li>Tax-free up to ₹20 lakhs</li>
+                        <li>No upper limit on service years</li>
+                        <li>Payable on resignation, retirement, or death</li>
+                        <li>Calculated based on last drawn salary</li>
+                        <li>Government-backed security</li>
+                        <li>Quick disbursement (within 30 days)</li>
+                        <li>No investment required from employee</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Gratuity Calculation</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Total Gratuity Amount</div>
+                        <div class="result-value" id="totalGratuity">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Taxable Amount</div>
+                        <div class="result-value" id="taxableAmount">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Tax-Free Amount</div>
+                        <div class="result-value" id="taxFreeAmount">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Net Receivable</div>
+                        <div class="result-value" id="netReceivable">₹0</div>
+                    </div>
+                </div>
+
+                <div class="formula-section">
+                    <div class="formula-title">Gratuity Calculation Formula</div>
+                    <div id="formulaText">
+                        Gratuity = (Last drawn salary × 15/26) × Completed years of service
+                    </div>
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #bdc3c7;">
+                        *26 = Number of working days in a month<br>
+                        *Salary = Basic + Dearness Allowance
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Detailed Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Last Drawn Salary:</span>
+                        <span id="breakdownSalary">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Years of Service:</span>
+                        <span id="breakdownYears">0 years</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>15 Days Salary:</span>
+                        <span id="breakdownFifteenDays">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Calculation Basis:</span>
+                        <span id="breakdownBasis">15/26 formula</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Basic Gratuity:</span>
+                        <span id="breakdownBasic">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Statutory Limit:</span>
+                        <span>₹20,00,000</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Final Gratuity:</span>
+                        <span id="breakdownFinal">₹0</span>
+                    </div>
+                </div>
+
+                <div class="tax-info">
+                    <h3>💰 Tax Implications</h3>
+                    <div class="breakdown-item">
+                        <span>Tax Exemption Limit:</span>
+                        <span>₹20,00,000</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Your Gratuity Amount:</span>
+                        <span id="taxGratuityAmount">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Tax-Free Portion:</span>
+                        <span class="increase-indicator" id="taxFreePortion">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Taxable Portion:</span>
+                        <span id="taxablePortion">₹0</span>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 10px;">
+                        *As per Income Tax Act, gratuity received is exempt up to ₹20 lakhs
+                    </small>
+                </div>
+
+                <div class="scenario-comparison">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Service Period Scenarios</h3>
+                    <div class="scenario-table-container">
+                        <table class="scenario-table">
+                            <thead>
+                                <tr>
+                                    <th>Years of Service</th>
+                                    <th>Gratuity Amount</th>
+                                    <th>Increase</th>
+                                </tr>
+                            </thead>
+                            <tbody id="scenarioTableBody">
+                                <!-- Scenario data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEmploymentType = 'covered';
+        const GRATUITY_LIMIT = 2000000; // ₹20 lakhs
+
+        function selectEmploymentType(type) {
+            currentEmploymentType = type;
+            
+            // Update active state
+            document.querySelectorAll('.employment-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            calculateGratuity();
+        }
+
+        function calculateGratuity() {
+            // Get input values
+            const lastDrawnSalary = parseFloat(document.getElementById('lastDrawnSalary').value) || 0;
+            const serviceYears = parseFloat(document.getElementById('serviceYears').value) || 0;
+            const serviceMonths = parseFloat(document.getElementById('serviceMonths').value) || 0;
+            const organizationType = document.getElementById('organizationType').value;
+
+            // Calculate total service in years
+            const totalServiceYears = serviceYears + (serviceMonths / 12);
+
+            // Check eligibility
+            const isEligible = totalServiceYears >= 5;
+            document.getElementById('eligibilityStatus').textContent = isEligible ? 
+                '✅ You are eligible for gratuity!' : 
+                '❌ Minimum 5 years service required';
+            document.getElementById('eligibilityStatus').style.color = isEligible ? '#27ae60' : '#e74c3c';
+
+            if (!isEligible) {
+                // Reset results if not eligible
+                resetResults();
+                return;
+            }
+
+            // Calculate gratuity based on employment type
+            let gratuityAmount = 0;
+            let formulaText = '';
+
+            if (currentEmploymentType === 'covered') {
+                // Covered under Payment of Gratuity Act, 1972
+                gratuityAmount = (lastDrawnSalary * 15 * totalServiceYears) / 26;
+                formulaText = 'Gratuity = (Salary × 15/26) × Completed years of service';
+            } else {
+                // Not covered under the Act
+                gratuityAmount = (lastDrawnSalary * 15 * totalServiceYears) / 30;
+                formulaText = 'Gratuity = (Salary × 15/30) × Completed years of service';
+            }
+
+            // Apply statutory limit of ₹20 lakhs
+            gratuityAmount = Math.min(gratuityAmount, GRATUITY_LIMIT);
+
+            // Calculate tax implications
+            const taxFreeAmount = Math.min(gratuityAmount, GRATUITY_LIMIT);
+            const taxableAmount = Math.max(0, gratuityAmount - GRATUITY_LIMIT);
+            const netReceivable = gratuityAmount;
+
+            // Display results
+            displayResults(gratuityAmount, taxFreeAmount, taxableAmount, netReceivable, 
+                         lastDrawnSalary, totalServiceYears, formulaText);
+            
+            // Generate scenario comparison
+            generateScenarioComparison(lastDrawnSalary, totalServiceYears);
+        }
+
+        function displayResults(gratuity, taxFree, taxable, net, salary, serviceYears, formula) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+
+            document.getElementById('totalGratuity').textContent = formatINR(gratuity);
+            document.getElementById('taxableAmount').textContent = formatINR(taxable);
+            document.getElementById('taxFreeAmount').textContent = formatINR(taxFree);
+            document.getElementById('netReceivable').textContent = formatINR(net);
+
+            // Update formula
+            document.getElementById('formulaText').textContent = formula;
+
+            // Detailed breakdown
+            document.getElementById('breakdownSalary').textContent = formatINR(salary);
+            document.getElementById('breakdownYears').textContent = serviceYears.toFixed(1) + ' years';
+            
+            const fifteenDaysSalary = currentEmploymentType === 'covered' ? 
+                (salary * 15) / 26 : (salary * 15) / 30;
+            document.getElementById('breakdownFifteenDays').textContent = formatINR(fifteenDaysSalary);
+            
+            document.getElementById('breakdownBasis').textContent = currentEmploymentType === 'covered' ? 
+                '15/26 formula' : '15/30 formula';
+            document.getElementById('breakdownBasic').textContent = formatINR(gratuity);
+            document.getElementById('breakdownFinal').textContent = formatINR(gratuity);
+
+            // Tax implications
+            document.getElementById('taxGratuityAmount').textContent = formatINR(gratuity);
+            document.getElementById('taxFreePortion').textContent = formatINR(taxFree);
+            document.getElementById('taxablePortion').textContent = formatINR(taxable);
+        }
+
+        function generateScenarioComparison(salary, currentServiceYears) {
+            const tableBody = document.getElementById('scenarioTableBody');
+            tableBody.innerHTML = '';
+
+            const scenarios = [5, 10, 15, 20, 25, 30];
+            
+            scenarios.forEach(years => {
+                let gratuity = 0;
+                if (currentEmploymentType === 'covered') {
+                    gratuity = (salary * 15 * years) / 26;
+                } else {
+                    gratuity = (salary * 15 * years) / 30;
+                }
+                gratuity = Math.min(gratuity, GRATUITY_LIMIT);
+
+                const increase = years > currentServiceYears ? 
+                    ((gratuity - ((salary * 15 * currentServiceYears) / (currentEmploymentType === 'covered' ? 26 : 30))) / 100000).toFixed(1) + 'L' : 
+                    '-';
+
+                const row = document.createElement('tr');
+                
+                if (years === Math.floor(currentServiceYears)) {
+                    row.style.background = '#e8f4fc';
+                }
+                
+                row.innerHTML = `
+                    <td>${years} years</td>
+                    <td>₹${Math.round(gratuity).toLocaleString('en-IN')}</td>
+                    <td style="color: ${years > currentServiceYears ? '#27ae60' : '#666'}; font-weight: bold;">
+                        ${increase}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function resetResults() {
+            document.getElementById('totalGratuity').textContent = '₹0';
+            document.getElementById('taxableAmount').textContent = '₹0';
+            document.getElementById('taxFreeAmount').textContent = '₹0';
+            document.getElementById('netReceivable').textContent = '₹0';
+            document.getElementById('scenarioTableBody').innerHTML = '';
+        }
+
+        function resetCalculator() {
+            document.getElementById('lastDrawnSalary').value = '75000';
+            document.getElementById('serviceYears').value = '12';
+            document.getElementById('serviceMonths').value = '6';
+            document.getElementById('organizationType').selectedIndex = 0;
+            
+            // Reset employment type
+            currentEmploymentType = 'covered';
+            document.querySelectorAll('.employment-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelectorAll('.employment-option')[0].classList.add('active');
+            
+            calculateGratuity();
+        }
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateGratuity();
+        };
+
+        // Auto-calculate when inputs change
+        document.getElementById('lastDrawnSalary').addEventListener('input', calculateGratuity);
+        document.getElementById('serviceYears').addEventListener('input', calculateGratuity);
+        document.getElementById('serviceMonths').addEventListener('input', calculateGratuity);
+        document.getElementById('organizationType').addEventListener('change', calculateGratuity);
+    </script>
+</body>
+</html>

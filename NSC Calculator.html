@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSC Calculator - National Savings Certificate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .nsc-info {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+
+        .nsc-info h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #b8dcff;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .result-card.warning {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+
+        .breakdown-section {
+            margin-top: 25px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .yearly-breakdown {
+            margin-top: 25px;
+        }
+
+        .yearly-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .yearly-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .yearly-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .yearly-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .tax-benefit {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .tax-benefit h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .features {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+        }
+
+        .features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style-position: inside;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .features li {
+            margin-bottom: 8px;
+            padding-left: 10px;
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .maturity-highlight {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border: 2px dashed #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>NSC Calculator</h1>
+            <p>National Savings Certificate - Tax Saving Investment</p>
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Investment Details</h2>
+                
+                <div class="input-group">
+                    <label for="investmentAmount">Investment Amount (₹)</label>
+                    <input type="number" id="investmentAmount" placeholder="Enter investment amount" min="100" step="100" value="100000">
+                    <small style="color: #666; font-size: 0.9em;">Minimum: ₹100, No maximum limit</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="tenure">Tenure</label>
+                    <select id="tenure">
+                        <option value="5">5 Years</option>
+                        <option value="10">10 Years (NSC X)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="interestRate">Interest Rate (% per annum)</label>
+                    <input type="number" id="interestRate" step="0.1" value="7.7" readonly>
+                    <small style="color: #666; font-size: 0.9em;">Current NSC interest rate (Compounded annually but payable at maturity)</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="taxSlab">Your Income Tax Slab</label>
+                    <select id="taxSlab">
+                        <option value="0">No Tax (Below ₹2.5L)</option>
+                        <option value="5">5% (₹2.5L - ₹5L)</option>
+                        <option value="20" selected>20% (₹5L - ₹10L)</option>
+                        <option value="30">30% (Above ₹10L)</option>
+                    </select>
+                </div>
+
+                <div class="nsc-info">
+                    <h4>📋 NSC Key Features</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Interest Rate:</strong> 7.7% p.a.
+                        </div>
+                        <div class="info-item">
+                            <strong>Tenure:</strong> 5 years
+                        </div>
+                        <div class="info-item">
+                            <strong>Minimum Investment:</strong> ₹100
+                        </div>
+                        <div class="info-item">
+                            <strong>Maximum Investment:</strong> No limit
+                        </div>
+                        <div class="info-item">
+                            <strong>Tax Benefit:</strong> Section 80C
+                        </div>
+                        <div class="info-item">
+                            <strong>Risk:</strong> Government backed
+                        </div>
+                        <div class="info-item">
+                            <strong>Compounding:</strong> Annual
+                        </div>
+                        <div class="info-item">
+                            <strong>Premature Withdrawal:</strong> Limited
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateNSC()">Calculate Returns</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+
+                <div class="features">
+                    <h3>✅ NSC Benefits</h3>
+                    <ul>
+                        <li>Government-backed safe investment</li>
+                        <li>Tax benefits under Section 80C up to ₹1.5L</li>
+                        <li>Fixed returns with guaranteed interest</li>
+                        <li>No TDS deduction</li>
+                        <li>Can be used as collateral for loans</li>
+                        <li>Available at post offices across India</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Investment Summary</h2>
+                
+                <div class="maturity-highlight">
+                    <div class="result-label">Maturity Value</div>
+                    <div class="result-value" id="maturityValue">₹0</div>
+                    <div style="margin-top: 10px; font-size: 1.1em;">After <span id="tenureDisplay">5</span> years</div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Total Investment</div>
+                        <div class="result-value" id="totalInvestment">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Total Interest</div>
+                        <div class="result-value" id="totalInterest">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Annual Interest</div>
+                        <div class="result-value" id="annualInterest">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Effective Yield</div>
+                        <div class="result-value" id="effectiveYield">0%</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Detailed Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Principal Amount:</span>
+                        <span id="breakdownPrincipal">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Interest Rate:</span>
+                        <span id="breakdownRate">7.7%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Compounding:</span>
+                        <span>Annual</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Interest Earned:</span>
+                        <span class="increase-indicator" id="breakdownInterest">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Maturity Value:</span>
+                        <span id="breakdownMaturity">₹0</span>
+                    </div>
+                </div>
+
+                <div class="tax-benefit">
+                    <h3>💰 Tax Benefits (Section 80C)</h3>
+                    <div class="breakdown-item">
+                        <span>Investment Eligible for Deduction:</span>
+                        <span id="taxDeduction">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Tax Saved (Approx.):</span>
+                        <span class="increase-indicator" id="taxSaved">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Net Investment Cost:</span>
+                        <span id="netInvestment">₹0</span>
+                    </div>
+                    <small style="color: #666; display: block; margin-top: 10px;">
+                        *Note: Interest accrued annually is also eligible for Section 80C benefit when reinvested
+                    </small>
+                </div>
+
+                <div class="yearly-breakdown">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Year-wise Growth</h3>
+                    <div class="yearly-table-container">
+                        <table class="yearly-table">
+                            <thead>
+                                <tr>
+                                    <th>Year</th>
+                                    <th>Opening</th>
+                                    <th>Interest</th>
+                                    <th>Closing</th>
+                                </tr>
+                            </thead>
+                            <tbody id="yearlyTableBody">
+                                <!-- Yearly data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Current NSC interest rates
+        const nscRates = {
+            '5': 7.7,  // 5-year NSC
+            '10': 7.9  // 10-year NSC (NSC X)
+        };
+
+        function calculateNSC() {
+            // Get input values
+            const investmentAmount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+            const tenure = parseInt(document.getElementById('tenure').value);
+            let interestRate = parseFloat(document.getElementById('interestRate').value);
+            const taxSlab = parseFloat(document.getElementById('taxSlab').value);
+
+            // Validate inputs
+            if (investmentAmount < 100) {
+                alert('Minimum investment amount is ₹100');
+                return;
+            }
+
+            // Update interest rate based on tenure
+            interestRate = nscRates[tenure];
+            document.getElementById('interestRate').value = interestRate;
+
+            // Calculate maturity amount using compound interest formula
+            // A = P(1 + r/n)^(nt)
+            const maturityAmount = investmentAmount * Math.pow(1 + interestRate/100, tenure);
+            
+            // Calculate interest earned
+            const totalInterest = maturityAmount - investmentAmount;
+            
+            // Calculate annual interest
+            const annualInterest = totalInterest / tenure;
+            
+            // Calculate effective yield
+            const effectiveYield = (Math.pow(maturityAmount / investmentAmount, 1/tenure) - 1) * 100;
+
+            // Calculate tax benefits
+            const taxDeduction = Math.min(investmentAmount, 150000); // Section 80C limit
+            const taxSaved = (taxDeduction * taxSlab) / 100;
+            const netInvestment = investmentAmount - taxSaved;
+
+            // Display results
+            displayResults(investmentAmount, maturityAmount, totalInterest, annualInterest, effectiveYield, 
+                         taxDeduction, taxSaved, netInvestment, tenure, interestRate);
+            
+            // Generate yearly breakdown
+            generateYearlyBreakdown(investmentAmount, tenure, interestRate);
+        }
+
+        function displayResults(investment, maturity, interest, annualInterest, yield, 
+                              taxDeduction, taxSaved, netInvestment, tenure, rate) {
+            // Format numbers with Indian locale
+            const formatINR = (num) => '₹' + Math.round(num).toLocaleString('en-IN');
+
+            document.getElementById('maturityValue').textContent = formatINR(maturity);
+            document.getElementById('totalInvestment').textContent = formatINR(investment);
+            document.getElementById('totalInterest').textContent = formatINR(interest);
+            document.getElementById('annualInterest').textContent = formatINR(annualInterest);
+            document.getElementById('effectiveYield').textContent = yield.toFixed(2) + '%';
+            document.getElementById('tenureDisplay').textContent = tenure;
+
+            // Detailed breakdown
+            document.getElementById('breakdownPrincipal').textContent = formatINR(investment);
+            document.getElementById('breakdownRate').textContent = rate + '%';
+            document.getElementById('breakdownInterest').textContent = formatINR(interest);
+            document.getElementById('breakdownMaturity').textContent = formatINR(maturity);
+
+            // Tax benefits
+            document.getElementById('taxDeduction').textContent = formatINR(taxDeduction);
+            document.getElementById('taxSaved').textContent = formatINR(taxSaved);
+            document.getElementById('netInvestment').textContent = formatINR(netInvestment);
+        }
+
+        function generateYearlyBreakdown(investmentAmount, tenure, interestRate) {
+            const tableBody = document.getElementById('yearlyTableBody');
+            tableBody.innerHTML = '';
+
+            let openingBalance = investmentAmount;
+
+            for (let year = 1; year <= tenure; year++) {
+                const interest = openingBalance * (interestRate / 100);
+                const closingBalance = openingBalance + interest;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Year ${year}</td>
+                    <td>₹${Math.round(openingBalance).toLocaleString('en-IN')}</td>
+                    <td style="color: #27ae60; font-weight: bold;">₹${Math.round(interest).toLocaleString('en-IN')}</td>
+                    <td>₹${Math.round(closingBalance).toLocaleString('en-IN')}</td>
+                `;
+                
+                if (year === tenure) {
+                    row.style.background = '#e8f4fc';
+                    row.style.fontWeight = 'bold';
+                }
+                
+                tableBody.appendChild(row);
+
+                openingBalance = closingBalance;
+            }
+        }
+
+        function resetCalculator() {
+            document.getElementById('investmentAmount').value = '100000';
+            document.getElementById('tenure').selectedIndex = 0;
+            document.getElementById('taxSlab').selectedIndex = 2;
+            
+            // Reset results
+            document.getElementById('maturityValue').textContent = '₹0';
+            document.getElementById('totalInvestment').textContent = '₹0';
+            document.getElementById('totalInterest').textContent = '₹0';
+            document.getElementById('annualInterest').textContent = '₹0';
+            document.getElementById('effectiveYield').textContent = '0%';
+            
+            document.getElementById('yearlyTableBody').innerHTML = '';
+            
+            calculateNSC();
+        }
+
+        // Update interest rate when tenure changes
+        document.getElementById('tenure').addEventListener('change', function() {
+            const tenure = this.value;
+            document.getElementById('interestRate').value = nscRates[tenure];
+            calculateNSC();
+        });
+
+        // Initialize calculator
+        window.onload = function() {
+            calculateNSC();
+        };
+
+        // Auto-calculate when inputs change
+        document.getElementById('investmentAmount').addEventListener('input', calculateNSC);
+        document.getElementById('taxSlab').addEventListener('change', calculateNSC);
+    </script>
+</body>
+</html>

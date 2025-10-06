@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discount Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff7e5f;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 126, 95, 0.2);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .discount-types {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .discount-type {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .discount-type.active {
+            border-color: #ff7e5f;
+            background-color: #fff5f2;
+        }
+
+        .discount-type input {
+            display: none;
+        }
+
+        .result {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            display: none;
+            border-left: 5px solid #ff7e5f;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff7e5f;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .savings-highlight {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .savings-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .savings-label {
+            font-size: 1.2rem;
+        }
+
+        .breakdown {
+            margin-top: 25px;
+        }
+
+        .breakdown h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px dashed #e1e8ed;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .comparison {
+            margin-top: 25px;
+        }
+
+        .comparison h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .comparison-bar {
+            height: 30px;
+            background-color: #ecf0f1;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .original-bar {
+            height: 100%;
+            background: linear-gradient(to right, #95a5a6, #7f8c8d);
+            border-radius: 15px;
+            width: 100%;
+            transition: width 0.5s;
+        }
+
+        .discounted-bar {
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border-radius: 15px;
+            width: 0%;
+            transition: width 0.5s;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .tips {
+            background-color: #e8f6f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .tips h4 {
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+
+        .tips ul {
+            padding-left: 20px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+        }
+
+        .history {
+            margin-top: 30px;
+        }
+
+        .history h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Discount Calculator</h1>
+            <p class="subtitle">Calculate savings and final prices with ease</p>
+        </header>
+        
+        <div class="calculator">
+            <div class="input-section">
+                <div class="discount-types">
+                    <div class="discount-type active" data-type="percentage">
+                        <input type="radio" id="percentage" name="discountType" value="percentage" checked>
+                        <label for="percentage">Percentage Off</label>
+                    </div>
+                    <div class="discount-type" data-type="fixed">
+                        <input type="radio" id="fixed" name="discountType" value="fixed">
+                        <label for="fixed">Fixed Amount Off</label>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="originalPrice">Original Price ($)</label>
+                    <input type="number" id="originalPrice" min="0.01" step="0.01" value="100" required>
+                </div>
+                
+                <div class="input-group" id="percentageGroup">
+                    <label for="discountPercentage">Discount Percentage (%)</label>
+                    <input type="number" id="discountPercentage" min="0" max="100" step="0.1" value="20" required>
+                </div>
+                
+                <div class="input-group" id="fixedGroup" style="display: none;">
+                    <label for="discountAmount">Discount Amount ($)</label>
+                    <input type="number" id="discountAmount" min="0.01" step="0.01" value="20">
+                </div>
+                
+                <div class="input-group">
+                    <label for="taxRate">Tax Rate (%) <span style="font-weight: normal; color: #7f8c8d;">(optional)</span></label>
+                    <input type="number" id="taxRate" min="0" step="0.1" value="0">
+                </div>
+                
+                <button id="calculateBtn" class="calculate-btn">Calculate Discount</button>
+                
+                <div class="tips">
+                    <h4>💡 Shopping Tips</h4>
+                    <ul>
+                        <li>Compare percentage vs fixed amount discounts</li>
+                        <li>Consider stacking discounts and coupons</li>
+                        <li>Check if tax is applied before or after discount</li>
+                        <li>Look for seasonal sales and clearance events</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="results-section">
+                <div id="result" class="result">
+                    <h2>Your Savings</h2>
+                    
+                    <div class="savings-highlight">
+                        <div class="savings-amount" id="savingsAmount">$20.00</div>
+                        <div class="savings-label">Total Savings</div>
+                    </div>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-value" id="finalPrice">$80.00</div>
+                            <div class="result-label">Final Price</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="discountRate">20%</div>
+                            <div class="result-label">Discount Rate</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="amountSaved">$20.00</div>
+                            <div class="result-label">Amount Saved</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value" id="youPay">$80.00</div>
+                            <div class="result-label">You Pay</div>
+                        </div>
+                    </div>
+                    
+                    <div class="breakdown">
+                        <h3>Price Breakdown</h3>
+                        <div class="breakdown-item">
+                            <span>Original Price:</span>
+                            <span id="breakdownOriginal">$100.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Discount:</span>
+                            <span id="breakdownDiscount">-$20.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Subtotal:</span>
+                            <span id="breakdownSubtotal">$80.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Tax:</span>
+                            <span id="breakdownTax">$0.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Final Price:</span>
+                            <span id="breakdownFinal">$80.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison">
+                        <h3>Price Comparison</h3>
+                        <div class="comparison-bar">
+                            <div class="original-bar" id="originalBar"></div>
+                            <div class="discounted-bar" id="discountedBar"></div>
+                        </div>
+                        <div class="bar-labels">
+                            <span>Original: <span id="originalLabel">$100.00</span></span>
+                            <span>You Pay: <span id="discountedLabel">$80.00</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="history">
+                    <h3>Recent Calculations</h3>
+                    <div id="historyList">
+                        <!-- History items will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const discountTypes = document.querySelectorAll('.discount-type');
+        const percentageGroup = document.getElementById('percentageGroup');
+        const fixedGroup = document.getElementById('fixedGroup');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultDiv = document.getElementById('result');
+        const savingsAmount = document.getElementById('savingsAmount');
+        const finalPrice = document.getElementById('finalPrice');
+        const discountRate = document.getElementById('discountRate');
+        const amountSaved = document.getElementById('amountSaved');
+        const youPay = document.getElementById('youPay');
+        const breakdownOriginal = document.getElementById('breakdownOriginal');
+        const breakdownDiscount = document.getElementById('breakdownDiscount');
+        const breakdownSubtotal = document.getElementById('breakdownSubtotal');
+        const breakdownTax = document.getElementById('breakdownTax');
+        const breakdownFinal = document.getElementById('breakdownFinal');
+        const originalBar = document.getElementById('originalBar');
+        const discountedBar = document.getElementById('discountedBar');
+        const originalLabel = document.getElementById('originalLabel');
+        const discountedLabel = document.getElementById('discountedLabel');
+        const historyList = document.getElementById('historyList');
+
+        // Event listeners
+        discountTypes.forEach(type => {
+            type.addEventListener('click', () => {
+                discountTypes.forEach(t => t.classList.remove('active'));
+                type.classList.add('active');
+                
+                const discountType = type.getAttribute('data-type');
+                if (discountType === 'percentage') {
+                    percentageGroup.style.display = 'block';
+                    fixedGroup.style.display = 'none';
+                } else {
+                    percentageGroup.style.display = 'none';
+                    fixedGroup.style.display = 'block';
+                }
+            });
+        });
+
+        calculateBtn.addEventListener('click', calculateDiscount);
+
+        // Calculate discount
+        function calculateDiscount() {
+            // Get input values
+            const originalPrice = parseFloat(document.getElementById('originalPrice').value);
+            const discountType = document.querySelector('input[name="discountType"]:checked').value;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            
+            let discountValue, discountPercentage, discountAmount;
+            
+            if (discountType === 'percentage') {
+                discountPercentage = parseFloat(document.getElementById('discountPercentage').value);
+                discountAmount = originalPrice * (discountPercentage / 100);
+            } else {
+                discountAmount = parseFloat(document.getElementById('discountAmount').value);
+                discountPercentage = (discountAmount / originalPrice) * 100;
+            }
+            
+            // Calculate prices
+            const subtotal = originalPrice - discountAmount;
+            const taxAmount = subtotal * (taxRate / 100);
+            const finalAmount = subtotal + taxAmount;
+            
+            // Format currency
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            // Display results
+            savingsAmount.textContent = formatter.format(discountAmount);
+            finalPrice.textContent = formatter.format(finalAmount);
+            discountRate.textContent = discountPercentage.toFixed(1) + '%';
+            amountSaved.textContent = formatter.format(discountAmount);
+            youPay.textContent = formatter.format(finalAmount);
+            
+            // Update breakdown
+            breakdownOriginal.textContent = formatter.format(originalPrice);
+            breakdownDiscount.textContent = '-' + formatter.format(discountAmount);
+            breakdownSubtotal.textContent = formatter.format(subtotal);
+            breakdownTax.textContent = formatter.format(taxAmount);
+            breakdownFinal.textContent = formatter.format(finalAmount);
+            
+            // Update comparison bars
+            const discountPercentageVisual = (discountAmount / originalPrice) * 100;
+            originalBar.style.width = '100%';
+            discountedBar.style.width = (100 - discountPercentageVisual) + '%';
+            
+            originalLabel.textContent = formatter.format(originalPrice);
+            discountedLabel.textContent = formatter.format(finalAmount);
+            
+            // Show result section
+            resultDiv.classList.add('active');
+            
+            // Add to history
+            addToHistory(originalPrice, discountPercentage, discountAmount, finalAmount);
+        }
+
+        // Add calculation to history
+        function addToHistory(originalPrice, discountPercentage, discountAmount, finalAmount) {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div>
+                    <strong>${formatter.format(originalPrice)} → ${formatter.format(finalAmount)}</strong>
+                    <div class="history-details">${discountPercentage.toFixed(1)}% off • ${dateStr}</div>
+                </div>
+                <div class="history-savings">Save ${formatter.format(discountAmount)}</div>
+            `;
+            
+            historyList.insertBefore(historyItem, historyList.firstChild);
+            
+            // Keep only last 5 entries
+            if (historyList.children.length > 5) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        // Initialize the calculator
+        function initCalculator() {
+            // Add some sample history items
+            const formatter = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+            
+            const sampleItems = [
+                { original: 250, discount: 15, final: 212.50, date: '2023-10-15' },
+                { original: 89.99, discount: 30, final: 62.99, date: '2023-10-10' },
+                { original: 45, discount: 10, final: 40.50, date: '2023-10-05' }
+            ];
+            
+            sampleItems.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div>
+                        <strong>${formatter.format(item.original)} → ${formatter.format(item.final)}</strong>
+                        <div class="history-details">${item.discount}% off • ${item.date}</div>
+                    </div>
+                    <div class="history-savings">Save ${formatter.format(item.original - item.final)}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // Calculate initial results
+            calculateDiscount();
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', initCalculator);
+    </script>
+</body>
+</html>

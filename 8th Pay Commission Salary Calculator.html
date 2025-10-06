@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8th Pay Commission Salary Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ffeaa7;
+            font-size: 0.9em;
+        }
+
+        .calculator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-section, .results-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            font-size: 1.4em;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .input-group select, .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .input-group select:focus, .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .pay-matrix {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        .pay-matrix h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .result-card.highlight {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border-left-color: #2980b9;
+        }
+
+        .result-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        .breakdown-section {
+            margin-top: 20px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .breakdown-item.total {
+            background: #e8f4fc;
+            margin-top: 10px;
+            border-radius: 5px;
+            padding: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .comparison-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4fc;
+            border-radius: 10px;
+        }
+
+        .comparison-chart {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .comparison-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .increase-indicator {
+            color: #27ae60;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>8th Pay Commission Salary Calculator</h1>
+            <p>Estimate your expected salary based on projected recommendations</p>
+        </div>
+
+        <div class="disclaimer">
+            ⚠️ <strong>Disclaimer:</strong> This calculator is based on expected recommendations and projections. Actual figures may vary when the official 8th Pay Commission is constituted and announces its recommendations.
+        </div>
+
+        <div class="calculator-container">
+            <div class="input-section">
+                <h2 class="section-title">Employee Details</h2>
+                
+                <div class="input-group">
+                    <label for="currentBasic">Current Basic Pay (₹)</label>
+                    <input type="number" id="currentBasic" placeholder="Enter current basic pay" min="0" step="100">
+                </div>
+
+                <div class="input-group">
+                    <label for="gradePay">Current Grade Pay (₹)</label>
+                    <input type="number" id="gradePay" placeholder="Enter grade pay" min="0" step="10">
+                </div>
+
+                <div class="input-group">
+                    <label for="payLevel">Current Pay Level</label>
+                    <select id="payLevel">
+                        <option value="">Select Pay Level</option>
+                        <option value="1">Level 1 (₹18,000-56,900)</option>
+                        <option value="2">Level 2 (₹19,900-63,200)</option>
+                        <option value="3">Level 3 (₹21,700-69,100)</option>
+                        <option value="4">Level 4 (₹25,500-81,100)</option>
+                        <option value="5">Level 5 (₹29,200-92,300)</option>
+                        <option value="6">Level 6 (₹35,400-1,12,400)</option>
+                        <option value="7">Level 7 (₹44,900-1,42,400)</option>
+                        <option value="8">Level 8 (₹47,600-1,51,100)</option>
+                        <option value="9">Level 9 (₹53,100-1,67,800)</option>
+                        <option value="10">Level 10 (₹56,100-1,77,500)</option>
+                        <option value="11">Level 11 (₹67,700-2,08,700)</option>
+                        <option value="12">Level 12 (₹78,800-2,09,200)</option>
+                        <option value="13">Level 13 (₹1,18,500-2,14,100)</option>
+                        <option value="13A">Level 13A (₹1,31,100-2,16,600)</option>
+                        <option value="14">Level 14 (₹1,44,200-2,18,200)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="cityCategory">City Category</label>
+                    <select id="cityCategory">
+                        <option value="X">X (Population 50 lakh & above)</option>
+                        <option value="Y">Y (Population 5-50 lakh)</option>
+                        <option value="Z" selected>Z (Population below 5 lakh)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="yearsOfService">Years of Service</label>
+                    <input type="number" id="yearsOfService" placeholder="Enter years of service" min="0" max="40" step="1">
+                </div>
+
+                <div class="pay-matrix">
+                    <h4>Expected Fitment Factor</h4>
+                    <p>Based on current discussions, the fitment factor is projected to be around <strong>2.5x to 3.0x</strong> of the current basic pay.</p>
+                    <div class="input-group">
+                        <label for="fitmentFactor">Select Fitment Factor</label>
+                        <select id="fitmentFactor">
+                            <option value="2.5">2.5x (Conservative Estimate)</option>
+                            <option value="2.75" selected>2.75x (Moderate Estimate)</option>
+                            <option value="3.0">3.0x (Optimistic Estimate)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="calculate-btn" onclick="calculateSalary()">Calculate Salary</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Reset</button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Salary Breakdown</h2>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Current Basic Pay</div>
+                        <div class="result-value" id="currentBasicDisplay">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Expected New Basic Pay</div>
+                        <div class="result-value" id="newBasicDisplay">₹0</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Current Gross Salary</div>
+                        <div class="result-value" id="currentGrossDisplay">₹0</div>
+                    </div>
+                    <div class="result-card highlight">
+                        <div class="result-label">Expected Gross Salary</div>
+                        <div class="result-value" id="newGrossDisplay">₹0</div>
+                    </div>
+                </div>
+
+                <div class="breakdown-section">
+                    <h3 style="margin-bottom: 15px; color: #2c3e50;">Detailed Breakdown</h3>
+                    
+                    <div class="breakdown-item">
+                        <span>Basic Pay:</span>
+                        <span id="breakdownBasic">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>House Rent Allowance (HRA):</span>
+                        <span id="breakdownHRA">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Dearness Allowance (DA):</span>
+                        <span id="breakdownDA">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Travel Allowance (TA):</span>
+                        <span id="breakdownTA">₹0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Other Allowances:</span>
+                        <span id="breakdownOther">₹0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span>Expected Gross Salary:</span>
+                        <span id="breakdownTotal">₹0</span>
+                    </div>
+                </div>
+
+                <div class="comparison-section">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Salary Comparison</h3>
+                    <div class="comparison-chart">
+                        <div class="comparison-item">
+                            <div class="result-label">Current Salary</div>
+                            <div class="result-value" id="comparisonCurrent">₹0</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="result-label">Expected Salary</div>
+                            <div class="result-value" id="comparisonNew">₹0</div>
+                        </div>
+                        <div class="comparison-item">
+                            <div class="result-label">Expected Increase</div>
+                            <div class="result-value increase-indicator" id="comparisonIncrease">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Allowance rates (projected estimates)
+        const hraRates = {
+            'X': 0.27, // 27% of basic for X cities
+            'Y': 0.18, // 18% of basic for Y cities
+            'Z': 0.09  // 9% of basic for Z cities
+        };
+
+        const taRates = {
+            'X': 3600, // Monthly TA for X cities
+            'Y': 1800, // Monthly TA for Y cities
+            'Z': 900   // Monthly TA for Z cities
+        };
+
+        function calculateSalary() {
+            // Get input values
+            const currentBasic = parseFloat(document.getElementById('currentBasic').value) || 0;
+            const gradePay = parseFloat(document.getElementById('gradePay').value) || 0;
+            const cityCategory = document.getElementById('cityCategory').value;
+            const yearsOfService = parseInt(document.getElementById('yearsOfService').value) || 0;
+            const fitmentFactor = parseFloat(document.getElementById('fitmentFactor').value);
+
+            // Calculate current pay components
+            const currentGross = calculateCurrentGross(currentBasic, gradePay, cityCategory);
+            
+            // Calculate new basic pay using fitment factor
+            const newBasicPay = Math.round((currentBasic + gradePay) * fitmentFactor);
+            
+            // Calculate new salary components
+            const newGross = calculateNewGross(newBasicPay, cityCategory, yearsOfService);
+
+            // Display results
+            displayResults(currentBasic, currentGross, newBasicPay, newGross, cityCategory, yearsOfService);
+        }
+
+        function calculateCurrentGross(basic, gradePay, cityCategory) {
+            const currentDA = (basic + gradePay) * 0.46; // Assuming 46% DA
+            const currentHRA = (basic + gradePay) * hraRates[cityCategory];
+            const currentTA = taRates[cityCategory];
+            
+            return basic + gradePay + currentDA + currentHRA + currentTA;
+        }
+
+        function calculateNewGross(newBasic, cityCategory, yearsOfService) {
+            // Projected DA rate for 8th CPC (initial estimate)
+            const newDA = newBasic * 0.20; // Starting at 20%
+            
+            // HRA based on new basic
+            const newHRA = newBasic * hraRates[cityCategory];
+            
+            // Enhanced TA
+            const newTA = taRates[cityCategory] * 2; // Double the current TA
+            
+            // Additional benefits based on service years
+            const serviceBenefit = yearsOfService > 20 ? newBasic * 0.05 : 0;
+            
+            return newBasic + newDA + newHRA + newTA + serviceBenefit;
+        }
+
+        function displayResults(currentBasic, currentGross, newBasic, newGross, cityCategory, yearsOfService) {
+            // Basic displays
+            document.getElementById('currentBasicDisplay').textContent = '₹' + formatNumber(currentBasic);
+            document.getElementById('newBasicDisplay').textContent = '₹' + formatNumber(newBasic);
+            document.getElementById('currentGrossDisplay').textContent = '₹' + formatNumber(Math.round(currentGross));
+            document.getElementById('newGrossDisplay').textContent = '₹' + formatNumber(Math.round(newGross));
+
+            // Detailed breakdown
+            const newDA = newBasic * 0.20;
+            const newHRA = newBasic * hraRates[cityCategory];
+            const newTA = taRates[cityCategory] * 2;
+            const serviceBenefit = yearsOfService > 20 ? newBasic * 0.05 : 0;
+            const otherAllowances = newGross - (newBasic + newDA + newHRA + newTA + serviceBenefit);
+
+            document.getElementById('breakdownBasic').textContent = '₹' + formatNumber(newBasic);
+            document.getElementById('breakdownHRA').textContent = '₹' + formatNumber(Math.round(newHRA));
+            document.getElementById('breakdownDA').textContent = '₹' + formatNumber(Math.round(newDA));
+            document.getElementById('breakdownTA').textContent = '₹' + formatNumber(newTA);
+            document.getElementById('breakdownOther').textContent = '₹' + formatNumber(Math.round(otherAllowances));
+            document.getElementById('breakdownTotal').textContent = '₹' + formatNumber(Math.round(newGross));
+
+            // Comparison
+            document.getElementById('comparisonCurrent').textContent = '₹' + formatNumber(Math.round(currentGross));
+            document.getElementById('comparisonNew').textContent = '₹' + formatNumber(Math.round(newGross));
+            
+            const increasePercentage = ((newGross - currentGross) / currentGross * 100).toFixed(1);
+            document.getElementById('comparisonIncrease').textContent = '+' + increasePercentage + '%';
+        }
+
+        function formatNumber(num) {
+            return num.toLocaleString('en-IN');
+        }
+
+        function resetCalculator() {
+            document.getElementById('currentBasic').value = '';
+            document.getElementById('gradePay').value = '';
+            document.getElementById('payLevel').selectedIndex = 0;
+            document.getElementById('cityCategory').selectedIndex = 2;
+            document.getElementById('yearsOfService').value = '';
+            document.getElementById('fitmentFactor').selectedIndex = 1;
+            
+            // Reset all displays
+            const displayElements = document.querySelectorAll('[id$="Display"], [id^="breakdown"], [id^="comparison"]');
+            displayElements.forEach(element => {
+                if (element.id.includes('Current') || element.id.includes('comparisonCurrent')) {
+                    element.textContent = '₹0';
+                } else if (element.id.includes('Increase')) {
+                    element.textContent = '0%';
+                } else {
+                    element.textContent = '₹0';
+                }
+            });
+        }
+
+        // Auto-calculate when inputs change
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('change', calculateSalary);
+        });
+
+        // Initialize with some default values for demonstration
+        window.onload = function() {
+            document.getElementById('currentBasic').value = 50000;
+            document.getElementById('gradePay').value = 5400;
+            document.getElementById('yearsOfService').value = 15;
+            calculateSalary();
+        };
+    </script>
+</body>
+</html>

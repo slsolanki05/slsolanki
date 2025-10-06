@@ -1,0 +1,6 @@
+# Create robots.txt with this exact content:
+User-agent: *
+Allow: /
+
+Sitemap: https://calculationhub.space/sitemap.xml
+Crawl-delay: 1

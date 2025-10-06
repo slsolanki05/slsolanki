@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalculationHub.Space - 25+ Free Online Calculators & Tools</title>
+    <meta name="description" content="25+ free online calculators: PPF calculator, CGPA converter, stock tools, FLAMES, numerology, body calculators & unit converters. No registration, instant results.">
+    <meta name="keywords" content="free online calculators, financial calculators, PPF calculator, CGPA to percentage, stock calculator, FLAMES game, body shape calculator, unit converters, academic calculators, health calculators">
+    <meta name="author" content="CalculationHub.Space">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="25+ Free Online Calculators - CalculationHub.Space">
+    <meta property="og:description" content="Instant access to 25+ specialized calculators for finance, academics, health, relationships & conversions. 100% free, no registration.">
+    <meta property="og:url" content="https://calculationhub.space">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://calculationhub.space/og-image.jpg">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://calculationhub.space">
+    
+    <!-- Sitemap Reference -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+    
+    <!-- Enhanced Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "CalculationHub.Space - 25+ Free Calculators",
+          "url": "https://calculationhub.space",
+          "description": "Collection of 25+ free online calculators for finance, academics, relationships, health, and unit conversions",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Any",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "author": {
+            "@type": "Organization",
+            "name": "CalculationHub.Space",
+            "url": "https://calculationhub.space"
+          }
+        },
+        {
+          "@type": "WebSite",
+          "name": "CalculationHub.Space",
+          "url": "https://calculationhub.space",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://calculationhub.space/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are these calculators completely free?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, all 25+ calculators are 100% free with no registration, no hidden costs, and no personal data collection."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What types of calculators do you offer?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "We offer financial calculators (PPF, stock, salary), academic tools (CGPA, LTP), relationship calculators (FLAMES, love), health calculators (body shape, nutrition), and unit converters."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border: #dee2e6;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,186.7C384,213,480,235,576,213.3C672,192,768,128,864,128C960,128,1056,192,1152,192C1248,192,1344,128,1392,96L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 25px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero h2 {
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 800px;
+            margin: 0 auto 40px;
+        }
+        
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tool-icon {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            font-size: 2.5rem;
+        }
+        
+        .tool-content {
+            padding: 25px;
+        }
+        
+        .tool-content h3 {
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .tool-content p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .tool-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .tool-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Tool Container */
+        .tool-container {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 60px;
+            overflow: hidden;
+        }
+        
+        .tool-header {
+            background: var(--light);
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tool-header h2 {
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-btn {
+            background: var(--gray);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: var(--dark);
+        }
+        
+        .tool-frame {
+            width: 100%;
+            height: 700px;
+            border: none;
+        }
+        
+        /* Categories */
+        .categories {
+            margin-bottom: 40px;
+        }
+        
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .category-tab {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .category-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .category-content {
+            display: none;
+        }
+        
+        .category-content.active {
+            display: block;
+        }
+        
+        /* Features Section */
+        .features {
+            background: white;
+            padding: 60px 0;
+            margin-top: 40px;
+        }
+        
+        .features h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--dark);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #b0b7c3;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #444;
+            color: #b0b7c3;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-frame {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <h1><i class="fas fa-calculator"></i> CalculationHub.Space Calculators</h1>
+                <p class="tagline">Your comprehensive collection of 25+ free online calculators for finance, academics, relationships, health, and more</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <span>CalculationHub.Space</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#tools">All Tools</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <h2>Powerful Calculators for Every Need</h2>
+            <p>Access our collection of 25+ specialized calculators designed to help with financial planning, academic calculations, relationship analysis, health, and unit conversions. All tools are completely free to use with no registration required.</p>
+            
+            <!-- SEO H2 Added -->
+            <h2 style="text-align: center; margin: 40px 0 20px 0; color: var(--dark); font-size: 1.8rem; font-weight: 600;">
+                Browse 25+ Calculator Categories
+            </h2>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories" id="tools">
+            <div class="category-tabs">
+                <div class="category-tab active" data-category="all">All Tools</div>
+                <div class="category-tab" data-category="finance">Financial</div>
+                <div class="category-tab" data-category="academic">Academic</div>
+                <div class="category-tab" data-category="relationship">Relationship</div>
+                <div class="category-tab" data-category="health">Health</div>
+                <div class="category-tab" data-category="conversion">Conversion</div>
+                <div class="category-tab" data-category="automotive">Automotive</div>
+            </div>
+
+            <!-- All Tools Category -->
+            <div class="category-content active" id="all-tools">
+                <div class="tools-grid">
+                    <!-- Fuel Consumption Calculator -->
+                    <div class="tool-card" data-tool="fuel-consumption" data-category="automotive">
+                        <div class="tool-icon" aria-label="Fuel Consumption Calculator">
+                            <i class="fas fa-gas-pump"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Fuel Consumption Calculator</h3>
+                            <p>Calculate your vehicle's fuel efficiency, trip costs, and range. Compare metric and imperial units with detailed analysis.</p>
+                            <a href="#" class="tool-btn" data-tool="fuel-consumption">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Discount Calculator -->
+                    <div class="tool-card" data-tool="discount" data-category="finance">
+                        <div class="tool-icon" aria-label="Discount Calculator">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Discount Calculator</h3>
+                            <p>Calculate savings and final prices with percentage or fixed amount discounts. Perfect for shopping and price comparisons.</p>
+                            <a href="#" class="tool-btn" data-tool="discount">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- NSC Calculator -->
+                    <div class="tool-card" data-tool="nsc" data-category="finance">
+                        <div class="tool-icon" aria-label="NSC Calculator">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>NSC Calculator</h3>
+                            <p>Calculate returns on your National Savings Certificate investment with tax benefits and maturity projections.</p>
+                            <a href="#" class="tool-btn" data-tool="nsc">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Bra Size Calculator -->
+                    <div class="tool-card" data-tool="bra-size" data-category="health">
+                        <div class="tool-icon" aria-label="Bra Size Calculator">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Bra Size Calculator</h3>
+                            <p>Find your perfect bra fit with accurate measurements. Calculate band size, cup size, and get international size conversions.</p>
+                            <a href="#" class="tool-btn" data-tool="bra-size">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Period Calculator & Tracker -->
+                    <div class="tool-card" data-tool="period-tracker" data-category="health">
+                        <div class="tool-icon" aria-label="Period Calculator & Tracker">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Period Calculator & Tracker</h3>
+                            <p>Track your menstrual cycle, predict future periods, ovulation days, and fertility windows with our comprehensive period tracker.</p>
+                            <a href="#" class="tool-btn" data-tool="period-tracker">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Body Fat Percentage Calculator -->
+                    <div class="tool-card" data-tool="body-fat" data-category="health">
+                        <div class="tool-icon" aria-label="Body Fat Percentage Calculator">
+                            <i class="fas fa-weight"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Body Fat Percentage Calculator</h3>
+                            <p>Estimate your body composition using U.S. Navy method or BMI method. Track your fitness progress with detailed analysis.</p>
+                            <a href="#" class="tool-btn" data-tool="body-fat">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Gratuity Calculator -->
+                    <div class="tool-card" data-tool="gratuity" data-category="finance">
+                        <div class="tool-icon" aria-label="Gratuity Calculator">
+                            <i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Gratuity Calculator</h3>
+                            <p>Calculate your gratuity amount based on your last drawn salary and years of service as per the Payment of Gratuity Act.</p>
+                            <a href="#" class="tool-btn" data-tool="gratuity">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Lumpsum Calculator -->
+                    <div class="tool-card" data-tool="lumpsum" data-category="finance">
+                        <div class="tool-icon" aria-label="Lumpsum Calculator">
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Lumpsum Calculator</h3>
+                            <p>Calculate returns on your one-time mutual fund investments with detailed projections and scenario analysis.</p>
+                            <a href="#" class="tool-btn" data-tool="lumpsum">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- SWP Calculator -->
+                    <div class="tool-card" data-tool="swp" data-category="finance">
+                        <div class="tool-icon" aria-label="SWP Calculator">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>SWP Calculator</h3>
+                            <p>Calculate Systematic Withdrawal Plan returns and generate regular income from your investments.</p>
+                            <a href="#" class="tool-btn" data-tool="swp">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Salary Hike Calculator -->
+                    <div class="tool-card" data-tool="salary-hike" data-category="finance">
+                        <div class="tool-icon" aria-label="Salary Hike Calculator">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Salary Hike Calculator</h3>
+                            <p>Calculate your salary increase, compare scenarios, and plan your financial growth with detailed projections.</p>
+                            <a href="#" class="tool-btn" data-tool="salary-hike">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- PPF Calculator -->
+                    <div class="tool-card" data-tool="ppf" data-category="finance">
+                        <div class="tool-icon" aria-label="PPF Calculator">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>PPF Calculator</h3>
+                            <p>Calculate your Public Provident Fund returns with detailed projections and breakdowns.</p>
+                            <a href="#" class="tool-btn" data-tool="ppf">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- NPS Calculator -->
+                    <div class="tool-card" data-tool="nps" data-category="finance">
+                        <div class="tool-icon" aria-label="NPS Calculator">
+                            <i class="fas fa-poll"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>NPS Calculator</h3>
+                            <p>Measure customer loyalty and satisfaction with the Net Promoter Score.</p>
+                            <a href="#" class="tool-btn" data-tool="nps">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Stock Market Average Calculator -->
+                    <div class="tool-card" data-tool="stock" data-category="finance">
+                        <div class="tool-icon" aria-label="Stock Market Calculator">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Stock Average Calculator</h3>
+                            <p>Calculate your average stock price and track your investment performance.</p>
+                            <a href="#" class="tool-btn" data-tool="stock">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- 8th Pay Commission Salary Calculator -->
+                    <div class="tool-card" data-tool="salary" data-category="finance">
+                        <div class="tool-icon" aria-label="8th Pay Commission Salary Calculator">
+                            <i class="fas fa-money-check-alt"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>8th Pay Commission Salary Calculator</h3>
+                            <p>Estimate your expected salary based on projected 8th Pay Commission recommendations.</p>
+                            <a href="#" class="tool-btn" data-tool="salary">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- CGPA to Percentage Calculator -->
+                    <div class="tool-card" data-tool="cgpa" data-category="academic">
+                        <div class="tool-icon" aria-label="CGPA Calculator">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>CGPA to Percentage</h3>
+                            <p>Convert your CGPA score to percentage using various conversion formulas.</p>
+                            <a href="#" class="tool-btn" data-tool="cgpa">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- L T P Calculator -->
+                    <div class="tool-card" data-tool="ltp" data-category="academic">
+                        <div class="tool-icon" aria-label="LTP Calculator">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>L T P Calculator</h3>
+                            <p>Calculate course hours and credits instantly for academic planning.</p>
+                            <a href="#" class="tool-btn" data-tool="ltp">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- FLAMES Calculator -->
+                    <div class="tool-card" data-tool="flames" data-category="relationship">
+                        <div class="tool-icon" aria-label="FLAMES Calculator">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>FLAMES Calculator</h3>
+                            <p>Discover your relationship status through the popular FLAMES game.</p>
+                            <a href="#" class="tool-btn" data-tool="flames">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Love Calculator -->
+                    <div class="tool-card" data-tool="love-calculator" data-category="relationship">
+                        <div class="tool-icon" aria-label="Love Calculator">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Love Calculator</h3>
+                            <p>Calculate your love compatibility with your partner and discover your relationship potential.</p>
+                            <a href="#" class="tool-btn" data-tool="love-calculator">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Name Numerology Calculator -->
+                    <div class="tool-card" data-tool="numerology" data-category="relationship">
+                        <div class="tool-icon" aria-label="Name Numerology Calculator">
+                            <i class="fas fa-star-and-crescent"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Name Numerology Calculator</h3>
+                            <p>Discover the hidden meanings and vibrations of your name through numerology.</p>
+                            <a href="#" class="tool-btn" data-tool="numerology">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Female Body Figure Calculator -->
+                    <div class="tool-card" data-tool="body-figure" data-category="health">
+                        <div class="tool-icon" aria-label="Female Body Figure Calculator">
+                            <i class="fas fa-female"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Female Body Figure Calculator</h3>
+                            <p>Discover your body shape and get personalized styling tips based on your measurements.</p>
+                            <a href="#" class="tool-btn" data-tool="body-figure">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Female Body Shape Calculator -->
+                    <div class="tool-card" data-tool="body-shape" data-category="health">
+                        <div class="tool-icon" aria-label="Female Body Shape Calculator">
+                            <i class="fas fa-venus"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Female Body Shape Calculator</h3>
+                            <p>Discover your body type and get personalized fashion advice based on your measurements.</p>
+                            <a href="#" class="tool-btn" data-tool="body-shape">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Body Shape Calculator -->
+                    <div class="tool-card" data-tool="body-shape-calculator" data-category="health">
+                        <div class="tool-icon" aria-label="Body Shape Calculator">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Body Shape Calculator</h3>
+                            <p>Discover your body type based on measurements and get personalized styling tips for your unique shape.</p>
+                            <a href="#" class="tool-btn" data-tool="body-shape-calculator">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Poshan Calculator -->
+                    <div class="tool-card" data-tool="poshan" data-category="health">
+                        <div class="tool-icon" aria-label="Poshan Calculator">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Poshan Calculator</h3>
+                            <p>Track your daily nutrition intake and calculate your dietary needs.</p>
+                            <a href="#" class="tool-btn" data-tool="poshan">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Meter to Feet Converter -->
+                    <div class="tool-card" data-tool="meter-feet" data-category="conversion">
+                        <div class="tool-icon" aria-label="Meter to Feet Converter">
+                            <i class="fas fa-ruler"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Meter to Feet Converter</h3>
+                            <p>Quick and accurate length conversions between meters and feet.</p>
+                            <a href="#" class="tool-btn" data-tool="meter-feet">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- Millimeters to Feet Calculator -->
+                    <div class="tool-card" data-tool="mm-feet" data-category="conversion">
+                        <div class="tool-icon" aria-label="Millimeters to Feet Calculator">
+                            <i class="fas fa-ruler-combined"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Millimeters to Feet</h3>
+                            <p>Convert between millimeters and feet with precision and ease.</p>
+                            <a href="#" class="tool-btn" data-tool="mm-feet">Use Tool</a>
+                        </div>
+                    </div>
+
+                    <!-- FT² Calculator -->
+                    <div class="tool-card" data-tool="ft2" data-category="conversion">
+                        <div class="tool-icon" aria-label="Square Footage Calculator">
+                            <i class="fas fa-vector-square"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h3>Square Footage Calculator</h3>
+                            <p>Calculate square footage for various shapes and convert between area units.</p>
+                            <a href="#" class="tool-btn" data-tool="ft2">Use Tool</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Tools Category -->
+            <div class="category-content" id="finance-tools">
+                <div class="tools-grid">
+                    <!-- Financial tools will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Academic Tools Category -->
+            <div class="category-content" id="academic-tools">
+                <div class="tools-grid">
+                    <!-- Academic tools will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Relationship Tools Category -->
+            <div class="category-content" id="relationship-tools">
+                <div class="tools-grid">
+                    <!-- Relationship tools will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Health Tools Category -->
+            <div class="category-content" id="health-tools">
+                <div class="tools-grid">
+                    <!-- Health tools will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Conversion Tools Category -->
+            <div class="category-content" id="conversion-tools">
+                <div class="tools-grid">
+                    <!-- Conversion tools will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Automotive Tools Category -->
+            <div class="category-content" id="automotive-tools">
+                <div class="tools-grid">
+                    <!-- Automotive tools will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Tool Containers (Hidden by default) -->
+        <!-- Fuel Consumption Calculator Tool -->
+        <div class="tool-container" id="fuel-consumption-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-gas-pump"></i> Fuel Consumption Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Fuel Consumption Calculator.html" class="tool-frame" title="Fuel Consumption Calculator"></iframe>
+        </div>
+
+        <!-- Discount Calculator Tool -->
+        <div class="tool-container" id="discount-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-percentage"></i> Discount Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Discount Calculator.html" class="tool-frame" title="Discount Calculator"></iframe>
+        </div>
+
+        <!-- NSC Calculator Tool -->
+        <div class="tool-container" id="nsc-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-certificate"></i> NSC Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="NSC Calculator.html" class="tool-frame" title="NSC Calculator"></iframe>
+        </div>
+
+        <!-- Bra Size Calculator Tool -->
+        <div class="tool-container" id="bra-size-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-tshirt"></i> Bra Size Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Bra Size Calculator.html" class="tool-frame" title="Bra Size Calculator"></iframe>
+        </div>
+
+        <!-- Period Calculator & Tracker Tool -->
+        <div class="tool-container" id="period-tracker-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-calendar-alt"></i> Period Calculator & Tracker</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Period Calculator & Tracker.html" class="tool-frame" title="Period Calculator & Tracker"></iframe>
+        </div>
+
+        <!-- Body Fat Percentage Calculator Tool -->
+        <div class="tool-container" id="body-fat-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-weight"></i> Body Fat Percentage Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Body Fat Percentage Calculator.html" class="tool-frame" title="Body Fat Percentage Calculator"></iframe>
+        </div>
+
+        <!-- Gratuity Calculator Tool -->
+        <div class="tool-container" id="gratuity-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-hand-holding-usd"></i> Gratuity Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Gratuity Calculator.html" class="tool-frame" title="Gratuity Calculator"></iframe>
+        </div>
+
+        <!-- Lumpsum Calculator Tool -->
+        <div class="tool-container" id="lumpsum-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-chart-pie"></i> Lumpsum Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Lumpsum Calculator.html" class="tool-frame" title="Lumpsum Calculator"></iframe>
+        </div>
+
+        <!-- SWP Calculator Tool -->
+        <div class="tool-container" id="swp-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-money-bill-wave"></i> SWP Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="SWP Calculator.html" class="tool-frame" title="SWP Calculator"></iframe>
+        </div>
+
+        <!-- Salary Hike Calculator Tool -->
+        <div class="tool-container" id="salary-hike-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-chart-line"></i> Salary Hike Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Salary Hike Calculator.html" class="tool-frame" title="Salary Hike Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="ppf-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-piggy-bank"></i> PPF Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="PPF Calculator.html" class="tool-frame" title="PPF Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="nps-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-poll"></i> NPS Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="NPS Calculator.html" class="tool-frame" title="NPS Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="stock-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-chart-line"></i> Stock Market Average Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Stock Market Average Calculator (2).html" class="tool-frame" title="Stock Market Average Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="salary-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-money-check-alt"></i> 8th Pay Commission Salary Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="8th Pay Commission Salary Calculator.html" class="tool-frame" title="8th Pay Commission Salary Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="cgpa-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-graduation-cap"></i> CGPA to Percentage Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="CGPA to Percentage Calculator.html" class="tool-frame" title="CGPA to Percentage Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="ltp-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-book-open"></i> L T P Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="L T P Calculator.html" class="tool-frame" title="L T P Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="flames-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-heart"></i> FLAMES Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="FLAMES Calculator.html" class="tool-frame" title="FLAMES Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="love-calculator-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-heartbeat"></i> Love Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Love Calculator.html" class="tool-frame" title="Love Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="numerology-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-star-and-crescent"></i> Name Numerology Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Name Numerology Calculator.html" class="tool-frame" title="Name Numerology Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="body-figure-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-female"></i> Female Body Figure Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Female Body Figure Calculator.html" class="tool-frame" title="Female Body Figure Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="body-shape-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-venus"></i> Female Body Shape Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Female Body Shape Calculator.html" class="tool-frame" title="Female Body Shape Calculator"></iframe>
+        </div>
+
+        <!-- Body Shape Calculator Tool -->
+        <div class="tool-container" id="body-shape-calculator-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-user-friends"></i> Body Shape Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Body Shape Calculator.html" class="tool-frame" title="Body Shape Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="poshan-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-apple-alt"></i> Poshan Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Poshan Calculator.html" class="tool-frame" title="Poshan Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="meter-feet-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-ruler"></i> Meter to Feet Converter</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Meter to Feet Converter.html" class="tool-frame" title="Meter to Feet Converter"></iframe>
+        </div>
+
+        <div class="tool-container" id="mm-feet-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-ruler-combined"></i> Millimeters to Feet Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="Millimeters to Feet Calculator.html" class="tool-frame" title="Millimeters to Feet Calculator"></iframe>
+        </div>
+
+        <div class="tool-container" id="ft2-tool">
+            <div class="tool-header">
+                <h2><i class="fas fa-vector-square"></i> Square Footage Calculator</h2>
+                <button class="back-btn">Back to Tools</button>
+            </div>
+            <iframe src="FT² Calculator.html" class="tool-frame" title="Square Footage Calculator"></iframe>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features" id="about">
+        <div class="container">
+            <h2>Why Choose Our Calculators?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>All calculations happen locally in your browser. We don't store any of your personal data.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Instant Results</h3>
+                    <p>Get accurate results immediately without any delays or complicated processes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Our calculators work perfectly on all devices - desktop, tablet, and mobile.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>No Registration</h3>
+                    <p>Access all our tools immediately without any sign-up or registration required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>CalculationHub.Space</h3>
+                    <p>Your trusted source for 25+ free online calculators and tools. Instant results, no registration, complete privacy.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#tools">All Tools</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Popular Tools</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" data-tool="ppf">PPF Calculator</a></li>
+                        <li><a href="#" data-tool="cgpa">CGPA Converter</a></li>
+                        <li><a href="#" data-tool="flames">FLAMES Game</a></li>
+                        <li><a href="#" data-tool="salary-hike">Salary Hike Calculator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 CalculationHub.Space. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tool navigation functionality with lazy loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tool buttons
+            const toolButtons = document.querySelectorAll('.tool-btn');
+            const toolContainers = document.querySelectorAll('.tool-container');
+            const backButtons = document.querySelectorAll('.back-btn');
+            const categoriesSection = document.querySelector('.categories');
+            
+            // Category tabs
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const categoryContents = document.querySelectorAll('.category-content');
+            
+            // Lazy load iframes
+            const iframes = document.querySelectorAll('.tool-frame');
+            
+            const lazyLoadIframe = (iframe) => {
+                iframe.setAttribute('data-src', iframe.src);
+                iframe.removeAttribute('src');
+                iframe.setAttribute('loading', 'lazy');
+            };
+            
+            const loadIframe = (iframe) => {
+                if (iframe.getAttribute('data-src') && !iframe.src) {
+                    iframe.src = iframe.getAttribute('data-src');
+                }
+            };
+            
+            // Initialize lazy loading
+            iframes.forEach(lazyLoadIframe);
+            
+            // Show tool function with lazy loading
+            function showTool(toolId) {
+                // Hide all tool containers and categories
+                toolContainers.forEach(container => {
+                    container.style.display = 'none';
+                });
+                categoriesSection.style.display = 'none';
+                
+                // Show the selected tool
+                const selectedTool = document.getElementById(toolId + '-tool');
+                if (selectedTool) {
+                    selectedTool.style.display = 'block';
+                    
+                    // Load the iframe when tool is displayed
+                    const iframe = selectedTool.querySelector('.tool-frame');
+                    loadIframe(iframe);
+                    
+                    // Scroll to the tool
+                    selectedTool.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+            
+            // Back to tools function
+            function backToTools() {
+                // Hide all tool containers
+                toolContainers.forEach(container => {
+                    container.style.display = 'none';
+                });
+                
+                // Show categories
+                categoriesSection.style.display = 'block';
+                
+                // Scroll to tools section
+                categoriesSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            // Add event listeners to tool buttons
+            toolButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const toolId = this.getAttribute('data-tool');
+                    showTool(toolId);
+                });
+            });
+            
+            // Add event listeners to back buttons
+            backButtons.forEach(button => {
+                button.addEventListener('click', backToTools);
+            });
+            
+            // Category tab functionality
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const category = this.getAttribute('data-category');
+                    
+                    // Update active tab
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding category content
+                    categoryContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    if (category === 'all') {
+                        document.getElementById('all-tools').classList.add('active');
+                    } else {
+                        document.getElementById(category + '-tools').classList.add('active');
+                        
+                        // Populate category tools
+                        populateCategoryTools(category);
+                    }
+                });
+            });
+            
+            // Function to populate category tools
+            function populateCategoryTools(category) {
+                const categoryGrid = document.getElementById(category + '-tools').querySelector('.tools-grid');
+                const allTools = document.querySelectorAll('.tool-card[data-category="' + category + '"]');
+                
+                // Clear current grid
+                categoryGrid.innerHTML = '';
+                
+                // Add tools to category grid
+                allTools.forEach(tool => {
+                    categoryGrid.appendChild(tool.cloneNode(true));
+                });
+                
+                // Re-attach event listeners to new buttons
+                const newToolButtons = categoryGrid.querySelectorAll('.tool-btn');
+                newToolButtons.forEach(button => {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const toolId = this.getAttribute('data-tool');
+                        showTool(toolId);
+                    });
+                });
+            }
+            
+            // Footer tool links
+            const footerToolLinks = document.querySelectorAll('.footer-links a[data-tool]');
+            footerToolLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const toolId = this.getAttribute('data-tool');
+                    showTool(toolId);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
